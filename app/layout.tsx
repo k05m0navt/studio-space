@@ -12,7 +12,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Studio Space | Photo Studio & Coworking",
+  title: "Vasha Studio | Photo Studio & Coworking",
   description: "Premium photo studio and coworking space for creatives",
 };
 

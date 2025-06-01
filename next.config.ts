@@ -1,10 +1,22 @@
 // next.config.js
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { NextConfig } from "next";
+import createNextIntlPlugin from 'next-intl/plugin';
+
+const withNextIntl = createNextIntlPlugin();
+
+const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
     domains: ["https://qtejvuokreytzwkdxuts.supabase.co"],
   },
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
+      },
+    },
+  },
 };
 
-module.exports = nextConfig;
+export default withNextIntl(nextConfig);

@@ -5,18 +5,18 @@ const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Studio Space API',
+      title: 'Vasha Studio API',
       version: '1.0.0',
-      description: 'A comprehensive API for managing studio space bookings, content, and user interactions',
+      description: 'A comprehensive API for managing Vasha Studio bookings, content, and user interactions',
       contact: {
-        name: 'Studio Space Team',
-        email: 'api@studiospace.com',
+        name: 'Vasha Studio Team',
+        email: 'api@vashastudio.com',
       },
     },
     servers: [
       {
         url: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000',
-        description: 'Studio Space API Server',
+        description: 'Vasha Studio API Server',
       },
     ],
     components: {
@@ -221,150 +221,398 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(specs);
   }
 
-  // Return beautiful HTML documentation
+  // Return beautiful HTML documentation matching the web app design
   const html = `
     <!DOCTYPE html>
-    <html lang="en">
+    <html lang="en" class="">
     <head>
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Studio Space API Documentation</title>
+      <title>Vasha Studio API Documentation</title>
       <link rel="stylesheet" type="text/css" href="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui.css" />
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
       <style>
-        html {
+        :root {
+          --radius: 0.625rem;
+          --background: oklch(1 0 0);
+          --foreground: oklch(0.145 0 0);
+          --card: oklch(1 0 0);
+          --card-foreground: oklch(0.145 0 0);
+          --popover: oklch(1 0 0);
+          --popover-foreground: oklch(0.145 0 0);
+          --primary: oklch(0.205 0 0);
+          --primary-foreground: oklch(0.985 0 0);
+          --secondary: oklch(0.97 0 0);
+          --secondary-foreground: oklch(0.205 0 0);
+          --muted: oklch(0.97 0 0);
+          --muted-foreground: oklch(0.556 0 0);
+          --accent: oklch(0.97 0 0);
+          --accent-foreground: oklch(0.205 0 0);
+          --destructive: oklch(0.577 0.245 27.325);
+          --border: oklch(0.922 0 0);
+          --input: oklch(0.922 0 0);
+          --ring: oklch(0.708 0 0);
+        }
+
+        @media (prefers-color-scheme: dark) {
+          :root {
+            --background: oklch(0.145 0 0);
+            --foreground: oklch(0.985 0 0);
+            --card: oklch(0.205 0 0);
+            --card-foreground: oklch(0.985 0 0);
+            --popover: oklch(0.205 0 0);
+            --popover-foreground: oklch(0.985 0 0);
+            --primary: oklch(0.922 0 0);
+            --primary-foreground: oklch(0.205 0 0);
+            --secondary: oklch(0.269 0 0);
+            --secondary-foreground: oklch(0.985 0 0);
+            --muted: oklch(0.269 0 0);
+            --muted-foreground: oklch(0.708 0 0);
+            --accent: oklch(0.269 0 0);
+            --accent-foreground: oklch(0.985 0 0);
+            --destructive: oklch(0.704 0.191 22.216);
+            --border: oklch(1 0 0 / 10%);
+            --input: oklch(1 0 0 / 15%);
+            --ring: oklch(0.556 0 0);
+          }
+        }
+
+        * {
           box-sizing: border-box;
-          overflow: -moz-scrollbars-vertical;
-          overflow-y: scroll;
         }
-        *, *:before, *:after {
-          box-sizing: inherit;
+
+        html {
+          overflow-x: hidden;
+          scroll-behavior: smooth;
         }
+
         body {
-          margin:0;
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+          margin: 0;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+          background-color: var(--background);
+          color: var(--foreground);
+          line-height: 1.6;
+          antialiased: true;
+          transition: background 0.3s, color 0.3s;
         }
-        #swagger-ui {
+
+        .header-nav {
+          background: var(--background);
+          border-bottom: 1px solid var(--border);
+          padding: 1rem 0;
+          position: sticky;
+          top: 0;
+          z-index: 1000;
+          backdrop-filter: blur(10px);
+          background: var(--background)/95;
+        }
+
+        .header-content {
           max-width: 1200px;
           margin: 0 auto;
-          padding: 20px;
+          padding: 0 2rem;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
         }
-        .swagger-ui .topbar {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          border-radius: 10px;
-          margin-bottom: 20px;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .swagger-ui .topbar .topbar-wrapper {
-          padding: 20px;
-        }
-        .swagger-ui .topbar .topbar-wrapper .link {
-          color: white;
-          font-size: 24px;
-          font-weight: bold;
+
+        .logo {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: var(--foreground);
           text-decoration: none;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
         }
-        .swagger-ui .info {
-          background: white;
-          border-radius: 10px;
-          padding: 30px;
-          margin-bottom: 20px;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+        .theme-toggle {
+          background: var(--secondary);
+          border: 1px solid var(--border);
+          border-radius: var(--radius);
+          padding: 0.5rem;
+          cursor: pointer;
+          transition: all 0.2s;
+          color: var(--foreground);
         }
-        .swagger-ui .info .title {
-          color: #667eea;
-          font-size: 36px;
-          font-weight: bold;
-          margin-bottom: 10px;
+
+        .theme-toggle:hover {
+          background: var(--accent);
         }
-        .swagger-ui .scheme-container {
-          background: white;
-          border-radius: 10px;
-          padding: 20px;
-          margin-bottom: 20px;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .swagger-ui .opblock {
-          border-radius: 10px;
-          margin-bottom: 15px;
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-          overflow: hidden;
-        }
-        .swagger-ui .opblock.opblock-post {
-          border-color: #49cc90;
-          background: rgba(73, 204, 144, 0.1);
-        }
-        .swagger-ui .opblock.opblock-get {
-          border-color: #61affe;
-          background: rgba(97, 175, 254, 0.1);
-        }
-        .swagger-ui .opblock.opblock-put {
-          border-color: #fca130;
-          background: rgba(252, 161, 48, 0.1);
-        }
-        .swagger-ui .opblock.opblock-delete {
-          border-color: #f93e3e;
-          background: rgba(249, 62, 62, 0.1);
-        }
-        .swagger-ui .btn.authorize {
-          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-          border: none;
-          border-radius: 6px;
-          color: white;
-          font-weight: bold;
-          padding: 10px 20px;
-        }
-        .swagger-ui .btn.execute {
-          background: linear-gradient(135deg, #49cc90 0%, #38a3a5 100%);
-          border: none;
-          border-radius: 6px;
-          color: white;
-          font-weight: bold;
-        }
+
         .custom-header {
           text-align: center;
-          padding: 40px 20px;
-          color: white;
+          padding: 4rem 2rem;
+          background: var(--background);
+          border-bottom: 1px solid var(--border);
         }
+
         .custom-header h1 {
-          font-size: 48px;
-          margin-bottom: 10px;
-          font-weight: bold;
-          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+          font-size: 3rem;
+          margin: 0 0 1rem 0;
+          font-weight: 700;
+          color: var(--foreground);
+          background: linear-gradient(135deg, var(--primary), var(--primary));
+          -webkit-background-clip: text;
+          background-clip: text;
         }
+
         .custom-header p {
-          font-size: 18px;
-          margin-bottom: 30px;
-          opacity: 0.9;
+          font-size: 1.125rem;
+          margin: 0 0 2rem 0;
+          color: var(--muted-foreground);
+          max-width: 600px;
+          margin-left: auto;
+          margin-right: auto;
         }
+
         .api-stats {
           display: flex;
           justify-content: center;
-          gap: 30px;
-          margin-bottom: 40px;
+          gap: 2rem;
+          margin-bottom: 2rem;
+          flex-wrap: wrap;
         }
+
         .stat-item {
-          background: rgba(255, 255, 255, 0.2);
-          padding: 20px;
-          border-radius: 10px;
+          background: var(--card);
+          border: 1px solid var(--border);
+          padding: 1.5rem;
+          border-radius: calc(var(--radius) + 4px);
           text-align: center;
-          backdrop-filter: blur(10px);
+          min-width: 120px;
+          transition: all 0.2s;
         }
+
+        .stat-item:hover {
+          background: var(--accent);
+          transform: translateY(-2px);
+        }
+
         .stat-number {
-          font-size: 24px;
-          font-weight: bold;
+          font-size: 1.5rem;
+          font-weight: 700;
           display: block;
+          color: var(--primary);
         }
+
         .stat-label {
-          font-size: 14px;
-          opacity: 0.8;
+          font-size: 0.875rem;
+          color: var(--muted-foreground);
+          margin-top: 0.25rem;
+        }
+
+        #swagger-ui {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 2rem;
+        }
+
+        /* Override Swagger UI styles to match our design */
+        .swagger-ui {
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+        }
+
+        .swagger-ui .topbar {
+          display: none !important;
+        }
+
+        .swagger-ui .info {
+          background: var(--card) !important;
+          border: 1px solid var(--border) !important;
+          border-radius: calc(var(--radius) + 4px) !important;
+          padding: 2rem !important;
+          margin-bottom: 2rem !important;
+        }
+
+        .swagger-ui .info .title {
+          color: var(--foreground) !important;
+          font-size: 2rem !important;
+          font-weight: 700 !important;
+          margin-bottom: 0.5rem !important;
+        }
+
+        .swagger-ui .info .description {
+          color: var(--muted-foreground) !important;
+          font-size: 1rem !important;
+        }
+
+        .swagger-ui .scheme-container {
+          background: var(--card) !important;
+          border: 1px solid var(--border) !important;
+          border-radius: var(--radius) !important;
+          padding: 1.5rem !important;
+          margin-bottom: 2rem !important;
+        }
+
+        .swagger-ui .opblock {
+          border-radius: var(--radius) !important;
+          margin-bottom: 1rem !important;
+          border: 1px solid var(--border) !important;
+          background: var(--card) !important;
+          overflow: hidden;
+        }
+
+        .swagger-ui .opblock.opblock-post {
+          border-left: 4px solid #10b981 !important;
+        }
+
+        .swagger-ui .opblock.opblock-get {
+          border-left: 4px solid #3b82f6 !important;
+        }
+
+        .swagger-ui .opblock.opblock-put {
+          border-left: 4px solid #f59e0b !important;
+        }
+
+        .swagger-ui .opblock.opblock-delete {
+          border-left: 4px solid #ef4444 !important;
+        }
+
+        .swagger-ui .opblock-summary {
+          background: var(--background) !important;
+          border-bottom: 1px solid var(--border) !important;
+          padding: 1rem 1.5rem !important;
+        }
+
+        .swagger-ui .opblock-summary-method {
+          border-radius: calc(var(--radius) - 2px) !important;
+          font-weight: 600 !important;
+          font-size: 0.75rem !important;
+          padding: 0.25rem 0.5rem !important;
+        }
+
+        .swagger-ui .opblock-summary-path {
+          color: var(--foreground) !important;
+          font-weight: 500 !important;
+          font-family: 'Inter', monospace !important;
+        }
+
+        .swagger-ui .opblock-description-wrapper {
+          background: var(--card) !important;
+          padding: 1.5rem !important;
+        }
+
+        .swagger-ui .btn {
+          border-radius: var(--radius) !important;
+          font-weight: 500 !important;
+          transition: all 0.2s !important;
+        }
+
+        .swagger-ui .btn.authorize {
+          background: var(--primary) !important;
+          border: none !important;
+          color: var(--primary-foreground) !important;
+          padding: 0.5rem 1rem !important;
+        }
+
+        .swagger-ui .btn.authorize:hover {
+          opacity: 0.9 !important;
+          transform: translateY(-1px) !important;
+        }
+
+        .swagger-ui .btn.execute {
+          background: var(--primary) !important;
+          border: none !important;
+          color: var(--primary-foreground) !important;
+        }
+
+        .swagger-ui .btn.execute:hover {
+          opacity: 0.9 !important;
+        }
+
+        .swagger-ui .parameters-col_description {
+          color: var(--muted-foreground) !important;
+        }
+
+        .swagger-ui .response-col_status {
+          color: var(--foreground) !important;
+          font-weight: 600 !important;
+        }
+
+        .swagger-ui .model-box {
+          background: var(--muted) !important;
+          border-radius: var(--radius) !important;
+          border: 1px solid var(--border) !important;
+        }
+
+        .swagger-ui .model-title {
+          color: var(--foreground) !important;
+          font-weight: 600 !important;
+        }
+
+        .swagger-ui textarea {
+          background: var(--background) !important;
+          border: 1px solid var(--border) !important;
+          border-radius: var(--radius) !important;
+          color: var(--foreground) !important;
+          font-family: 'Inter', monospace !important;
+        }
+
+        .swagger-ui input[type="text"] {
+          background: var(--background) !important;
+          border: 1px solid var(--border) !important;
+          border-radius: var(--radius) !important;
+          color: var(--foreground) !important;
+        }
+
+        .swagger-ui .download-contents {
+          background: var(--muted) !important;
+          border-radius: var(--radius) !important;
+          padding: 1rem !important;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+          .custom-header h1 {
+            font-size: 2rem;
+          }
+
+          .api-stats {
+            gap: 1rem;
+          }
+
+          .stat-item {
+            padding: 1rem;
+            min-width: 100px;
+          }
+
+          #swagger-ui {
+            padding: 1rem;
+          }
+
+          .header-content {
+            padding: 0 1rem;
+          }
+        }
+
+        /* Focus styles for accessibility */
+        .swagger-ui .btn:focus,
+        .swagger-ui input:focus,
+        .swagger-ui textarea:focus {
+          outline: 2px solid var(--primary) !important;
+          outline-offset: 2px !important;
         }
       </style>
     </head>
     <body>
+      <nav class="header-nav">
+        <div class="header-content">
+          <a href="/" class="logo">
+            <span>📸</span>
+            Vasha Studio
+          </a>
+          <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+            🌙
+          </button>
+        </div>
+      </nav>
+
       <div class="custom-header">
-        <h1>🎯 Studio Space API</h1>
-        <p>Comprehensive API for managing studio space bookings, content, and user interactions</p>
+        <h1>🎯 Vasha Studio API</h1>
+        <p>Comprehensive API for managing studio bookings, content, and user interactions with modern authentication and real-time features</p>
         <div class="api-stats">
           <div class="stat-item">
             <span class="stat-number">15+</span>
@@ -378,13 +626,53 @@ export async function GET(request: NextRequest) {
             <span class="stat-number">JWT</span>
             <span class="stat-label">Authentication</span>
           </div>
+          <div class="stat-item">
+            <span class="stat-number">i18n</span>
+            <span class="stat-label">Ready</span>
+          </div>
         </div>
       </div>
+
       <div id="swagger-ui"></div>
+
       <script src="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui-bundle.js"></script>
       <script src="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui-standalone-preset.js"></script>
       <script>
+        // Theme management
+        function toggleTheme() {
+          const html = document.documentElement;
+          const isDark = html.classList.contains('dark');
+          const button = document.querySelector('.theme-toggle');
+          
+          if (isDark) {
+            html.classList.remove('dark');
+            button.textContent = '🌙';
+            localStorage.setItem('theme', 'light');
+          } else {
+            html.classList.add('dark');
+            button.textContent = '☀️';
+            localStorage.setItem('theme', 'dark');
+          }
+        }
+
+        // Initialize theme
+        function initTheme() {
+          const savedTheme = localStorage.getItem('theme');
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const button = document.querySelector('.theme-toggle');
+          
+          if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+            document.documentElement.classList.add('dark');
+            button.textContent = '☀️';
+          } else {
+            button.textContent = '🌙';
+          }
+        }
+
+        // Initialize Swagger UI
         window.onload = function() {
+          initTheme();
+          
           const ui = SwaggerUIBundle({
             url: '/api/docs?format=json',
             dom_id: '#swagger-ui',
@@ -406,20 +694,32 @@ export async function GET(request: NextRequest) {
             filter: true,
             showExtensions: true,
             showCommonExtensions: true,
-            defaultModelsExpandDepth: 2,
+            defaultModelsExpandDepth: 1,
             requestInterceptor: function(request) {
-              // Add any custom headers or modifications here
               return request;
             },
             responseInterceptor: function(response) {
-              // Handle responses here
               return response;
             },
             onComplete: function() {
-              console.log('Swagger UI loaded successfully');
+              console.log('Vasha Studio API documentation loaded successfully');
             }
           });
         };
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+          if (!localStorage.getItem('theme')) {
+            const button = document.querySelector('.theme-toggle');
+            if (e.matches) {
+              document.documentElement.classList.add('dark');
+              button.textContent = '☀️';
+            } else {
+              document.documentElement.classList.remove('dark');
+              button.textContent = '🌙';
+            }
+          }
+        });
       </script>
     </body>
     </html>

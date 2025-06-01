@@ -1,0 +1,108 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "save": "Save",
+    "edit": "Edit",
+    "delete": "Delete",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous"
+  },
+  "navigation": {
+    "home": "Home",
+    "studio": "Studio",
+    "coworking": "Coworking",
+    "gallery": "Gallery",
+    "faq": "FAQ",
+    "admin": "Admin",
+    "bookNow": "Book Now"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot Password?",
+    "alreadyHaveAccount": "Already have an account?",
+    "dontHaveAccount": "Don't have an account?",
+    "signIn": "Sign In",
+    "signUp": "Sign Up"
+  },
+  "studio": {
+    "title": "Vasha Studio",
+    "subtitle": "Professional Photo Studio & Creative Coworking Space",
+    "description": "Premium photography studio and coworking space for creatives in the heart of the city",
+    "features": {
+      "professional": "Professional Equipment",
+      "lighting": "Advanced Lighting",
+      "space": "Spacious Environment",
+      "flexible": "Flexible Booking"
+    }
+  },
+  "booking": {
+    "title": "Book Your Session",
+    "selectDate": "Select Date",
+    "selectTime": "Select Time",
+    "studioBooking": "Studio Booking",
+    "coworkingBooking": "Coworking Booking",
+    "customerInfo": "Customer Information",
+    "bookingType": "Booking Type",
+    "message": "Message (Optional)",
+    "confirmBooking": "Confirm Booking",
+    "bookingSuccess": "Booking successful!",
+    "bookingError": "Booking failed. Please try again.",
+    "timeSlotUnavailable": "This time slot is not available"
+  },
+  "gallery": {
+    "title": "Gallery",
+    "subtitle": "Showcase of our work and studio spaces",
+    "categories": {
+      "all": "All",
+      "studio": "Studio",
+      "coworking": "Coworking",
+      "events": "Events"
+    }
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Find answers to common questions about our studio and services",
+    "categories": {
+      "general": "General",
+      "studio": "Studio",
+      "coworking": "Coworking"
+    }
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Get in touch with our team",
+    "address": "Address",
+    "phone": "Phone",
+    "email": "Email",
+    "hours": "Hours",
+    "monday_friday": "Monday - Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday",
+    "parking": "Parking",
+    "metro": "Metro",
+    "freeOnSite": "Free on-site",
+    "blocksAway": "blocks away",
+    "getDirections": "Get Directions",
+    "gettingHere": "Getting Here",
+    "memberAccess": "24/7 access available for monthly members"
+  },
+  "footer": {
+    "description": "Professional photography studio and coworking space",
+    "quickLinks": "Quick Links",
+    "contact": "Contact",
+    "followUs": "Follow Us",
+    "allRightsReserved": "All rights reserved"
+  }
+} 

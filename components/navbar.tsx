@@ -176,7 +176,7 @@ export function Navbar() {
           whileTap={{ scale: 0.98 }}
           transition={{ duration: 0.15 }}
         >
-          Studio Space
+          📸 Vasha Studio
         </motion.span>
       </Link>
       
