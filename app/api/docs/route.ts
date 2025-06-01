@@ -198,30 +198,463 @@ const options = {
         name: 'Bookings',
         description: 'Studio and coworking space bookings',
       },
-      {
-        name: 'Gallery',
-        description: 'Image gallery management',
-      },
-      {
-        name: 'Settings',
-        description: 'Application settings and configuration',
-      },
     ],
+    paths: {
+      '/api/auth': {
+        post: {
+          tags: ['Authentication'],
+          summary: 'User authentication',
+          description: 'Authenticate user with email and password',
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    email: {
+                      type: 'string',
+                      format: 'email',
+                      description: 'User email address',
+                    },
+                    password: {
+                      type: 'string',
+                      description: 'User password',
+                    },
+                  },
+                  required: ['email', 'password'],
+                },
+              },
+            },
+          },
+          responses: {
+            200: {
+              description: 'Authentication successful',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      token: {
+                        type: 'string',
+                        description: 'JWT authentication token',
+                      },
+                      user: {
+                        $ref: '#/components/schemas/User',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            401: {
+              description: 'Authentication failed',
+              content: {
+                'application/json': {
+                  schema: {
+                    $ref: '#/components/schemas/Error',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      '/api/content': {
+        get: {
+          tags: ['Content'],
+          summary: 'Get content list',
+          description: 'Retrieve paginated list of content with filtering options',
+          parameters: [
+            {
+              name: 'page',
+              in: 'query',
+              description: 'Page number for pagination',
+              schema: {
+                type: 'integer',
+                default: 1,
+              },
+            },
+            {
+              name: 'limit',
+              in: 'query',
+              description: 'Number of items per page',
+              schema: {
+                type: 'integer',
+                default: 10,
+              },
+            },
+            {
+              name: 'type',
+              in: 'query',
+              description: 'Filter by content type',
+              schema: {
+                type: 'string',
+                enum: ['PAGE', 'BLOG_POST', 'ANNOUNCEMENT', 'HERO_SECTION', 'FEATURE', 'TESTIMONIAL', 'SERVICE'],
+              },
+            },
+            {
+              name: 'locale',
+              in: 'query',
+              description: 'Filter by locale',
+              schema: {
+                type: 'string',
+                default: 'en',
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: 'Content list retrieved successfully',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      content: {
+                        type: 'array',
+                        items: {
+                          $ref: '#/components/schemas/Content',
+                        },
+                      },
+                      pagination: {
+                        type: 'object',
+                        properties: {
+                          page: {
+                            type: 'integer',
+                          },
+                          limit: {
+                            type: 'integer',
+                          },
+                          total: {
+                            type: 'integer',
+                          },
+                          totalPages: {
+                            type: 'integer',
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            500: {
+              description: 'Server error',
+              content: {
+                'application/json': {
+                  schema: {
+                    $ref: '#/components/schemas/Error',
+                  },
+                },
+              },
+            },
+          },
+        },
+        post: {
+          tags: ['Content'],
+          summary: 'Create new content',
+          description: 'Create a new content item (requires admin privileges)',
+          security: [
+            {
+              bearerAuth: [],
+            },
+          ],
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    type: {
+                      type: 'string',
+                      enum: ['PAGE', 'BLOG_POST', 'ANNOUNCEMENT', 'HERO_SECTION', 'FEATURE', 'TESTIMONIAL', 'SERVICE'],
+                    },
+                    key: {
+                      type: 'string',
+                    },
+                    title: {
+                      type: 'string',
+                    },
+                    content: {
+                      type: 'string',
+                    },
+                    description: {
+                      type: 'string',
+                    },
+                    locale: {
+                      type: 'string',
+                      default: 'en',
+                    },
+                    isActive: {
+                      type: 'boolean',
+                      default: true,
+                    },
+                    metadata: {
+                      type: 'object',
+                    },
+                    order: {
+                      type: 'number',
+                    },
+                  },
+                  required: ['type', 'key', 'title', 'content'],
+                },
+              },
+            },
+          },
+          responses: {
+            201: {
+              description: 'Content created successfully',
+              content: {
+                'application/json': {
+                  schema: {
+                    $ref: '#/components/schemas/Content',
+                  },
+                },
+              },
+            },
+            400: {
+              description: 'Validation error',
+              content: {
+                'application/json': {
+                  schema: {
+                    $ref: '#/components/schemas/Error',
+                  },
+                },
+              },
+            },
+            401: {
+              description: 'Unauthorized',
+              content: {
+                'application/json': {
+                  schema: {
+                    $ref: '#/components/schemas/Error',
+                  },
+                },
+              },
+            },
+            403: {
+              description: 'Insufficient privileges',
+              content: {
+                'application/json': {
+                  schema: {
+                    $ref: '#/components/schemas/Error',
+                  },
+                },
+              },
+            },
+            500: {
+              description: 'Server error',
+              content: {
+                'application/json': {
+                  schema: {
+                    $ref: '#/components/schemas/Error',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      '/api/bookings': {
+        get: {
+          tags: ['Bookings'],
+          summary: 'Get bookings list',
+          description: 'Retrieve list of bookings with optional filtering (requires authentication)',
+          security: [
+            {
+              bearerAuth: [],
+            },
+          ],
+          parameters: [
+            {
+              name: 'page',
+              in: 'query',
+              description: 'Page number for pagination',
+              schema: {
+                type: 'integer',
+                default: 1,
+              },
+            },
+            {
+              name: 'limit',
+              in: 'query',
+              description: 'Number of bookings per page',
+              schema: {
+                type: 'integer',
+                default: 10,
+              },
+            },
+            {
+              name: 'status',
+              in: 'query',
+              description: 'Filter by booking status',
+              schema: {
+                type: 'string',
+                enum: ['pending', 'confirmed', 'cancelled'],
+              },
+            },
+            {
+              name: 'type',
+              in: 'query',
+              description: 'Filter by booking type',
+              schema: {
+                type: 'string',
+                enum: ['studio', 'coworking'],
+              },
+            },
+          ],
+          responses: {
+            200: {
+              description: 'Bookings retrieved successfully',
+              content: {
+                'application/json': {
+                  schema: {
+                    type: 'object',
+                    properties: {
+                      bookings: {
+                        type: 'array',
+                        items: {
+                          $ref: '#/components/schemas/Booking',
+                        },
+                      },
+                      pagination: {
+                        type: 'object',
+                        properties: {
+                          page: {
+                            type: 'integer',
+                          },
+                          limit: {
+                            type: 'integer',
+                          },
+                          total: {
+                            type: 'integer',
+                          },
+                          totalPages: {
+                            type: 'integer',
+                          },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            401: {
+              description: 'Unauthorized',
+              content: {
+                'application/json': {
+                  schema: {
+                    $ref: '#/components/schemas/Error',
+                  },
+                },
+              },
+            },
+            500: {
+              description: 'Server error',
+              content: {
+                'application/json': {
+                  schema: {
+                    $ref: '#/components/schemas/Error',
+                  },
+                },
+              },
+            },
+          },
+        },
+        post: {
+          tags: ['Bookings'],
+          summary: 'Create new booking',
+          description: 'Create a new studio or coworking space booking',
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  type: 'object',
+                  properties: {
+                    name: {
+                      type: 'string',
+                    },
+                    email: {
+                      type: 'string',
+                      format: 'email',
+                    },
+                    phone: {
+                      type: 'string',
+                    },
+                    date: {
+                      type: 'string',
+                      format: 'date-time',
+                    },
+                    start_time: {
+                      type: 'string',
+                    },
+                    end_time: {
+                      type: 'string',
+                    },
+                    message: {
+                      type: 'string',
+                    },
+                    type: {
+                      type: 'string',
+                      enum: ['studio', 'coworking'],
+                    },
+                  },
+                  required: ['name', 'email', 'date', 'start_time', 'end_time', 'type'],
+                },
+              },
+            },
+          },
+          responses: {
+            201: {
+              description: 'Booking created successfully',
+              content: {
+                'application/json': {
+                  schema: {
+                    $ref: '#/components/schemas/Booking',
+                  },
+                },
+              },
+            },
+            400: {
+              description: 'Validation error or time conflict',
+              content: {
+                'application/json': {
+                  schema: {
+                    $ref: '#/components/schemas/Error',
+                  },
+                },
+              },
+            },
+            500: {
+              description: 'Server error',
+              content: {
+                'application/json': {
+                  schema: {
+                    $ref: '#/components/schemas/Error',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   },
-  apis: ['./app/api/**/*.ts'], // Path to the API files
+  apis: [],
 };
-
-const specs = swaggerJsdoc(options);
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const format = searchParams.get('format');
 
   if (format === 'json') {
-    return NextResponse.json(specs);
+    const spec = swaggerJsdoc(options);
+    return NextResponse.json(spec);
   }
 
-  // Return beautiful HTML documentation matching the web app design
   const html = `
     <!DOCTYPE html>
     <html lang="en" class="">
@@ -233,186 +666,259 @@ export async function GET(request: NextRequest) {
       <link rel="preconnect" href="https://fonts.googleapis.com">
       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
       <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+      
       <style>
         :root {
-          --radius: 0.625rem;
-          --background: oklch(1 0 0);
-          --foreground: oklch(0.145 0 0);
-          --card: oklch(1 0 0);
-          --card-foreground: oklch(0.145 0 0);
-          --popover: oklch(1 0 0);
-          --popover-foreground: oklch(0.145 0 0);
-          --primary: oklch(0.205 0 0);
-          --primary-foreground: oklch(0.985 0 0);
-          --secondary: oklch(0.97 0 0);
-          --secondary-foreground: oklch(0.205 0 0);
-          --muted: oklch(0.97 0 0);
-          --muted-foreground: oklch(0.556 0 0);
-          --accent: oklch(0.97 0 0);
-          --accent-foreground: oklch(0.205 0 0);
-          --destructive: oklch(0.577 0.245 27.325);
-          --border: oklch(0.922 0 0);
-          --input: oklch(0.922 0 0);
-          --ring: oklch(0.708 0 0);
+          --background: 0 0% 100%;
+          --foreground: 224 71.4% 4.1%;
+          --card: 0 0% 100%;
+          --card-foreground: 224 71.4% 4.1%;
+          --popover: 0 0% 100%;
+          --popover-foreground: 224 71.4% 4.1%;
+          --primary: 220.9 39.3% 11%;
+          --primary-foreground: 210 20% 98%;
+          --secondary: 220 14.3% 95.9%;
+          --secondary-foreground: 220.9 39.3% 11%;
+          --muted: 220 14.3% 95.9%;
+          --muted-foreground: 220 8.9% 46.1%;
+          --accent: 220 14.3% 95.9%;
+          --accent-foreground: 220.9 39.3% 11%;
+          --destructive: 0 84.2% 60.2%;
+          --destructive-foreground: 210 20% 98%;
+          --border: 220 13% 91%;
+          --input: 220 13% 91%;
+          --ring: 224 71.4% 4.1%;
+          --radius: 0.5rem;
         }
 
-        @media (prefers-color-scheme: dark) {
-          :root {
-            --background: oklch(0.145 0 0);
-            --foreground: oklch(0.985 0 0);
-            --card: oklch(0.205 0 0);
-            --card-foreground: oklch(0.985 0 0);
-            --popover: oklch(0.205 0 0);
-            --popover-foreground: oklch(0.985 0 0);
-            --primary: oklch(0.922 0 0);
-            --primary-foreground: oklch(0.205 0 0);
-            --secondary: oklch(0.269 0 0);
-            --secondary-foreground: oklch(0.985 0 0);
-            --muted: oklch(0.269 0 0);
-            --muted-foreground: oklch(0.708 0 0);
-            --accent: oklch(0.269 0 0);
-            --accent-foreground: oklch(0.985 0 0);
-            --destructive: oklch(0.704 0.191 22.216);
-            --border: oklch(1 0 0 / 10%);
-            --input: oklch(1 0 0 / 15%);
-            --ring: oklch(0.556 0 0);
-          }
+        .dark {
+          --background: 224 71.4% 4.1%;
+          --foreground: 210 20% 98%;
+          --card: 224 71.4% 4.1%;
+          --card-foreground: 210 20% 98%;
+          --popover: 224 71.4% 4.1%;
+          --popover-foreground: 210 20% 98%;
+          --primary: 210 20% 98%;
+          --primary-foreground: 220.9 39.3% 11%;
+          --secondary: 215 27.9% 16.9%;
+          --secondary-foreground: 210 20% 98%;
+          --muted: 215 27.9% 16.9%;
+          --muted-foreground: 217.9 10.6% 64.9%;
+          --accent: 215 27.9% 16.9%;
+          --accent-foreground: 210 20% 98%;
+          --destructive: 0 62.8% 30.6%;
+          --destructive-foreground: 210 20% 98%;
+          --border: 215 27.9% 16.9%;
+          --input: 215 27.9% 16.9%;
+          --ring: 216 12.2% 83.9%;
         }
 
         * {
           box-sizing: border-box;
         }
 
-        html {
-          overflow-x: hidden;
-          scroll-behavior: smooth;
-        }
-
         body {
           margin: 0;
-          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-          background-color: var(--background);
-          color: var(--foreground);
-          line-height: 1.6;
-          antialiased: true;
-          transition: background 0.3s, color 0.3s;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+          background-color: hsl(var(--background));
+          color: hsl(var(--foreground));
+          line-height: 1.5;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
         }
 
+        /* Navbar styling to match the main app */
         .header-nav {
-          background: var(--background);
-          border-bottom: 1px solid var(--border);
-          padding: 1rem 0;
-          position: sticky;
-          top: 0;
-          z-index: 1000;
-          backdrop-filter: blur(10px);
-          background: var(--background)/95;
-        }
-
-        .header-content {
-          max-width: 1200px;
-          margin: 0 auto;
-          padding: 0 2rem;
+          width: 100%;
+          padding: 0.5rem 1rem;
           display: flex;
           align-items: center;
           justify-content: space-between;
+          box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+          background: hsl(var(--background));
+          position: sticky;
+          top: 0;
+          z-index: 50;
+          border-bottom: 1px solid hsl(var(--border));
+        }
+
+        .header-content {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          width: 100%;
         }
 
         .logo {
-          font-size: 1.5rem;
-          font-weight: 700;
-          color: var(--foreground);
-          text-decoration: none;
           display: flex;
           align-items: center;
           gap: 0.5rem;
+          text-decoration: none;
+          color: hsl(var(--foreground));
+          font-size: 1.5rem;
+          font-weight: 700;
+          user-select: none;
+          transition: all 0.15s ease-in-out;
+        }
+
+        .logo:hover {
+          transform: scale(1.02);
+        }
+
+        .nav-links {
+          display: none;
+          gap: 0.25rem;
+          align-items: center;
+        }
+
+        @media (min-width: 768px) {
+          .nav-links {
+            display: flex;
+          }
+        }
+
+        .nav-link {
+          position: relative;
+          padding: 0.5rem 1rem;
+          border-radius: 0.5rem;
+          transition: all 0.2s ease;
+          text-decoration: none;
+          color: hsl(var(--muted-foreground));
+          font-size: 0.875rem;
+          font-weight: 500;
+          min-height: 2.75rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .nav-link:hover {
+          color: hsl(var(--foreground));
+          background: hsl(var(--accent) / 0.8);
+        }
+
+        .nav-link.active {
+          background: hsl(var(--primary));
+          color: hsl(var(--primary-foreground));
+          font-weight: 600;
+          box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
         }
 
         .theme-toggle {
-          background: var(--secondary);
-          border: 1px solid var(--border);
-          border-radius: var(--radius);
-          padding: 0.5rem;
+          margin-left: 0.5rem;
+          padding: 0.5rem 0.5rem;
+          border-radius: 0.5rem;
+          border: 1px solid hsl(var(--border));
+          background: hsl(var(--muted));
+          color: hsl(var(--foreground));
           cursor: pointer;
-          transition: all 0.2s;
-          color: var(--foreground);
+          transition: all 0.15s ease;
+          min-height: 2.75rem;
+          min-width: 2.75rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1rem;
+          outline: none;
         }
 
         .theme-toggle:hover {
-          background: var(--accent);
+          background: hsl(var(--accent));
+          transform: scale(1.02);
         }
 
+        .theme-toggle:focus-visible {
+          outline: 2px solid hsl(var(--primary));
+          outline-offset: 2px;
+        }
+
+        /* API Header */
         .custom-header {
+          background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.8) 100%);
+          color: hsl(var(--primary-foreground));
+          padding: 3rem 1rem;
           text-align: center;
-          padding: 4rem 2rem;
-          background: var(--background);
-          border-bottom: 1px solid var(--border);
+          position: relative;
+          overflow: hidden;
+        }
+
+        .custom-header::before {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: url('data:image/svg+xml,<svg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><g fill="%23ffffff" fill-opacity="0.03"><polygon points="36 34 18 34 18 26 36 26"/></g></svg>') repeat;
+          opacity: 0.3;
         }
 
         .custom-header h1 {
           font-size: 3rem;
-          margin: 0 0 1rem 0;
           font-weight: 700;
-          color: var(--foreground);
-          background: linear-gradient(135deg, var(--primary), var(--primary));
-          -webkit-background-clip: text;
-          background-clip: text;
+          margin: 0 0 1rem 0;
+          position: relative;
+          z-index: 1;
         }
 
         .custom-header p {
           font-size: 1.125rem;
           margin: 0 0 2rem 0;
-          color: var(--muted-foreground);
+          opacity: 0.9;
           max-width: 600px;
           margin-left: auto;
           margin-right: auto;
+          position: relative;
+          z-index: 1;
         }
 
         .api-stats {
           display: flex;
-          justify-content: center;
           gap: 2rem;
-          margin-bottom: 2rem;
+          justify-content: center;
           flex-wrap: wrap;
+          position: relative;
+          z-index: 1;
         }
 
         .stat-item {
-          background: var(--card);
-          border: 1px solid var(--border);
+          background: hsl(var(--primary-foreground) / 0.1);
+          backdrop-filter: blur(10px);
+          border: 1px solid hsl(var(--primary-foreground) / 0.2);
+          border-radius: 1rem;
           padding: 1.5rem;
-          border-radius: calc(var(--radius) + 4px);
           text-align: center;
           min-width: 120px;
-          transition: all 0.2s;
+          transition: all 0.3s ease;
         }
 
         .stat-item:hover {
-          background: var(--accent);
           transform: translateY(-2px);
+          box-shadow: 0 8px 25px hsl(var(--primary) / 0.3);
         }
 
         .stat-number {
+          display: block;
           font-size: 1.5rem;
           font-weight: 700;
-          display: block;
-          color: var(--primary);
+          margin-bottom: 0.25rem;
         }
 
         .stat-label {
           font-size: 0.875rem;
-          color: var(--muted-foreground);
-          margin-top: 0.25rem;
+          opacity: 0.8;
         }
 
+        /* Swagger UI Container */
         #swagger-ui {
           max-width: 1200px;
           margin: 0 auto;
-          padding: 2rem;
+          padding: 2rem 1rem;
         }
 
-        /* Override Swagger UI styles to match our design */
+        /* Swagger UI Overrides */
         .swagger-ui {
-          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif !important;
         }
 
         .swagger-ui .topbar {
@@ -420,146 +926,175 @@ export async function GET(request: NextRequest) {
         }
 
         .swagger-ui .info {
-          background: var(--card) !important;
-          border: 1px solid var(--border) !important;
-          border-radius: calc(var(--radius) + 4px) !important;
-          padding: 2rem !important;
-          margin-bottom: 2rem !important;
+          margin: 0 0 2rem 0 !important;
         }
 
         .swagger-ui .info .title {
-          color: var(--foreground) !important;
+          color: hsl(var(--foreground)) !important;
           font-size: 2rem !important;
           font-weight: 700 !important;
-          margin-bottom: 0.5rem !important;
         }
 
         .swagger-ui .info .description {
-          color: var(--muted-foreground) !important;
+          color: hsl(var(--muted-foreground)) !important;
           font-size: 1rem !important;
+          margin: 1rem 0 !important;
         }
 
         .swagger-ui .scheme-container {
-          background: var(--card) !important;
-          border: 1px solid var(--border) !important;
+          background: hsl(var(--card)) !important;
+          border: 1px solid hsl(var(--border)) !important;
           border-radius: var(--radius) !important;
-          padding: 1.5rem !important;
-          margin-bottom: 2rem !important;
+          padding: 1rem !important;
+          margin: 1rem 0 !important;
+        }
+
+        .swagger-ui .opblock-tag {
+          background: hsl(var(--card)) !important;
+          border: 1px solid hsl(var(--border)) !important;
+          border-radius: var(--radius) !important;
+          margin: 0 0 1rem 0 !important;
+        }
+
+        .swagger-ui .opblock-tag-section h3 {
+          color: hsl(var(--foreground)) !important;
+          font-weight: 600 !important;
         }
 
         .swagger-ui .opblock {
+          background: hsl(var(--card)) !important;
+          border: 1px solid hsl(var(--border)) !important;
           border-radius: var(--radius) !important;
-          margin-bottom: 1rem !important;
-          border: 1px solid var(--border) !important;
-          background: var(--card) !important;
-          overflow: hidden;
+          margin: 0 0 1rem 0 !important;
         }
 
         .swagger-ui .opblock.opblock-post {
-          border-left: 4px solid #10b981 !important;
+          border-color: hsl(142.1 76.2% 36.3%) !important;
+        }
+
+        .swagger-ui .opblock.opblock-post .opblock-summary {
+          border-color: hsl(142.1 76.2% 36.3%) !important;
         }
 
         .swagger-ui .opblock.opblock-get {
-          border-left: 4px solid #3b82f6 !important;
+          border-color: hsl(221.2 83.2% 53.3%) !important;
         }
 
-        .swagger-ui .opblock.opblock-put {
-          border-left: 4px solid #f59e0b !important;
-        }
-
-        .swagger-ui .opblock.opblock-delete {
-          border-left: 4px solid #ef4444 !important;
+        .swagger-ui .opblock.opblock-get .opblock-summary {
+          border-color: hsl(221.2 83.2% 53.3%) !important;
         }
 
         .swagger-ui .opblock-summary {
-          background: var(--background) !important;
-          border-bottom: 1px solid var(--border) !important;
-          padding: 1rem 1.5rem !important;
+          background: hsl(var(--muted)) !important;
+          border-bottom: 1px solid hsl(var(--border)) !important;
+          padding: 1rem !important;
         }
 
         .swagger-ui .opblock-summary-method {
-          border-radius: calc(var(--radius) - 2px) !important;
+          border-radius: var(--radius) !important;
           font-weight: 600 !important;
           font-size: 0.75rem !important;
-          padding: 0.25rem 0.5rem !important;
+          text-transform: uppercase !important;
         }
 
         .swagger-ui .opblock-summary-path {
-          color: var(--foreground) !important;
-          font-weight: 500 !important;
+          color: hsl(var(--foreground)) !important;
+          font-weight: 600 !important;
           font-family: 'Inter', monospace !important;
         }
 
+        .swagger-ui .opblock-summary-description {
+          color: hsl(var(--muted-foreground)) !important;
+        }
+
         .swagger-ui .opblock-description-wrapper {
-          background: var(--card) !important;
-          padding: 1.5rem !important;
+          background: hsl(var(--background)) !important;
+          border-top: 1px solid hsl(var(--border)) !important;
+          padding: 1rem !important;
+        }
+
+        .swagger-ui .opblock-section-header {
+          background: hsl(var(--muted)) !important;
+          color: hsl(var(--foreground)) !important;
+          font-weight: 600 !important;
+          padding: 0.75rem 1rem !important;
+        }
+
+        .swagger-ui .parameters-col_description p,
+        .swagger-ui .response-col_description p {
+          color: hsl(var(--muted-foreground)) !important;
+          margin: 0 !important;
+        }
+
+        .swagger-ui .parameter__name {
+          color: hsl(var(--foreground)) !important;
+          font-weight: 600 !important;
+        }
+
+        .swagger-ui .parameter__type {
+          color: hsl(var(--muted-foreground)) !important;
+          font-size: 0.875rem !important;
         }
 
         .swagger-ui .btn {
           border-radius: var(--radius) !important;
           font-weight: 500 !important;
-          transition: all 0.2s !important;
-        }
-
-        .swagger-ui .btn.authorize {
-          background: var(--primary) !important;
-          border: none !important;
-          color: var(--primary-foreground) !important;
-          padding: 0.5rem 1rem !important;
-        }
-
-        .swagger-ui .btn.authorize:hover {
-          opacity: 0.9 !important;
-          transform: translateY(-1px) !important;
+          transition: all 0.2s ease !important;
         }
 
         .swagger-ui .btn.execute {
-          background: var(--primary) !important;
-          border: none !important;
-          color: var(--primary-foreground) !important;
+          background: hsl(var(--primary)) !important;
+          color: hsl(var(--primary-foreground)) !important;
+          border: 1px solid hsl(var(--primary)) !important;
         }
 
         .swagger-ui .btn.execute:hover {
-          opacity: 0.9 !important;
+          background: hsl(var(--primary) / 0.9) !important;
+          transform: translateY(-1px) !important;
         }
 
-        .swagger-ui .parameters-col_description {
-          color: var(--muted-foreground) !important;
+        .swagger-ui .btn.try-out__btn {
+          background: hsl(var(--secondary)) !important;
+          color: hsl(var(--secondary-foreground)) !important;
+          border: 1px solid hsl(var(--border)) !important;
         }
 
         .swagger-ui .response-col_status {
-          color: var(--foreground) !important;
           font-weight: 600 !important;
         }
 
+        .swagger-ui .response .response-col_status {
+          color: hsl(var(--foreground)) !important;
+        }
+
         .swagger-ui .model-box {
-          background: var(--muted) !important;
+          background: hsl(var(--muted)) !important;
           border-radius: var(--radius) !important;
-          border: 1px solid var(--border) !important;
+          border: 1px solid hsl(var(--border)) !important;
         }
 
         .swagger-ui .model-title {
-          color: var(--foreground) !important;
+          color: hsl(var(--foreground)) !important;
           font-weight: 600 !important;
         }
 
         .swagger-ui textarea {
-          background: var(--background) !important;
-          border: 1px solid var(--border) !important;
+          background: hsl(var(--background)) !important;
+          border: 1px solid hsl(var(--border)) !important;
           border-radius: var(--radius) !important;
-          color: var(--foreground) !important;
+          color: hsl(var(--foreground)) !important;
           font-family: 'Inter', monospace !important;
         }
 
         .swagger-ui input[type="text"] {
-          background: var(--background) !important;
-          border: 1px solid var(--border) !important;
+          background: hsl(var(--background)) !important;
+          border: 1px solid hsl(var(--border)) !important;
           border-radius: var(--radius) !important;
-          color: var(--foreground) !important;
+          color: hsl(var(--foreground)) !important;
         }
 
         .swagger-ui .download-contents {
-          background: var(--muted) !important;
+          background: hsl(var(--muted)) !important;
           border-radius: var(--radius) !important;
           padding: 1rem !important;
         }
@@ -592,7 +1127,7 @@ export async function GET(request: NextRequest) {
         .swagger-ui .btn:focus,
         .swagger-ui input:focus,
         .swagger-ui textarea:focus {
-          outline: 2px solid var(--primary) !important;
+          outline: 2px solid hsl(var(--primary)) !important;
           outline-offset: 2px !important;
         }
       </style>
@@ -604,8 +1139,19 @@ export async function GET(request: NextRequest) {
             <span>📸</span>
             Vasha Studio
           </a>
+          
+          <div class="nav-links">
+            <a href="/" class="nav-link">Home</a>
+            <a href="/studio" class="nav-link">Studio</a>
+            <a href="/coworking" class="nav-link">Coworking</a>
+            <a href="/gallery" class="nav-link">Gallery</a>
+            <a href="/faq" class="nav-link">FAQ</a>
+            <a href="/admin" class="nav-link">Admin</a>
+            <a href="/api/docs" class="nav-link active">API</a>
+          </div>
+
           <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
-            🌙
+            <span id="theme-icon">🌙</span>
           </button>
         </div>
       </nav>
@@ -638,34 +1184,34 @@ export async function GET(request: NextRequest) {
       <script src="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui-bundle.js"></script>
       <script src="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui-standalone-preset.js"></script>
       <script>
-        // Theme management
+        // Theme management that syncs with main app
         function toggleTheme() {
           const html = document.documentElement;
           const isDark = html.classList.contains('dark');
-          const button = document.querySelector('.theme-toggle');
+          const icon = document.getElementById('theme-icon');
           
           if (isDark) {
             html.classList.remove('dark');
-            button.textContent = '🌙';
+            icon.textContent = '🌙';
             localStorage.setItem('theme', 'light');
           } else {
             html.classList.add('dark');
-            button.textContent = '☀️';
+            icon.textContent = '☀️';
             localStorage.setItem('theme', 'dark');
           }
         }
 
-        // Initialize theme
+        // Initialize theme from localStorage or system preference
         function initTheme() {
           const savedTheme = localStorage.getItem('theme');
           const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          const button = document.querySelector('.theme-toggle');
+          const icon = document.getElementById('theme-icon');
           
           if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
             document.documentElement.classList.add('dark');
-            button.textContent = '☀️';
+            icon.textContent = '☀️';
           } else {
-            button.textContent = '🌙';
+            icon.textContent = '🌙';
           }
         }
 
@@ -710,13 +1256,13 @@ export async function GET(request: NextRequest) {
         // Listen for system theme changes
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
           if (!localStorage.getItem('theme')) {
-            const button = document.querySelector('.theme-toggle');
+            const icon = document.getElementById('theme-icon');
             if (e.matches) {
               document.documentElement.classList.add('dark');
-              button.textContent = '☀️';
+              icon.textContent = '☀️';
             } else {
               document.documentElement.classList.remove('dark');
-              button.textContent = '🌙';
+              icon.textContent = '🌙';
             }
           }
         });

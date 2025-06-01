@@ -22,6 +22,58 @@
     "admin": "Admin",
     "bookNow": "Book Now"
   },
+  "home": {
+    "badge": "Professional Photography Studio",
+    "heroTitle": "Your Creative",
+    "heroTitleAccent": "Studio Space",
+    "heroDescription": "Professional photography studio and creative coworking space designed to bring your artistic vision to life.",
+    "bookStudio": "Book Studio Time",
+    "viewGallery": "View Gallery",
+    "stats": {
+      "projects": "Projects",
+      "members": "Members",
+      "reviews": "200+ reviews"
+    },
+    "studio": {
+      "title": "Professional Studio",
+      "description": "State-of-the-art equipment, professional lighting, and creative spaces",
+      "price": "Book from $75/hour"
+    },
+    "community": {
+      "title": "Community",
+      "members": "50+ Members"
+    },
+    "amenities": {
+      "title": "Amenities",
+      "description": "Wi-Fi & Coffee"
+    },
+    "features": {
+      "title": "Everything You Need to Create",
+      "description": "Our studio combines professional equipment with a collaborative environment to support your creative projects.",
+      "studio": {
+        "title": "Photography Studio",
+        "description": "Professional lighting, backdrops, and equipment for all your photography needs.",
+        "feature1": "Professional Lighting",
+        "feature2": "Multiple Backdrops"
+      },
+      "coworking": {
+        "title": "Creative Coworking",
+        "description": "A collaborative workspace for creative professionals and entrepreneurs.",
+        "feature1": "24/7 Access",
+        "feature2": "Meeting Rooms"
+      },
+      "booking": {
+        "title": "Easy Booking",
+        "description": "Simple online booking system with flexible scheduling and instant confirmation.",
+        "feature1": "Instant Confirmation",
+        "feature2": "Flexible Scheduling"
+      }
+    },
+    "location": {
+      "title": "Visit Our Studio",
+      "description": "Located in the heart of the city with easy access and parking available."
+    }
+  },
   "auth": {
     "login": "Login",
     "register": "Register",
@@ -31,10 +83,10 @@
     "name": "Name",
     "confirmPassword": "Confirm Password",
     "forgotPassword": "Forgot Password?",
-    "alreadyHaveAccount": "Already have an account?",
-    "dontHaveAccount": "Don't have an account?",
-    "signIn": "Sign In",
-    "signUp": "Sign Up"
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "signUp": "Sign Up",
+    "signIn": "Sign In"
   },
   "studio": {
     "title": "Vasha Studio",
@@ -47,19 +99,27 @@
       "flexible": "Flexible Booking"
     }
   },
+  "coworking": {
+    "title": "Creative Coworking Space",
+    "subtitle": "Collaborative Workspace",
+    "description": "A modern coworking space designed for creative professionals, entrepreneurs, and freelancers to collaborate and thrive."
+  },
   "booking": {
     "title": "Book Your Session",
     "selectDate": "Select Date",
     "selectTime": "Select Time",
-    "studioBooking": "Studio Booking",
-    "coworkingBooking": "Coworking Booking",
+    "studioType": "Studio Type",
+    "photography": "Photography",
+    "coworking": "Coworking",
     "customerInfo": "Customer Information",
-    "bookingType": "Booking Type",
-    "message": "Message (Optional)",
-    "confirmBooking": "Confirm Booking",
-    "bookingSuccess": "Booking successful!",
-    "bookingError": "Booking failed. Please try again.",
-    "timeSlotUnavailable": "This time slot is not available"
+    "fullName": "Full Name",
+    "email": "Email Address",
+    "phone": "Phone Number",
+    "message": "Additional Message",
+    "submit": "Book Session",
+    "confirmation": "Booking Confirmation",
+    "success": "Your booking has been confirmed!",
+    "thankYou": "Thank you for choosing our studio."
   },
   "gallery": {
     "title": "Gallery",
@@ -98,11 +158,23 @@
     "gettingHere": "Getting Here",
     "memberAccess": "24/7 access available for monthly members"
   },
+  "admin": {
+    "dashboard": "Admin Dashboard",
+    "bookings": "Bookings",
+    "users": "Users",
+    "content": "Content",
+    "settings": "Settings",
+    "analytics": "Analytics",
+    "logout": "Logout"
+  },
   "footer": {
-    "description": "Professional photography studio and coworking space",
+    "description": "Professional photography studio and creative coworking space.",
     "quickLinks": "Quick Links",
     "contact": "Contact",
+    "address": "123 Studio Street, Creative District",
+    "phone": "+1 (555) 123-4567",
+    "email": "hello@vashastudio.com",
     "followUs": "Follow Us",
-    "allRightsReserved": "All rights reserved"
+    "copyright": "© 2024 Vasha Studio. All rights reserved."
   }
 } 

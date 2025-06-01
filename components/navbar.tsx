@@ -1,24 +1,26 @@
 // components/navbar.tsx
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname } from "@/i18n/routing";
+import { Link } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 import { useState, useEffect, useRef } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Menu, X, Moon, Sun } from "lucide-react";
+import { Menu, X, Moon, Sun, Globe } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations, useLocale } from "next-intl";
+import { useRouter } from "@/i18n/routing";
 
 const NAV_ITEMS = [
-  { href: "/", label: "Home" },
-  { href: "/studio", label: "Studio" },
-  { href: "/coworking", label: "Coworking" },
-  { href: "/gallery", label: "Gallery" },
-  { href: "/faq", label: "FAQ" },
-  { href: "/admin", label: "Admin" },
-];
+  { href: "/", labelKey: "home" },
+  { href: "/studio", labelKey: "studio" },
+  { href: "/coworking", labelKey: "coworking" },
+  { href: "/gallery", labelKey: "gallery" },
+  { href: "/faq", labelKey: "faq" },
+  { href: "/admin", labelKey: "admin" },
+] as const;
 
 function DarkModeToggle({ fullWidth = false }: { fullWidth?: boolean }) {
   const { theme, setTheme } = useTheme();
@@ -76,11 +78,68 @@ function DarkModeToggle({ fullWidth = false }: { fullWidth?: boolean }) {
   );
 }
 
+function LanguageSwitcher({ fullWidth = false }: { fullWidth?: boolean }) {
+  const locale = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  const toggleLanguage = () => {
+    const newLocale = locale === 'en' ? 'ru' : 'en';
+    router.replace(pathname, { locale: newLocale });
+  };
+
+  return (
+    <motion.button
+      aria-label={`Switch to ${locale === 'en' ? 'Russian' : 'English'}`}
+      onClick={toggleLanguage}
+      className={
+        fullWidth
+          ? "w-full min-h-[44px] min-w-[44px] px-4 py-2 rounded border bg-muted hover:bg-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-primary transition flex items-center justify-center gap-2"
+          : "ml-2 px-2 py-1 rounded border bg-muted hover:bg-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-primary transition min-h-[44px] min-w-[44px] flex items-center justify-center"
+      }
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ duration: 0.15 }}
+    >
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={locale}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.8 }}
+          transition={{ duration: 0.2 }}
+          className="flex items-center gap-1"
+        >
+          <Globe className="h-4 w-4" />
+          {fullWidth && (
+            <span className="text-sm font-medium">
+              {locale === 'en' ? 'RU' : 'EN'}
+            </span>
+          )}
+          {!fullWidth && (
+            <span className="text-xs font-medium">
+              {locale === 'en' ? 'RU' : 'EN'}
+            </span>
+          )}
+        </motion.div>
+      </AnimatePresence>
+    </motion.button>
+  );
+}
+
 export function Navbar() {
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
+  const t = useTranslations('navigation');
 
   useEffect(() => {
     setMounted(true);
@@ -156,6 +215,7 @@ export function Navbar() {
         </div>
         <div className="flex gap-2">
           <Skeleton className="h-10 w-10 rounded-full" />
+          <Skeleton className="h-10 w-10 rounded-full" />
           <Skeleton className="h-10 w-20 rounded" />
         </div>
       </nav>
@@ -206,7 +266,7 @@ export function Navbar() {
                     transition={{ type: "spring", stiffness: 500, damping: 30 }}
                   />
                 )}
-                <span className="relative z-10">{item.label}</span>
+                <span className="relative z-10">{t(item.labelKey)}</span>
               </Link>
             </motion.li>
           );
@@ -220,6 +280,7 @@ export function Navbar() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4, delay: 0.3, ease: "easeOut" }}
         >
+          <LanguageSwitcher />
           <DarkModeToggle />
           <Link href="/book">
             <motion.div
@@ -228,7 +289,7 @@ export function Navbar() {
               transition={{ duration: 0.15, ease: "easeInOut" }}
             >
               <Button className="min-h-[44px] shadow-sm">
-                Book Now
+                {t('bookNow')}
               </Button>
             </motion.div>
           </Link>
@@ -236,6 +297,7 @@ export function Navbar() {
         
         {/* Mobile menu button */}
         <div className="md:hidden flex items-center gap-2">
+          <LanguageSwitcher />
           <DarkModeToggle />
           <motion.div
             whileHover={{ scale: 1.02 }}
@@ -318,7 +380,7 @@ export function Navbar() {
                       )}
                       onClick={() => setMenuOpen(false)}
                     >
-                      {item.label}
+                      {t(item.labelKey)}
                     </Link>
                   </motion.div>
                 ))}
@@ -330,7 +392,7 @@ export function Navbar() {
                 >
                   <Link href="/book" onClick={() => setMenuOpen(false)}>
                     <Button className="w-full min-h-[44px]">
-                      Book Now
+                      {t('bookNow')}
                     </Button>
                   </Link>
                 </motion.div>

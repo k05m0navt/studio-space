@@ -1,0 +1,280 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Link } from '@/i18n/routing';
+import { ArrowRight, Camera, Users, Star, Clock, CheckCircle, Wifi, Coffee } from "lucide-react";
+import { motion } from "framer-motion";
+import { LocationMap } from "@/components/location-map";
+import { useTranslations } from 'next-intl';
+
+export default function Home() {
+  const t = useTranslations('home');
+
+  return (
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+          <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[80vh] py-20">
+            {/* Left Content */}
+            <motion.div 
+              className="space-y-8"
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            >
+              <div className="space-y-6">
+                <motion.div 
+                  className="inline-flex items-center px-4 py-2 bg-accent text-accent-foreground rounded-full text-sm font-medium"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+                >
+                  <Camera className="w-4 h-4 mr-2" />
+                  {t('badge')}
+                </motion.div>
+                
+                <motion.h1 
+                  className="text-5xl sm:text-6xl lg:text-7xl font-bold leading-tight"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+                >
+                  {t('heroTitle')}
+                  <span className="block text-primary">{t('heroTitleAccent')}</span>
+                </motion.h1>
+                
+                <motion.p 
+                  className="text-xl text-muted-foreground leading-relaxed max-w-lg"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.3, ease: "easeOut" }}
+                >
+                  {t('heroDescription')}
+                </motion.p>
+              </div>
+              
+              <motion.div 
+                className="flex flex-col sm:flex-row gap-4"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+              >
+                <Link href="/book">
+                  <motion.div
+                    whileHover={{ scale: 1.005 }}
+                    whileTap={{ scale: 0.995 }}
+                    transition={{ duration: 0.1, ease: "easeInOut" }}
+                  >
+                    <Button size="lg" className="px-8 py-4 text-lg font-semibold rounded-xl shadow-lg">
+                      {t('bookStudio')}
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </Button>
+                  </motion.div>
+                </Link>
+                <Link href="/gallery">
+                  <motion.div
+                    whileHover={{ scale: 1.005 }}
+                    whileTap={{ scale: 0.995 }}
+                    transition={{ duration: 0.1, ease: "easeInOut" }}
+                  >
+                    <Button size="lg" variant="outline" className="px-8 py-4 text-lg font-semibold rounded-xl">
+                      {t('viewGallery')}
+                    </Button>
+                  </motion.div>
+                </Link>
+              </motion.div>
+              
+              {/* Stats */}
+              <motion.div 
+                className="flex items-center gap-8 pt-8"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.5, ease: "easeOut" }}
+              >
+                <motion.div 
+                  className="text-center"
+                  whileHover={{ scale: 1.01 }}
+                  transition={{ duration: 0.1, ease: "easeInOut" }}
+                >
+                  <div className="text-3xl font-bold">500+</div>
+                  <div className="text-sm text-muted-foreground">{t('stats.projects')}</div>
+                </motion.div>
+                <motion.div 
+                  className="text-center"
+                  whileHover={{ scale: 1.01 }}
+                  transition={{ duration: 0.1, ease: "easeInOut" }}
+                >
+                  <div className="text-3xl font-bold">50+</div>
+                  <div className="text-sm text-muted-foreground">{t('stats.members')}</div>
+                </motion.div>
+                <motion.div 
+                  className="flex items-center gap-1"
+                  whileHover={{ scale: 1.01 }}
+                  transition={{ duration: 0.1, ease: "easeInOut" }}
+                >
+                  <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                  <span className="text-lg font-semibold">4.9</span>
+                  <span className="text-muted-foreground">({t('stats.reviews')})</span>
+                </motion.div>
+              </motion.div>
+            </motion.div>
+            
+            {/* Right Content - Enhanced Studio Showcase */}
+            <motion.div 
+              className="relative"
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.15, ease: "easeOut" }}
+            >
+              <div className="grid grid-cols-12 gap-4 h-[500px]">
+                {/* Main Studio Card */}
+                <motion.div
+                  className="col-span-8 row-span-8"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  whileHover={{ scale: 1.005, y: -1 }}
+                  transition={{ duration: 0.1, ease: "easeInOut" }}
+                >
+                  <Card className="h-full border-0 shadow-xl bg-gradient-to-br from-primary/10 via-background to-accent/20">
+                    <CardContent className="h-full flex flex-col justify-center items-center p-8 text-center">
+                      <motion.div
+                        className="w-20 h-20 bg-primary/20 rounded-2xl flex items-center justify-center mb-6"
+                        whileHover={{ rotate: 2, scale: 1.01 }}
+                        transition={{ duration: 0.1, ease: "easeInOut" }}
+                      >
+                        <Camera className="w-10 h-10 text-primary" />
+                      </motion.div>
+                      <h3 className="text-2xl font-bold mb-3">{t('studio.title')}</h3>
+                      <p className="text-muted-foreground leading-relaxed">
+                        {t('studio.description')}
+                      </p>
+                      <motion.div 
+                        className="mt-6 px-4 py-2 bg-primary/10 rounded-full text-sm font-medium text-primary"
+                        whileHover={{ scale: 1.01 }}
+                        transition={{ duration: 0.1 }}
+                      >
+                        {t('studio.price')}
+                      </motion.div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+                
+                {/* Community Card */}
+                <motion.div
+                  className="col-span-4 row-span-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  whileHover={{ scale: 1.01, rotate: 0.5 }}
+                  transition={{ duration: 0.1, ease: "easeInOut" }}
+                >
+                  <Card className="h-full border-0 shadow-lg bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900">
+                    <CardContent className="h-full flex flex-col justify-center items-center p-6 text-center">
+                      <motion.div
+                        whileHover={{ rotate: -2, scale: 1.05 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <Users className="w-8 h-8 text-blue-600 dark:text-blue-400 mb-3" />
+                      </motion.div>
+                      <h4 className="font-semibold text-sm mb-1">{t('community.title')}</h4>
+                      <p className="text-xs text-muted-foreground">{t('community.members')}</p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+
+                {/* Amenities Card */}
+                <motion.div
+                  className="col-span-4 row-span-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  whileHover={{ scale: 1.01, rotate: -0.5 }}
+                  transition={{ duration: 0.1, ease: "easeInOut" }}
+                >
+                  <Card className="h-full border-0 shadow-lg bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900">
+                    <CardContent className="h-full flex flex-col justify-center items-center p-6 text-center">
+                      <div className="flex gap-2 mb-3">
+                        <motion.div whileHover={{ scale: 1.1 }} transition={{ duration: 0.1 }}>
+                          <Wifi className="w-4 h-4 text-green-600 dark:text-green-400" />
+                        </motion.div>
+                        <motion.div whileHover={{ scale: 1.1 }} transition={{ duration: 0.1 }}>
+                          <Coffee className="w-4 h-4 text-green-600 dark:text-green-400" />
+                        </motion.div>
+                      </div>
+                      <h4 className="font-semibold text-sm mb-1">{t('amenities.title')}</h4>
+                      <p className="text-xs text-muted-foreground">Wi-Fi & Coffee</p>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+
+                {/* Availability Card */}
+                <motion.div
+                  className="col-span-8 row-span-2"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  whileHover={{ scale: 1.005 }}
+                  transition={{ duration: 0.1, ease: "easeInOut" }}
+                >
+                  <Card className="h-full border-0 shadow-lg bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-950 dark:to-orange-900">
+                    <CardContent className="h-full flex items-center justify-between p-6">
+                      <div className="flex items-center gap-3">
+                        <motion.div 
+                          className="w-10 h-10 bg-orange-600 dark:bg-orange-400 rounded-full flex items-center justify-center"
+                          whileHover={{ scale: 1.05, rotate: 180 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <CheckCircle className="w-5 h-5 text-white dark:text-orange-900" />
+                        </motion.div>
+                        <div>
+                          <h4 className="font-semibold text-sm">Available Now</h4>
+                          <p className="text-xs text-muted-foreground">Ready for booking</p>
+                        </div>
+                      </div>
+                      <motion.div
+                        className="px-3 py-1 bg-orange-600 dark:bg-orange-400 text-white dark:text-orange-900 rounded-full text-xs font-medium"
+                        whileHover={{ scale: 1.02 }}
+                        transition={{ duration: 0.1 }}
+                      >
+                        24/7
+                      </motion.div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </div>
+              
+              {/* Floating Accent */}
+              <motion.div
+                className="absolute -top-4 -right-4 w-8 h-8 bg-primary/20 rounded-full"
+                animate={{ 
+                  y: [0, -10, 0],
+                  scale: [1, 1.1, 1]
+                }}
+                transition={{ 
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              />
+              <motion.div
+                className="absolute -bottom-4 -left-4 w-6 h-6 bg-accent/30 rounded-full"
+                animate={{ 
+                  y: [0, 10, 0],
+                  scale: [1, 0.9, 1]
+                }}
+                transition={{ 
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                  delay: 1
+                }}
+              />
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Location Map */}
+      <LocationMap />
+    </div>
+  );
+} 

@@ -2,9 +2,10 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import Link from "next/link";
 import { Camera, Lightbulb, Monitor, Headphones, Wifi, Coffee, Check, Star } from "lucide-react";
 import { motion } from "framer-motion";
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/routing';
 
 const features = [
   {
@@ -14,7 +15,7 @@ const features = [
   },
   {
     icon: Lightbulb,
-    title: "Studio Lighting",
+    title: "Studio Lighting", 
     description: "Professional lighting setup with softboxes, reflectors, and colored gels."
   },
   {
@@ -46,7 +47,7 @@ const packages = [
     duration: "per hour",
     features: [
       "Full studio access",
-      "Basic lighting setup",
+      "Basic lighting setup", 
       "Equipment rental available",
       "Free Wi-Fi"
     ]
@@ -64,7 +65,7 @@ const packages = [
     popular: true
   },
   {
-    name: "Full Day",
+    name: "Full Day", 
     price: "$500",
     duration: "8 hours",
     features: [
@@ -77,6 +78,9 @@ const packages = [
 ];
 
 export default function StudioPage() {
+  const t = useTranslations('studio');
+  const tCommon = useTranslations('common');
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -95,7 +99,7 @@ export default function StudioPage() {
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               <Camera className="w-4 h-4 mr-2" />
-              Professional Photography Studio
+              {t('subtitle')}
             </motion.div>
             
             <motion.h1 
@@ -104,10 +108,7 @@ export default function StudioPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.3 }}
             >
-              Professional Photo{" "}
-              <span className="text-primary">
-                Studio
-              </span>
+              {t('title')}
             </motion.h1>
             
             <motion.p 
@@ -116,9 +117,7 @@ export default function StudioPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              A fully equipped photography studio with professional lighting, 
-              equipment, and editing stations. Perfect for photoshoots, product 
-              photography, and creative projects.
+              {t('description')}
             </motion.p>
             
             <motion.div 
@@ -202,11 +201,11 @@ export default function StudioPage() {
               Studio Packages
             </h2>
             <p className="text-lg text-muted-foreground">
-              Choose the package that fits your project needs
+              Flexible pricing options for every project
             </p>
           </motion.div>
           
-          <div className="grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">
+          <div className="grid gap-8 md:grid-cols-3 max-w-5xl mx-auto">
             {packages.map((pkg, index) => (
               <motion.div
                 key={pkg.name}
@@ -214,65 +213,40 @@ export default function StudioPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                whileHover={{ y: -5, scale: 1.02 }}
+                whileHover={{ y: -5 }}
               >
-                <Card 
-                  className={`relative group hover:shadow-xl transition-shadow h-full ${
-                    pkg.popular 
-                      ? 'transform scale-105 ring-2 ring-primary/20' 
-                      : ''
-                  }`}
-                >
+                <Card className={`group hover:shadow-xl transition-all h-full relative ${pkg.popular ? 'border-primary shadow-lg' : ''}`}>
                   {pkg.popular && (
-                    <motion.div 
-                      className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10"
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.6, delay: 0.3 }}
-                    >
-                      <div className="bg-primary text-primary-foreground text-sm font-medium px-6 py-2 rounded-full shadow-lg flex items-center">
-                        <Star className="w-4 h-4 mr-2 fill-current" />
+                    <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                      <span className="bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-medium">
                         Most Popular
-                      </div>
-                    </motion.div>
-                  )}
-                  
-                  <CardHeader className="text-center">
-                    <CardTitle className="text-2xl">{pkg.name}</CardTitle>
-                    <div className="mb-2">
-                      <span className="text-4xl md:text-5xl font-bold">{pkg.price}</span>
-                      <span className="text-lg text-muted-foreground ml-2">{pkg.duration}</span>
+                      </span>
                     </div>
-                  </CardHeader>
-                  
-                  <CardContent className="space-y-6">
-                    <ul className="space-y-4">
+                  )}
+                  <CardContent className="p-8">
+                    <div className="text-center mb-8">
+                      <h3 className="text-2xl font-bold mb-2">{pkg.name}</h3>
+                      <div className="mb-4">
+                        <span className="text-4xl font-bold">{pkg.price}</span>
+                        <span className="text-muted-foreground ml-2">{pkg.duration}</span>
+                      </div>
+                    </div>
+                    
+                    <ul className="space-y-4 mb-8">
                       {pkg.features.map((feature, featureIndex) => (
-                        <motion.li 
-                          key={featureIndex} 
-                          className="flex items-start"
-                          initial={{ opacity: 0, x: -20 }}
-                          whileInView={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.4, delay: (index * 0.1) + (featureIndex * 0.05) }}
-                          viewport={{ once: true }}
-                        >
-                          <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
-                            <Check className="w-4 h-4 text-white" />
-                          </div>
-                          <span>{feature}</span>
-                        </motion.li>
+                        <li key={featureIndex} className="flex items-center">
+                          <Check className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
+                          <span className="text-sm">{feature}</span>
+                        </li>
                       ))}
                     </ul>
                     
                     <Link href="/book" className="block">
                       <Button 
-                        className={`w-full h-12 text-base font-semibold ${
-                          pkg.popular 
-                            ? 'bg-primary text-primary-foreground'
-                            : ''
-                        }`}
+                        className={`w-full ${pkg.popular ? 'bg-primary hover:bg-primary/90' : ''}`}
+                        variant={pkg.popular ? 'default' : 'outline'}
                       >
-                        Choose {pkg.name}
+                        Book Now
                       </Button>
                     </Link>
                   </CardContent>
@@ -280,29 +254,6 @@ export default function StudioPage() {
               </motion.div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section className="py-20 md:py-24 bg-muted/30">
-        <div className="container mx-auto px-4 md:px-6 max-w-7xl">
-          <Card className="text-center p-12 shadow-xl max-w-4xl mx-auto">
-            <CardHeader>
-              <CardTitle className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
-                Ready to Create?
-              </CardTitle>
-              <CardDescription className="text-xl max-w-2xl mx-auto">
-                Book your studio session today and bring your creative vision to life.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="pt-8">
-              <Link href="/book">
-                <Button size="lg" className="h-12 px-8 text-base font-semibold">
-                  Book Your Session Now
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
         </div>
       </section>
     </div>
