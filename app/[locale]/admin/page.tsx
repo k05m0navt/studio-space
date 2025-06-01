@@ -29,9 +29,15 @@ import {
   Download,
   Filter,
   Search,
-  MoreHorizontal
+  MoreHorizontal,
+  User,
+  Mail,
+  Phone,
+  AlertCircle,
+  Settings,
+  Activity
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
 import { 
@@ -57,6 +63,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { cn } from "@/lib/utils";
 
 // Types
 interface Booking {
@@ -73,6 +90,16 @@ interface Booking {
   createdAt: string;
 }
 
+interface User {
+  id: string;
+  name: string;
+  email: string;
+  role: 'user' | 'admin';
+  isActive: boolean;
+  lastLogin?: string;
+  createdAt: string;
+}
+
 interface Stats {
   totalBookings: number;
   monthlyRevenue: number;
@@ -80,25 +107,191 @@ interface Stats {
   studioUtilization: number;
   pendingBookings: number;
   confirmedBookings: number;
+  todayBookings: number;
+  weeklyGrowth: number;
 }
+
+const AdminLoginForm = ({ onLogin }: { onLogin: (credentials: { username: string; password: string }) => void }) => {
+  const [credentials, setCredentials] = useState({ username: "", password: "" });
+  const [isLoading, setIsLoading] = useState(false);
+  const t = useTranslations('admin');
+  const tAuth = useTranslations('auth');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    if (credentials.username === "admin" && credentials.password === "admin123") {
+      onLogin(credentials);
+      toast.success(tAuth('loginSuccess'));
+    } else {
+      toast.error(tAuth('loginFailed'));
+    }
+    
+    setIsLoading(false);
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background via-background to-muted/20">
+      <motion.div
+        initial={{ opacity: 0, y: 20, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="w-full max-w-md"
+      >
+        <Card className="shadow-2xl border-0 bg-card/80 backdrop-blur-sm">
+          <CardHeader className="text-center pb-2">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Shield className="w-10 h-10 text-primary" />
+              </div>
+              <CardTitle className="text-2xl font-bold">{t('loginTitle')}</CardTitle>
+              <p className="text-muted-foreground mt-2">{t('loginDescription')}</p>
+            </motion.div>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <motion.form
+              onSubmit={handleSubmit}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="space-y-6"
+            >
+              <div className="space-y-2">
+                <Label htmlFor="username">{tAuth('username')}</Label>
+                <Input
+                  id="username"
+                  type="text"
+                  placeholder={tAuth('username')}
+                  value={credentials.username}
+                  onChange={(e) => setCredentials(prev => ({ ...prev, username: e.target.value }))}
+                  required
+                  className="h-12"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">{tAuth('password')}</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder={tAuth('password')}
+                  value={credentials.password}
+                  onChange={(e) => setCredentials(prev => ({ ...prev, password: e.target.value }))}
+                  required
+                  className="h-12"
+                />
+              </div>
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.1 }}
+              >
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full h-12 text-base font-medium"
+                >
+                  {isLoading ? (
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      className="w-5 h-5 border-2 border-current border-t-transparent rounded-full"
+                    />
+                  ) : (
+                    tAuth('login')
+                  )}
+                </Button>
+              </motion.div>
+            </motion.form>
+          </CardContent>
+        </Card>
+      </motion.div>
+    </div>
+  );
+};
+
+const StatsCard = ({ 
+  title, 
+  value, 
+  icon: Icon, 
+  trend, 
+  trendLabel,
+  color = "primary" 
+}: {
+  title: string;
+  value: string | number;
+  icon: any;
+  trend?: number;
+  trendLabel?: string;
+  color?: "primary" | "success" | "warning" | "destructive";
+}) => {
+  const colorClasses = {
+    primary: "bg-primary/10 text-primary border-primary/20",
+    success: "bg-green-500/10 text-green-600 border-green-500/20",
+    warning: "bg-yellow-500/10 text-yellow-600 border-yellow-500/20",
+    destructive: "bg-red-500/10 text-red-600 border-red-500/20"
+  };
+
+  return (
+    <motion.div
+      whileHover={{ scale: 1.02, y: -2 }}
+      transition={{ duration: 0.2, ease: "easeOut" }}
+    >
+      <Card className="hover:shadow-lg transition-all duration-200 border-0 bg-gradient-to-br from-card to-card/50">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <p className="text-sm font-medium text-muted-foreground">{title}</p>
+              <p className="text-2xl font-bold">{value}</p>
+              {trend !== undefined && (
+                <div className="flex items-center gap-1">
+                  <TrendingUp className={cn("w-3 h-3", trend >= 0 ? "text-green-500" : "text-red-500")} />
+                  <span className={cn("text-xs font-medium", trend >= 0 ? "text-green-500" : "text-red-500")}>
+                    {trend >= 0 ? "+" : ""}{trend}% {trendLabel}
+                  </span>
+                </div>
+              )}
+            </div>
+            <div className={cn("p-3 rounded-full border", colorClasses[color])}>
+              <Icon className="w-5 h-5" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+};
 
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [loginForm, setLoginForm] = useState({ username: "", password: "" });
+  const [activeTab, setActiveTab] = useState("overview");
   const [bookings, setBookings] = useState<Booking[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [stats, setStats] = useState<Stats>({
     totalBookings: 0,
     monthlyRevenue: 0,
     activeMembers: 0,
     studioUtilization: 0,
     pendingBookings: 0,
-    confirmedBookings: 0
+    confirmedBookings: 0,
+    todayBookings: 0,
+    weeklyGrowth: 0
   });
   const [isLoadingData, setIsLoadingData] = useState(false);
   const [filterStatus, setFilterStatus] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isCreateAdminOpen, setIsCreateAdminOpen] = useState(false);
+  
   const t = useTranslations('admin');
+  const tCommon = useTranslations('common');
 
   // Check authentication on mount
   useEffect(() => {
@@ -113,575 +306,907 @@ export default function AdminDashboard() {
   const loadDashboardData = async () => {
     setIsLoadingData(true);
     try {
-      // Load bookings
-      const token = localStorage.getItem('adminToken');
-      if (token) {
-        const response = await fetch('/api/bookings', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        
-        if (response.ok) {
-          const data = await response.json();
-          setBookings(data.bookings || []);
-          
-          // Calculate stats from bookings
-          const totalBookings = data.bookings?.length || 0;
-          const pending = data.bookings?.filter((b: Booking) => b.status === 'pending').length || 0;
-          const confirmed = data.bookings?.filter((b: Booking) => b.status === 'confirmed').length || 0;
-          
-          setStats({
-            totalBookings,
-            monthlyRevenue: totalBookings * 75, // Estimate
-            activeMembers: 48, // Mock data
-            studioUtilization: Math.round((confirmed / Math.max(totalBookings, 1)) * 100),
-            pendingBookings: pending,
-            confirmedBookings: confirmed
-          });
+      // Simulate API calls
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Mock data
+      const mockBookings: Booking[] = [
+        {
+          id: '1',
+          name: 'Sarah Johnson',
+          email: 'sarah@example.com',
+          phone: '+1 (555) 123-4567',
+          type: 'studio',
+          date: '2024-01-15',
+          start_time: '10:00',
+          end_time: '14:00',
+          status: 'confirmed',
+          createdAt: '2024-01-10T12:00:00Z',
+          message: 'Need extra lighting setup for portrait session'
+        },
+        {
+          id: '2',
+          name: 'Mike Chen',
+          email: 'mike@example.com',
+          phone: '+1 (555) 987-6543',
+          type: 'coworking',
+          date: '2024-01-15',
+          start_time: '09:00',
+          end_time: '17:00',
+          status: 'pending',
+          createdAt: '2024-01-12T15:30:00Z'
+        },
+        {
+          id: '3',
+          name: 'Emma Davis',
+          email: 'emma@example.com',
+          type: 'studio',
+          date: '2024-01-16',
+          start_time: '15:00',
+          end_time: '18:00',
+          status: 'confirmed',
+          createdAt: '2024-01-13T09:15:00Z'
         }
-      } else {
-        // Use mock data if no token
-        const mockBookings: Booking[] = [
-          {
-            id: '1',
-            name: 'Sarah Johnson',
-            email: 'sarah@example.com',
-            phone: '+1 (555) 123-4567',
-            type: 'studio',
-            date: '2024-01-15',
-            start_time: '10:00',
-            end_time: '14:00',
-            status: 'confirmed',
-            createdAt: '2024-01-10T12:00:00Z'
-          },
-          {
-            id: '2',
-            name: 'Mike Chen',
-            email: 'mike@example.com',
-            phone: '+1 (555) 987-6543',
-            type: 'coworking',
-            date: '2024-01-15',
-            start_time: '09:00',
-            end_time: '17:00',
-            status: 'pending',
-            createdAt: '2024-01-12T15:30:00Z'
-          },
-          {
-            id: '3',
-            name: 'Emma Davis',
-            email: 'emma@example.com',
-            type: 'studio',
-            date: '2024-01-16',
-            start_time: '15:00',
-            end_time: '18:00',
-            status: 'confirmed',
-            createdAt: '2024-01-13T09:15:00Z'
-          }
-        ];
-        
-        setBookings(mockBookings);
-        setStats({
-          totalBookings: mockBookings.length,
-          monthlyRevenue: 12750,
-          activeMembers: 48,
-          studioUtilization: 78,
-          pendingBookings: mockBookings.filter(b => b.status === 'pending').length,
-          confirmedBookings: mockBookings.filter(b => b.status === 'confirmed').length
-        });
-      }
+      ];
+
+      const mockUsers: User[] = [
+        {
+          id: '1',
+          name: 'John Admin',
+          email: 'admin@vashastudio.com',
+          role: 'admin',
+          isActive: true,
+          lastLogin: '2024-01-15T10:30:00Z',
+          createdAt: '2024-01-01T00:00:00Z'
+        },
+        {
+          id: '2',
+          name: 'Sarah Johnson',
+          email: 'sarah@example.com',
+          role: 'user',
+          isActive: true,
+          lastLogin: '2024-01-14T16:20:00Z',
+          createdAt: '2024-01-10T12:00:00Z'
+        }
+      ];
+      
+      setBookings(mockBookings);
+      setUsers(mockUsers);
+      setStats({
+        totalBookings: mockBookings.length,
+        monthlyRevenue: 12750,
+        activeMembers: 48,
+        studioUtilization: 78,
+        pendingBookings: mockBookings.filter(b => b.status === 'pending').length,
+        confirmedBookings: mockBookings.filter(b => b.status === 'confirmed').length,
+        todayBookings: 5,
+        weeklyGrowth: 12.5
+      });
+
+      toast.success(t('messages.dataRefreshed'));
     } catch (error) {
       console.error('Failed to load dashboard data:', error);
-      toast.error('Failed to load dashboard data');
+      toast.error(t('messages.dataLoadFailed'));
     } finally {
       setIsLoadingData(false);
     }
   };
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Simple authentication - in production, use proper auth
-    if (loginForm.username === "admin" && loginForm.password === "studio123") {
-      localStorage.setItem("adminAuth", "authenticated");
-      setIsAuthenticated(true);
-      loadDashboardData();
-      toast.success("Welcome back!", {
-        description: "Successfully logged in to admin dashboard."
-      });
-    } else {
-      toast.error("Invalid credentials", {
-        description: "Please check your username and password."
-      });
-    }
+  const handleLogin = (credentials: { username: string; password: string }) => {
+    localStorage.setItem("adminAuth", "authenticated");
+    localStorage.setItem("adminUser", JSON.stringify(credentials));
+    setIsAuthenticated(true);
+    loadDashboardData();
   };
 
   const handleLogout = () => {
     localStorage.removeItem("adminAuth");
-    localStorage.removeItem("adminToken");
+    localStorage.removeItem("adminUser");
     setIsAuthenticated(false);
-    setBookings([]);
-    setStats({
-      totalBookings: 0,
-      monthlyRevenue: 0,
-      activeMembers: 0,
-      studioUtilization: 0,
-      pendingBookings: 0,
-      confirmedBookings: 0
-    });
-    toast.success("Logged out successfully");
+    toast.success(t('messages.logoutSuccess'));
   };
 
-  const updateBookingStatus = async (bookingId: string, newStatus: 'confirmed' | 'cancelled') => {
-    try {
-      // Update local state immediately for better UX
-      setBookings(prev => prev.map(booking => 
-        booking.id === bookingId 
-          ? { ...booking, status: newStatus }
-          : booking
-      ));
-      
-      toast.success(`Booking ${newStatus} successfully`);
-      
-      // Recalculate stats
-      const updatedBookings = bookings.map(booking => 
-        booking.id === bookingId 
-          ? { ...booking, status: newStatus }
-          : booking
-      );
-      
-      const confirmed = updatedBookings.filter(b => b.status === 'confirmed').length;
-      const pending = updatedBookings.filter(b => b.status === 'pending').length;
-      
-      setStats(prev => ({
-        ...prev,
-        confirmedBookings: confirmed,
-        pendingBookings: pending,
-        studioUtilization: Math.round((confirmed / Math.max(updatedBookings.length, 1)) * 100)
-      }));
-      
-    } catch (error) {
-      console.error('Failed to update booking:', error);
-      toast.error('Failed to update booking status');
-      // Revert the local state on error
-      loadDashboardData();
-    }
-  };
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "confirmed":
-        return <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">Confirmed</Badge>;
-      case "pending":
-        return <Badge variant="outline" className="border-yellow-300 text-yellow-800 dark:border-yellow-600 dark:text-yellow-300">Pending</Badge>;
-      case "cancelled":
-        return <Badge variant="destructive">Cancelled</Badge>;
-      default:
-        return <Badge variant="secondary">{status}</Badge>;
-    }
-  };
-
-  const filteredBookings = bookings.filter(booking => {
-    const matchesStatus = filterStatus === 'all' || booking.status === filterStatus;
-    const matchesSearch = searchQuery === '' || 
-      booking.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      booking.email.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    return matchesStatus && matchesSearch;
-  });
-
-  // Loading state
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
-  // Login form
-  if (!isAuthenticated) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-muted/30">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="max-w-md w-full mx-4"
-        >
-          <Card className="shadow-xl">
-            <CardHeader className="text-center pb-8">
-              <motion.div
-                className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4"
-                whileHover={{ scale: 1.05 }}
-                transition={{ duration: 0.2 }}
-              >
-                <Shield className="w-8 h-8 text-primary" />
-              </motion.div>
-              <CardTitle className="text-2xl font-bold">Admin Login</CardTitle>
-              <p className="text-muted-foreground">Access the Vasha Studio dashboard</p>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleLogin} className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="username">Username</Label>
-                  <Input
-                    id="username"
-                    type="text"
-                    value={loginForm.username}
-                    onChange={(e) => setLoginForm(prev => ({ ...prev, username: e.target.value }))}
-                    placeholder="Enter username"
-                    className="h-12"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    type="password"
-                    value={loginForm.password}
-                    onChange={(e) => setLoginForm(prev => ({ ...prev, password: e.target.value }))}
-                    placeholder="Enter password"
-                    className="h-12"
-                    required
-                  />
-                </div>
-                <motion.div
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.99 }}
-                >
-                  <Button type="submit" className="w-full h-12 text-base font-semibold">
-                    <Shield className="w-4 h-4 mr-2" />
-                    Login to Dashboard
-                  </Button>
-                </motion.div>
-              </form>
-              <div className="mt-6 p-4 bg-muted rounded-lg">
-                <p className="text-sm text-muted-foreground text-center">
-                  Demo credentials:<br />
-                  Username: <strong>admin</strong><br />
-                  Password: <strong>studio123</strong>
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full"
+        />
       </div>
     );
   }
 
-  // Main dashboard
+  if (!isAuthenticated) {
+    return <AdminLoginForm onLogin={handleLogin} />;
+  }
+
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto p-6 space-y-6">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/10">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="container mx-auto px-4 py-8 max-w-7xl"
+      >
         {/* Header */}
-        <motion.div 
-          className="flex items-center justify-between"
+        <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="flex items-center justify-between mb-8"
         >
           <div>
-            <h1 className="text-3xl font-bold">{t('dashboard')}</h1>
-            <p className="text-muted-foreground">Manage your studio bookings and analytics</p>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+              {t('welcome')}
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Manage your studio bookings and users
+            </p>
           </div>
-          <div className="flex items-center gap-3">
-            <Button 
-              variant="outline" 
-              size="icon"
-              onClick={loadDashboardData}
-              disabled={isLoadingData}
-            >
-              <RefreshCw className={`h-4 w-4 ${isLoadingData ? 'animate-spin' : ''}`} />
-            </Button>
-            <Button variant="outline" onClick={handleLogout}>
-              <LogOut className="w-4 h-4 mr-2" />
-              {t('logout')}
-            </Button>
+          <div className="flex items-center gap-4">
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                variant="outline"
+                onClick={loadDashboardData}
+                disabled={isLoadingData}
+                className="flex items-center gap-2"
+              >
+                <RefreshCw className={cn("w-4 h-4", isLoadingData && "animate-spin")} />
+                {tCommon('refresh')}
+              </Button>
+            </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                variant="destructive"
+                onClick={handleLogout}
+                className="flex items-center gap-2"
+              >
+                <LogOut className="w-4 h-4" />
+                {t('logout')}
+              </Button>
+            </motion.div>
           </div>
-        </motion.div>
-
-        {/* Stats Overview */}
-        <motion.div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Total Bookings</p>
-                  <p className="text-2xl font-bold">{stats.totalBookings}</p>
-                </div>
-                <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
-                  <Calendar className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Monthly Revenue</p>
-                  <p className="text-2xl font-bold">${stats.monthlyRevenue.toLocaleString()}</p>
-                </div>
-                <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
-                  <DollarSign className="w-6 h-6 text-green-600 dark:text-green-400" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Studio Utilization</p>
-                  <p className="text-2xl font-bold">{stats.studioUtilization}%</p>
-                </div>
-                <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="w-6 h-6 text-purple-600 dark:text-purple-400" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="hover:shadow-lg transition-shadow">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground">Pending Bookings</p>
-                  <p className="text-2xl font-bold">{stats.pendingBookings}</p>
-                </div>
-                <div className="w-12 h-12 bg-yellow-100 dark:bg-yellow-900 rounded-lg flex items-center justify-center">
-                  <Clock className="w-6 h-6 text-yellow-600 dark:text-yellow-400" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </motion.div>
 
         {/* Main Content */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
-        >
-          <Tabs defaultValue="bookings" className="space-y-6">
-            <TabsList>
-              <TabsTrigger value="bookings">{t('bookings')}</TabsTrigger>
-              <TabsTrigger value="analytics">{t('analytics')}</TabsTrigger>
-              <TabsTrigger value="settings">{t('settings')}</TabsTrigger>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          {/* Navigation Tabs */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <TabsList className="grid w-full grid-cols-5 lg:w-fit lg:grid-cols-5">
+              <TabsTrigger value="overview" className="flex items-center gap-2">
+                <BarChart3 className="w-4 h-4" />
+                <span className="hidden sm:inline">{t('overview')}</span>
+              </TabsTrigger>
+              <TabsTrigger value="bookings" className="flex items-center gap-2">
+                <Calendar className="w-4 h-4" />
+                <span className="hidden sm:inline">{t('bookings')}</span>
+              </TabsTrigger>
+              <TabsTrigger value="users" className="flex items-center gap-2">
+                <Users className="w-4 h-4" />
+                <span className="hidden sm:inline">{t('users')}</span>
+              </TabsTrigger>
+              <TabsTrigger value="admins" className="flex items-center gap-2">
+                <Shield className="w-4 h-4" />
+                <span className="hidden sm:inline">Admins</span>
+              </TabsTrigger>
+              <TabsTrigger value="settings" className="flex items-center gap-2">
+                <Settings className="w-4 h-4" />
+                <span className="hidden sm:inline">{t('settings')}</span>
+              </TabsTrigger>
             </TabsList>
+          </motion.div>
+
+          {/* Tab Contents */}
+          <AnimatePresence mode="wait">
+            {/* Overview Tab */}
+            {activeTab === "overview" && (
+              <TabsContent value="overview" className="space-y-6">
+                <motion.div
+                  key="overview"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {/* Stats Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <StatsCard
+                      title={t('stats.totalBookings')}
+                      value={stats.totalBookings}
+                      icon={Calendar}
+                      trend={stats.weeklyGrowth}
+                      trendLabel={t('stats.thisMonth')}
+                      color="primary"
+                    />
+                    <StatsCard
+                      title={t('stats.monthlyRevenue')}
+                      value={`$${stats.monthlyRevenue.toLocaleString()}`}
+                      icon={DollarSign}
+                      trend={8.2}
+                      trendLabel={t('stats.thisMonth')}
+                      color="success"
+                    />
+                    <StatsCard
+                      title={t('stats.pendingBookings')}
+                      value={stats.pendingBookings}
+                      icon={Clock}
+                      color="warning"
+                    />
+                    <StatsCard
+                      title={t('stats.studioUtilization')}
+                      value={`${stats.studioUtilization}%`}
+                      icon={Activity}
+                      trend={5.1}
+                      trendLabel={t('stats.thisMonth')}
+                      color="primary"
+                    />
+                  </div>
+
+                  {/* Recent Activity */}
+                  <div className="grid lg:grid-cols-2 gap-6">
+                    <Card className="border-0 shadow-sm">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Calendar className="w-5 h-5" />
+                          {t('recentBookings')}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-4">
+                          {bookings.slice(0, 3).map((booking, index) => (
+                            <motion.div
+                              key={booking.id}
+                              initial={{ opacity: 0, y: 10 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ duration: 0.3, delay: index * 0.1 }}
+                              className="flex items-center justify-between p-3 rounded-lg bg-muted/50 hover:bg-muted/70 transition-colors"
+                            >
+                              <div className="flex items-center gap-3">
+                                <Avatar className="w-8 h-8">
+                                  <AvatarFallback className="text-xs">
+                                    {booking.name.split(' ').map(n => n[0]).join('')}
+                                  </AvatarFallback>
+                                </Avatar>
+                                <div>
+                                  <p className="font-medium text-sm">{booking.name}</p>
+                                  <p className="text-xs text-muted-foreground">
+                                    {booking.type} - {booking.date}
+                                  </p>
+                                </div>
+                              </div>
+                              <Badge variant={
+                                booking.status === 'confirmed' ? 'default' :
+                                booking.status === 'pending' ? 'secondary' : 'destructive'
+                              }>
+                                {booking.status}
+                              </Badge>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+
+                    <Card className="border-0 shadow-sm">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <TrendingUp className="w-5 h-5" />
+                          {t('quickActions')}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          {[
+                            { icon: Plus, label: "Add New Booking", onClick: () => setActiveTab('bookings') },
+                            { icon: Users, label: "Manage Users", onClick: () => setActiveTab('users') },
+                            { icon: Shield, label: "Create Admin", onClick: () => setActiveTab('admins') },
+                            { icon: Download, label: "Export Data", onClick: () => toast.info("Export feature coming soon!") }
+                          ].map((action, index) => (
+                            <motion.div
+                              key={action.label}
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ duration: 0.3, delay: index * 0.1 }}
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.98 }}
+                            >
+                              <Button
+                                variant="ghost"
+                                className="w-full justify-start h-12"
+                                onClick={action.onClick}
+                              >
+                                <action.icon className="w-4 h-4 mr-3" />
+                                {action.label}
+                              </Button>
+                            </motion.div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </motion.div>
+              </TabsContent>
+            )}
 
             {/* Bookings Tab */}
-            <TabsContent value="bookings" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <CardTitle>Recent Bookings</CardTitle>
-                    <div className="flex items-center gap-2">
-                      <div className="relative">
-                        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                        <Input
-                          placeholder="Search bookings..."
-                          value={searchQuery}
-                          onChange={(e) => setSearchQuery(e.target.value)}
-                          className="pl-10 w-64"
-                        />
+            {activeTab === "bookings" && (
+              <TabsContent value="bookings" className="space-y-6">
+                <motion.div
+                  key="bookings"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Card className="border-0 shadow-sm">
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="flex items-center gap-2">
+                          <Calendar className="w-5 h-5" />
+                          {t('bookingManagement.title')}
+                        </CardTitle>
+                        <div className="flex items-center gap-2">
+                          <div className="relative">
+                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                            <Input
+                              placeholder={t('bookingManagement.searchPlaceholder')}
+                              value={searchQuery}
+                              onChange={(e) => setSearchQuery(e.target.value)}
+                              className="pl-10 w-64"
+                            />
+                          </div>
+                          <Select value={filterStatus} onValueChange={setFilterStatus}>
+                            <SelectTrigger className="w-40">
+                              <SelectValue placeholder={t('bookingManagement.filterBy')} />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="all">{tCommon('status')}</SelectItem>
+                              <SelectItem value="pending">{tCommon('pending')}</SelectItem>
+                              <SelectItem value="confirmed">{tCommon('confirmed')}</SelectItem>
+                              <SelectItem value="cancelled">{tCommon('cancelled')}</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
-                      <Select value={filterStatus} onValueChange={setFilterStatus}>
-                        <SelectTrigger className="w-32">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="all">All</SelectItem>
-                          <SelectItem value="pending">Pending</SelectItem>
-                          <SelectItem value="confirmed">Confirmed</SelectItem>
-                          <SelectItem value="cancelled">Cancelled</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Customer</TableHead>
-                        <TableHead>Type</TableHead>
-                        <TableHead>Date & Time</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Actions</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredBookings.map((booking) => (
-                        <TableRow key={booking.id}>
-                          <TableCell>
-                            <div>
-                              <div className="font-medium">{booking.name}</div>
-                              <div className="text-sm text-muted-foreground">{booking.email}</div>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant={booking.type === 'studio' ? 'default' : 'secondary'}>
-                              {booking.type === 'studio' ? 'Studio' : 'Coworking'}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <div>
-                              <div className="font-medium">{new Date(booking.date).toLocaleDateString()}</div>
-                              <div className="text-sm text-muted-foreground">
-                                {booking.start_time} - {booking.end_time}
+                    </CardHeader>
+                    <CardContent>
+                      <div className="rounded-md border">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>{tCommon('name')}</TableHead>
+                              <TableHead>{tCommon('email')}</TableHead>
+                              <TableHead>Service</TableHead>
+                              <TableHead>{tCommon('date')}</TableHead>
+                              <TableHead>{tCommon('time')}</TableHead>
+                              <TableHead>{tCommon('status')}</TableHead>
+                              <TableHead>{tCommon('actions')}</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {bookings
+                              .filter(booking => 
+                                filterStatus === 'all' || booking.status === filterStatus
+                              )
+                              .filter(booking =>
+                                booking.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                booking.email.toLowerCase().includes(searchQuery.toLowerCase())
+                              )
+                              .map((booking, index) => (
+                                <motion.tr
+                                  key={booking.id}
+                                  initial={{ opacity: 0, y: 10 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ duration: 0.3, delay: index * 0.05 }}
+                                  className="hover:bg-muted/50"
+                                >
+                                  <TableCell className="font-medium">{booking.name}</TableCell>
+                                  <TableCell>{booking.email}</TableCell>
+                                  <TableCell>
+                                    <Badge variant="outline" className="capitalize">
+                                      {booking.type}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell>{new Date(booking.date).toLocaleDateString()}</TableCell>
+                                  <TableCell>{booking.start_time} - {booking.end_time}</TableCell>
+                                  <TableCell>
+                                    <Badge variant={
+                                      booking.status === 'confirmed' ? 'default' :
+                                      booking.status === 'pending' ? 'secondary' : 'destructive'
+                                    }>
+                                      {booking.status}
+                                    </Badge>
+                                  </TableCell>
+                                  <TableCell>
+                                    <DropdownMenu>
+                                      <DropdownMenuTrigger asChild>
+                                        <Button variant="ghost" className="h-8 w-8 p-0">
+                                          <MoreHorizontal className="h-4 w-4" />
+                                        </Button>
+                                      </DropdownMenuTrigger>
+                                      <DropdownMenuContent align="end">
+                                        <DropdownMenuLabel>{tCommon('actions')}</DropdownMenuLabel>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem>
+                                          <Eye className="mr-2 h-4 w-4" />
+                                          {t('bookingManagement.viewDetails')}
+                                        </DropdownMenuItem>
+                                        {booking.status === 'pending' && (
+                                          <DropdownMenuItem
+                                            onClick={() => {
+                                              const updatedBookings = bookings.map(b =>
+                                                b.id === booking.id ? { ...b, status: 'confirmed' as const } : b
+                                              );
+                                              setBookings(updatedBookings);
+                                              toast.success(t('messages.bookingConfirmed'));
+                                            }}
+                                          >
+                                            <CheckCircle className="mr-2 h-4 w-4" />
+                                            {t('bookingManagement.confirmBooking')}
+                                          </DropdownMenuItem>
+                                        )}
+                                        {booking.status !== 'cancelled' && (
+                                          <DropdownMenuItem
+                                            onClick={() => {
+                                              const updatedBookings = bookings.map(b =>
+                                                b.id === booking.id ? { ...b, status: 'cancelled' as const } : b
+                                              );
+                                              setBookings(updatedBookings);
+                                              toast.success(t('messages.bookingCancelled'));
+                                            }}
+                                          >
+                                            <XCircle className="mr-2 h-4 w-4" />
+                                            {t('bookingManagement.cancelBooking')}
+                                          </DropdownMenuItem>
+                                        )}
+                                      </DropdownMenuContent>
+                                    </DropdownMenu>
+                                  </TableCell>
+                                </motion.tr>
+                              ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </TabsContent>
+            )}
+
+            {/* Users Tab */}
+            {activeTab === "users" && (
+              <TabsContent value="users" className="space-y-6">
+                <motion.div
+                  key="users"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Card className="border-0 shadow-sm">
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="flex items-center gap-2">
+                          <Users className="w-5 h-5" />
+                          {t('userManagement.title')}
+                        </CardTitle>
+                        <Button className="flex items-center gap-2">
+                          <Plus className="w-4 h-4" />
+                          {t('userManagement.addUser')}
+                        </Button>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="rounded-md border">
+                        <Table>
+                          <TableHeader>
+                            <TableRow>
+                              <TableHead>{tCommon('name')}</TableHead>
+                              <TableHead>{tCommon('email')}</TableHead>
+                              <TableHead>{t('userManagement.role')}</TableHead>
+                              <TableHead>{tCommon('status')}</TableHead>
+                              <TableHead>{t('userManagement.lastLogin')}</TableHead>
+                              <TableHead>{tCommon('actions')}</TableHead>
+                            </TableRow>
+                          </TableHeader>
+                          <TableBody>
+                            {users.map((user, index) => (
+                              <motion.tr
+                                key={user.id}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.3, delay: index * 0.05 }}
+                                className="hover:bg-muted/50"
+                              >
+                                <TableCell>
+                                  <div className="flex items-center gap-3">
+                                    <Avatar className="w-8 h-8">
+                                      <AvatarFallback>
+                                        {user.name.split(' ').map(n => n[0]).join('')}
+                                      </AvatarFallback>
+                                    </Avatar>
+                                    <span className="font-medium">{user.name}</span>
+                                  </div>
+                                </TableCell>
+                                <TableCell>{user.email}</TableCell>
+                                <TableCell>
+                                  <Badge variant={user.role === 'admin' ? 'default' : 'secondary'}>
+                                    {user.role}
+                                  </Badge>
+                                </TableCell>
+                                <TableCell>
+                                  <Badge variant={user.isActive ? 'default' : 'destructive'}>
+                                    {user.isActive ? tCommon('active') : tCommon('inactive')}
+                                  </Badge>
+                                </TableCell>
+                                <TableCell>
+                                  {user.lastLogin ? new Date(user.lastLogin).toLocaleDateString() : 'Never'}
+                                </TableCell>
+                                <TableCell>
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                      <Button variant="ghost" className="h-8 w-8 p-0">
+                                        <MoreHorizontal className="h-4 w-4" />
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end">
+                                      <DropdownMenuLabel>{tCommon('actions')}</DropdownMenuLabel>
+                                      <DropdownMenuSeparator />
+                                      <DropdownMenuItem>
+                                        <Edit className="mr-2 h-4 w-4" />
+                                        {t('userManagement.editUser')}
+                                      </DropdownMenuItem>
+                                      {user.role !== 'admin' && (
+                                        <DropdownMenuItem
+                                          onClick={() => {
+                                            const updatedUsers = users.map(u =>
+                                              u.id === user.id ? { ...u, role: 'admin' as const } : u
+                                            );
+                                            setUsers(updatedUsers);
+                                            toast.success(t('messages.userUpdated'));
+                                          }}
+                                        >
+                                          <Shield className="mr-2 h-4 w-4" />
+                                          {t('userManagement.makeAdmin')}
+                                        </DropdownMenuItem>
+                                      )}
+                                      <DropdownMenuItem
+                                        onClick={() => {
+                                          const updatedUsers = users.map(u =>
+                                            u.id === user.id ? { ...u, isActive: !u.isActive } : u
+                                          );
+                                          setUsers(updatedUsers);
+                                          toast.success(t('messages.userUpdated'));
+                                        }}
+                                      >
+                                        {user.isActive ? (
+                                          <>
+                                            <XCircle className="mr-2 h-4 w-4" />
+                                            {t('userManagement.deactivateUser')}
+                                          </>
+                                        ) : (
+                                          <>
+                                            <CheckCircle className="mr-2 h-4 w-4" />
+                                            {t('userManagement.activateUser')}
+                                          </>
+                                        )}
+                                      </DropdownMenuItem>
+                                      <DropdownMenuSeparator />
+                                      <DropdownMenuItem className="text-red-600">
+                                        <Trash2 className="mr-2 h-4 w-4" />
+                                        {t('userManagement.deleteUser')}
+                                      </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
+                                </TableCell>
+                              </motion.tr>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </TabsContent>
+            )}
+
+            {/* Admins Tab */}
+            {activeTab === "admins" && (
+              <TabsContent value="admins" className="space-y-6">
+                <motion.div
+                  key="admins"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Card className="border-0 shadow-sm">
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="flex items-center gap-2">
+                          <Shield className="w-5 h-5" />
+                          {t('adminManagement.title')}
+                        </CardTitle>
+                        <Button 
+                          onClick={() => setIsCreateAdminOpen(true)}
+                          className="flex items-center gap-2"
+                        >
+                          <Plus className="w-4 h-4" />
+                          {t('adminManagement.createAdmin')}
+                        </Button>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid gap-6">
+                        {users.filter(user => user.role === 'admin').map((admin, index) => (
+                          <motion.div
+                            key={admin.id}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.3, delay: index * 0.1 }}
+                          >
+                            <Card className="p-6 hover:shadow-md transition-shadow">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-4">
+                                  <Avatar className="w-12 h-12">
+                                    <AvatarFallback className="bg-primary/10 text-primary">
+                                      {admin.name.split(' ').map(n => n[0]).join('')}
+                                    </AvatarFallback>
+                                  </Avatar>
+                                  <div>
+                                    <h3 className="font-semibold">{admin.name}</h3>
+                                    <p className="text-sm text-muted-foreground">{admin.email}</p>
+                                    <div className="flex items-center gap-2 mt-1">
+                                      <Badge variant="default" className="text-xs">
+                                        {t('adminManagement.fullAccess')}
+                                      </Badge>
+                                      <Badge variant={admin.isActive ? 'default' : 'destructive'} className="text-xs">
+                                        {admin.isActive ? tCommon('active') : tCommon('inactive')}
+                                      </Badge>
+                                    </div>
+                                  </div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Button variant="outline" size="sm">
+                                    <Edit className="w-4 h-4 mr-1" />
+                                    {tCommon('edit')}
+                                  </Button>
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                      <Button variant="ghost" size="sm">
+                                        <MoreHorizontal className="h-4 w-4" />
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end">
+                                      <DropdownMenuItem>
+                                        <Settings className="mr-2 h-4 w-4" />
+                                        Manage Permissions
+                                      </DropdownMenuItem>
+                                      <DropdownMenuItem>
+                                        <Activity className="mr-2 h-4 w-4" />
+                                        View Activity
+                                      </DropdownMenuItem>
+                                      <DropdownMenuSeparator />
+                                      <DropdownMenuItem className="text-red-600">
+                                        <Trash2 className="mr-2 h-4 w-4" />
+                                        {t('userManagement.removeAdmin')}
+                                      </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
+                                </div>
                               </div>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            {getStatusBadge(booking.status)}
-                          </TableCell>
-                          <TableCell>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon">
-                                  <MoreHorizontal className="h-4 w-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                {booking.status === 'pending' && (
-                                  <>
-                                    <DropdownMenuItem 
-                                      onClick={() => updateBookingStatus(booking.id, 'confirmed')}
-                                      className="text-green-600 dark:text-green-400"
-                                    >
-                                      <CheckCircle className="w-4 h-4 mr-2" />
-                                      Confirm
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem 
-                                      onClick={() => updateBookingStatus(booking.id, 'cancelled')}
-                                      className="text-red-600 dark:text-red-400"
-                                    >
-                                      <XCircle className="w-4 h-4 mr-2" />
-                                      Cancel
-                                    </DropdownMenuItem>
-                                  </>
-                                )}
-                                <DropdownMenuItem>
-                                  <Eye className="w-4 h-4 mr-2" />
-                                  View Details
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                  
-                  {filteredBookings.length === 0 && (
-                    <div className="text-center py-8 text-muted-foreground">
-                      No bookings found matching your criteria.
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            </TabsContent>
-
-            {/* Analytics Tab */}
-            <TabsContent value="analytics" className="space-y-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Booking Trends</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="h-64 flex items-center justify-center text-muted-foreground">
-                      <div className="text-center">
-                        <BarChart3 className="w-12 h-12 mx-auto mb-4" />
-                        <p>Analytics charts would be displayed here</p>
-                        <p className="text-sm">Connect to analytics service</p>
+                            </Card>
+                          </motion.div>
+                        ))}
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Popular Time Slots</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">10:00 - 14:00</span>
-                        <div className="flex items-center gap-2">
-                          <div className="w-20 h-2 bg-muted rounded-full overflow-hidden">
-                            <div className="w-3/4 h-full bg-primary rounded-full"></div>
-                          </div>
-                          <span className="text-sm text-muted-foreground">75%</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">14:00 - 18:00</span>
-                        <div className="flex items-center gap-2">
-                          <div className="w-20 h-2 bg-muted rounded-full overflow-hidden">
-                            <div className="w-1/2 h-full bg-primary rounded-full"></div>
-                          </div>
-                          <span className="text-sm text-muted-foreground">50%</span>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <span className="text-sm">18:00 - 22:00</span>
-                        <div className="flex items-center gap-2">
-                          <div className="w-20 h-2 bg-muted rounded-full overflow-hidden">
-                            <div className="w-1/4 h-full bg-primary rounded-full"></div>
-                          </div>
-                          <span className="text-sm text-muted-foreground">25%</span>
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </TabsContent>
+            )}
 
             {/* Settings Tab */}
-            <TabsContent value="settings" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Studio Settings</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <Label>Studio Hours</Label>
-                      <Input defaultValue="9:00 AM - 10:00 PM" />
-                    </div>
-                    <div>
-                      <Label>Hourly Rate</Label>
-                      <Input defaultValue="$75" />
-                    </div>
-                    <div>
-                      <Label>Maximum Booking Duration</Label>
-                      <Input defaultValue="8 hours" />
-                    </div>
-                    <div>
-                      <Label>Advance Booking Limit</Label>
-                      <Input defaultValue="30 days" />
-                    </div>
-                  </div>
-                  <Button className="mt-4">Save Settings</Button>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          </Tabs>
-        </motion.div>
-      </div>
+            {activeTab === "settings" && (
+              <TabsContent value="settings" className="space-y-6">
+                <motion.div
+                  key="settings"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <Card className="border-0 shadow-sm">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Settings className="w-5 h-5" />
+                        {t('settings')}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-6">
+                        <div className="text-center py-12">
+                          <Settings className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
+                          <h3 className="text-lg font-semibold mb-2">Settings Panel</h3>
+                          <p className="text-muted-foreground">
+                            Settings and configuration options will be available here.
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              </TabsContent>
+            )}
+          </AnimatePresence>
+        </Tabs>
+
+        {/* Create Admin Dialog */}
+        <CreateAdminDialog 
+          open={isCreateAdminOpen} 
+          onOpenChange={setIsCreateAdminOpen}
+          onSuccess={(newAdmin) => {
+            setUsers(prev => [...prev, newAdmin]);
+            setIsCreateAdminOpen(false);
+            toast.success(t('messages.adminCreated'));
+          }}
+        />
+      </motion.div>
     </div>
   );
-} 
+}
+
+// Create Admin Dialog Component
+const CreateAdminDialog = ({ 
+  open, 
+  onOpenChange, 
+  onSuccess 
+}: { 
+  open: boolean; 
+  onOpenChange: (open: boolean) => void;
+  onSuccess: (admin: User) => void;
+}) => {
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    fullName: ''
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const t = useTranslations('admin.adminManagement.createAdminForm');
+  const tCommon = useTranslations('common');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (formData.password !== formData.confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+
+    setIsLoading(true);
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    const newAdmin: User = {
+      id: Date.now().toString(),
+      name: formData.fullName,
+      email: formData.email,
+      role: 'admin',
+      isActive: true,
+      createdAt: new Date().toISOString()
+    };
+
+    onSuccess(newAdmin);
+    setFormData({
+      username: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      fullName: ''
+    });
+    setIsLoading(false);
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
+            <Shield className="w-5 h-5" />
+            {t('title')}
+          </DialogTitle>
+          <DialogDescription>
+            {t('description')}
+          </DialogDescription>
+        </DialogHeader>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="username">{t('username')}</Label>
+              <Input
+                id="username"
+                placeholder={t('usernamePlaceholder')}
+                value={formData.username}
+                onChange={(e) => setFormData(prev => ({ ...prev, username: e.target.value }))}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="fullName">{t('fullName')}</Label>
+              <Input
+                id="fullName"
+                placeholder={t('fullNamePlaceholder')}
+                value={formData.fullName}
+                onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
+                required
+              />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="email">{t('email')}</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder={t('emailPlaceholder')}
+              value={formData.email}
+              onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+              required
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="password">{t('password')}</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder={t('passwordPlaceholder')}
+                value={formData.password}
+                onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">{t('confirmPassword')}</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                placeholder={t('confirmPassword')}
+                value={formData.confirmPassword}
+                onChange={(e) => setFormData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                required
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              disabled={isLoading}
+            >
+              {t('cancel')}
+            </Button>
+            <Button type="submit" disabled={isLoading}>
+              {isLoading ? (
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                  className="w-4 h-4 border-2 border-current border-t-transparent rounded-full"
+                />
+              ) : (
+                t('createAdmin')
+              )}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+  );
+}; 

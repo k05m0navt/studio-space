@@ -67,34 +67,9 @@ const TIME_SLOTS = [
   "13:00", "14:00", "15:00", "16:00", "17:00"
 ];
 
-const BOOKING_TYPES = [
-  {
-    id: "studio",
-    title: "Photography Studio",
-    description: "Professional studio with lighting and equipment",
-    price: "$75/hour",
-    features: ["Professional lighting", "Camera equipment rental", "Editing stations", "Props & backdrops"],
-    icon: Camera
-  },
-  {
-    id: "coworking",
-    title: "Coworking Space",
-    description: "Flexible workspace with all amenities",
-    price: "$25/day",
-    features: ["24/7 access", "High-speed internet", "Meeting rooms", "Coffee & snacks"],
-    icon: Users
-  }
-];
-
-const steps = [
-  { id: 1, title: "Service", icon: Check },
-  { id: 2, title: "Details", icon: User },
-  { id: 3, title: "Schedule", icon: Clock },
-  { id: 4, title: "Confirm", icon: Check },
-];
-
 export default function BookPage() {
   const t = useTranslations('booking');
+  const tCommon = useTranslations('common');
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -111,6 +86,42 @@ export default function BookPage() {
       message: "",
     },
   });
+
+  const BOOKING_TYPES = [
+    {
+      id: "studio" as const,
+      title: t('serviceSelection.studio.title'),
+      description: t('serviceSelection.studio.description'),
+      price: t('serviceSelection.studio.price'),
+      features: [
+        t('serviceSelection.studio.features.lighting'),
+        t('serviceSelection.studio.features.equipment'),
+        t('serviceSelection.studio.features.editing'),
+        t('serviceSelection.studio.features.props')
+      ],
+      icon: Camera
+    },
+    {
+      id: "coworking" as const,
+      title: t('serviceSelection.coworking.title'),
+      description: t('serviceSelection.coworking.description'),
+      price: t('serviceSelection.coworking.price'),
+      features: [
+        t('serviceSelection.coworking.features.access'),
+        t('serviceSelection.coworking.features.internet'),
+        t('serviceSelection.coworking.features.meetings'),
+        t('serviceSelection.coworking.features.refreshments')
+      ],
+      icon: Users
+    }
+  ];
+
+  const steps = [
+    { id: 1, title: t('steps.service'), icon: Check },
+    { id: 2, title: t('steps.details'), icon: User },
+    { id: 3, title: t('steps.schedule'), icon: Clock },
+    { id: 4, title: t('steps.confirm'), icon: Check },
+  ];
 
   const selectedBookingType = BOOKING_TYPES.find(
     (type) => type.id === form.watch("bookingType")
@@ -247,8 +258,8 @@ export default function BookPage() {
                         transition={{ duration: 0.3, ease: "easeOut" }}
                       >
                         <div className="text-center mb-8">
-                          <h2 className="text-2xl font-bold mb-2">Choose Your Service</h2>
-                          <p className="text-muted-foreground">Select the type of space you'd like to book</p>
+                          <h2 className="text-2xl font-bold mb-2">{t('serviceSelection.title')}</h2>
+                          <p className="text-muted-foreground">{t('serviceSelection.description')}</p>
                         </div>
                         
                         <FormField
@@ -314,8 +325,8 @@ export default function BookPage() {
                         transition={{ duration: 0.3, ease: "easeOut" }}
                       >
                         <div className="text-center mb-8">
-                          <h2 className="text-2xl font-bold mb-2">Your Details</h2>
-                          <p className="text-muted-foreground">Tell us how to reach you</p>
+                          <h2 className="text-2xl font-bold mb-2">{t('details.title')}</h2>
+                          <p className="text-muted-foreground">{t('details.description')}</p>
                         </div>
 
                         <div className="grid md:grid-cols-2 gap-6">
@@ -326,7 +337,7 @@ export default function BookPage() {
                               <FormItem>
                                 <FormLabel className="flex items-center gap-2">
                                   <User className="w-4 h-4" />
-                                  Full Name
+                                  {t('fullName')}
                                 </FormLabel>
                                 <FormControl>
                                   <Input placeholder="John Doe" {...field} className="h-12" />
@@ -343,7 +354,7 @@ export default function BookPage() {
                               <FormItem>
                                 <FormLabel className="flex items-center gap-2">
                                   <Mail className="w-4 h-4" />
-                                  Email Address
+                                  {t('email')}
                                 </FormLabel>
                                 <FormControl>
                                   <Input
@@ -365,7 +376,7 @@ export default function BookPage() {
                               <FormItem className="md:col-span-2">
                                 <FormLabel className="flex items-center gap-2">
                                   <Phone className="w-4 h-4" />
-                                  Phone Number
+                                  {t('phone')}
                                 </FormLabel>
                                 <FormControl>
                                   <Input
@@ -393,8 +404,8 @@ export default function BookPage() {
                         transition={{ duration: 0.3, ease: "easeOut" }}
                       >
                         <div className="text-center mb-8">
-                          <h2 className="text-2xl font-bold mb-2">Select Date & Time</h2>
-                          <p className="text-muted-foreground">When would you like to book?</p>
+                          <h2 className="text-2xl font-bold mb-2">{t('schedule.title')}</h2>
+                          <p className="text-muted-foreground">{t('schedule.description')}</p>
                         </div>
 
                         <div className="grid md:grid-cols-3 gap-6">
@@ -403,7 +414,7 @@ export default function BookPage() {
                             name="date"
                             render={({ field }) => (
                               <FormItem className="flex flex-col">
-                                <FormLabel>Date</FormLabel>
+                                <FormLabel>{tCommon('date')}</FormLabel>
                                 <Popover>
                                   <PopoverTrigger asChild>
                                     <FormControl>
@@ -417,7 +428,7 @@ export default function BookPage() {
                                         {field.value ? (
                                           format(field.value, "PPP")
                                         ) : (
-                                          <span>Pick a date</span>
+                                          <span>{t('schedule.pickDate')}</span>
                                         )}
                                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                       </Button>
@@ -443,11 +454,11 @@ export default function BookPage() {
                             name="startTime"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Start Time</FormLabel>
+                                <FormLabel>{t('schedule.startTime')}</FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                   <FormControl>
                                     <SelectTrigger className="h-12">
-                                      <SelectValue placeholder="Start time" />
+                                      <SelectValue placeholder={t('schedule.startTime')} />
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
@@ -468,11 +479,11 @@ export default function BookPage() {
                             name="endTime"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>End Time</FormLabel>
+                                <FormLabel>{t('schedule.endTime')}</FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                   <FormControl>
                                     <SelectTrigger className="h-12">
-                                      <SelectValue placeholder="End time" />
+                                      <SelectValue placeholder={t('schedule.endTime')} />
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
@@ -496,17 +507,17 @@ export default function BookPage() {
                             <FormItem className="mt-6">
                               <FormLabel className="flex items-center gap-2">
                                 <MessageSquare className="w-4 h-4" />
-                                Additional Message (Optional)
+                                {t('schedule.additionalMessage')}
                               </FormLabel>
                               <FormControl>
                                 <Textarea
-                                  placeholder="Tell us about your project or any special requirements..."
+                                  placeholder={t('schedule.messagePlaceholder')}
                                   className="resize-none min-h-[120px]"
                                   {...field}
                                 />
                               </FormControl>
                               <FormDescription>
-                                Let us know about your specific needs or any questions you have.
+                                {t('schedule.messageDescription')}
                               </FormDescription>
                               <FormMessage />
                             </FormItem>
@@ -525,25 +536,25 @@ export default function BookPage() {
                         transition={{ duration: 0.3, ease: "easeOut" }}
                       >
                         <div className="text-center mb-8">
-                          <h2 className="text-2xl font-bold mb-2">Review Your Booking</h2>
-                          <p className="text-muted-foreground">Please confirm your details below</p>
+                          <h2 className="text-2xl font-bold mb-2">{t('review.title')}</h2>
+                          <p className="text-muted-foreground">{t('review.description')}</p>
                         </div>
 
                         <div className="bg-muted/50 rounded-lg p-6 space-y-4">
                           <div className="grid md:grid-cols-2 gap-4">
                             <div>
-                              <h3 className="font-semibold mb-2">Service</h3>
+                              <h3 className="font-semibold mb-2">{t('review.service')}</h3>
                               <p className="text-muted-foreground">{selectedBookingType?.title}</p>
                             </div>
                             <div>
-                              <h3 className="font-semibold mb-2">Date & Time</h3>
+                              <h3 className="font-semibold mb-2">{t('review.dateTime')}</h3>
                               <p className="text-muted-foreground">
                                 {form.getValues("date") && format(form.getValues("date"), "PPP")}<br/>
                                 {form.getValues("startTime")} - {form.getValues("endTime")}
                               </p>
                             </div>
                             <div>
-                              <h3 className="font-semibold mb-2">Contact</h3>
+                              <h3 className="font-semibold mb-2">{t('review.contact')}</h3>
                               <p className="text-muted-foreground">
                                 {form.getValues("name")}<br/>
                                 {form.getValues("email")}<br/>
@@ -552,7 +563,7 @@ export default function BookPage() {
                             </div>
                             {form.getValues("message") && (
                               <div>
-                                <h3 className="font-semibold mb-2">Additional Message</h3>
+                                <h3 className="font-semibold mb-2">{t('review.additionalMessage')}</h3>
                                 <p className="text-muted-foreground">{form.getValues("message")}</p>
                               </div>
                             )}
@@ -577,7 +588,7 @@ export default function BookPage() {
                           className="flex items-center gap-2"
                         >
                           <ArrowLeft className="w-4 h-4" />
-                          Previous
+                          {t('navigation.previous')}
                         </Button>
                       </motion.div>
                     ) : (
@@ -595,7 +606,7 @@ export default function BookPage() {
                           onClick={handleNext}
                           className="flex items-center gap-2"
                         >
-                          Next
+                          {t('navigation.next')}
                           <ArrowRight className="w-4 h-4" />
                         </Button>
                       </motion.div>
@@ -610,7 +621,7 @@ export default function BookPage() {
                           disabled={isLoading}
                           className="flex items-center gap-2"
                         >
-                          {isLoading ? "Submitting..." : "Submit Booking"}
+                          {isLoading ? t('navigation.submitting') : t('navigation.submitBooking')}
                           <Check className="w-4 h-4" />
                         </Button>
                       </motion.div>
