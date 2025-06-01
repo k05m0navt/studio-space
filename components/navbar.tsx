@@ -90,6 +90,25 @@ export function Navbar() {
     setMenuOpen(false);
   }, [pathname]);
 
+  // Click outside to close mobile menu
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      if (drawerRef.current && !drawerRef.current.contains(event.target as Node)) {
+        // Also check if the click is not on the menu button
+        const target = event.target as Element;
+        const menuButton = target.closest('[aria-label="Toggle menu"]');
+        if (!menuButton) {
+          setMenuOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [menuOpen]);
+
   // Focus trap and Esc close for mobile drawer
   useEffect(() => {
     if (!menuOpen) return;
@@ -162,33 +181,36 @@ export function Navbar() {
       </Link>
       
       <ul className="hidden md:flex gap-1 items-center">
-        {NAV_ITEMS.map((item, index) => (
-          <motion.li 
-            key={item.href}
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: index * 0.05, ease: "easeOut" }}
-          >
-            <Link
-              href={item.href}
-              className={cn(
-                "relative px-4 py-2 rounded-lg transition-all duration-200 hover:bg-accent/80 focus-visible:ring-2 focus-visible:ring-primary min-h-[44px] flex items-center justify-center text-sm font-medium",
-                pathname === item.href 
-                  ? "bg-primary text-primary-foreground font-semibold shadow-sm" 
-                  : "text-muted-foreground hover:text-foreground"
-              )}
+        {NAV_ITEMS.map((item, index) => {
+          const isActive = pathname === item.href;
+          return (
+            <motion.li 
+              key={item.href}
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: index * 0.05, ease: "easeOut" }}
             >
-              {pathname === item.href && (
-                <motion.div
-                  className="absolute inset-0 bg-primary rounded-lg -z-10"
-                  layoutId="navbar-active"
-                  transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                />
-              )}
-              <span className="relative z-10">{item.label}</span>
-            </Link>
-          </motion.li>
-        ))}
+              <Link
+                href={item.href}
+                className={cn(
+                  "relative px-4 py-2 rounded-lg transition-all duration-200 focus-visible:ring-2 focus-visible:ring-primary min-h-[44px] flex items-center justify-center text-sm font-medium",
+                  isActive 
+                    ? "bg-primary text-primary-foreground font-semibold shadow-sm" 
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent/80"
+                )}
+              >
+                {isActive && (
+                  <motion.div
+                    className="absolute inset-0 bg-primary rounded-lg -z-10"
+                    layoutId="navbar-active"
+                    transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                  />
+                )}
+                <span className="relative z-10">{item.label}</span>
+              </Link>
+            </motion.li>
+          );
+        })}
       </ul>
       
       <div className="flex items-center gap-2 ml-4">
@@ -258,50 +280,63 @@ export function Navbar() {
       {/* Mobile drawer */}
       <AnimatePresence>
         {menuOpen && (
-          <motion.div
-            ref={drawerRef}
-            className="fixed inset-x-0 top-16 bg-background border-b shadow-lg z-40 md:hidden"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-          >
-            <div className="px-4 py-6 space-y-2">
-              {NAV_ITEMS.map((item, index) => (
-                <motion.div
-                  key={item.href}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.05, ease: "easeOut" }}
-                >
-                  <Link
-                    href={item.href}
-                    className={cn(
-                      "block px-4 py-3 rounded-lg transition-all duration-200 hover:bg-accent min-h-[44px] flex items-center text-sm font-medium",
-                      pathname === item.href 
-                        ? "bg-primary text-primary-foreground font-semibold" 
-                        : "text-muted-foreground hover:text-foreground"
-                    )}
-                    onClick={() => setMenuOpen(false)}
+          <>
+            {/* Backdrop */}
+            <motion.div
+              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30 md:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setMenuOpen(false)}
+            />
+            
+            {/* Menu */}
+            <motion.div
+              ref={drawerRef}
+              className="fixed inset-x-0 top-16 bg-background border-b shadow-lg z-40 md:hidden"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+            >
+              <div className="px-4 py-6 space-y-2">
+                {NAV_ITEMS.map((item, index) => (
+                  <motion.div
+                    key={item.href}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.05, ease: "easeOut" }}
                   >
-                    {item.label}
+                    <Link
+                      href={item.href}
+                      className={cn(
+                        "block px-4 py-3 rounded-lg transition-all duration-200 hover:bg-accent min-h-[44px] flex items-center text-sm font-medium",
+                        pathname === item.href 
+                          ? "bg-primary text-primary-foreground font-semibold" 
+                          : "text-muted-foreground hover:text-foreground"
+                      )}
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  </motion.div>
+                ))}
+                <motion.div 
+                  className="pt-4 border-t"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: 0.4, ease: "easeOut" }}
+                >
+                  <Link href="/book" onClick={() => setMenuOpen(false)}>
+                    <Button className="w-full min-h-[44px]">
+                      Book Now
+                    </Button>
                   </Link>
                 </motion.div>
-              ))}
-              <motion.div 
-                className="pt-4 border-t"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.4, ease: "easeOut" }}
-              >
-                <Link href="/book" onClick={() => setMenuOpen(false)}>
-                  <Button className="w-full min-h-[44px]">
-                    Book Now
-                  </Button>
-                </Link>
-              </motion.div>
-            </div>
-          </motion.div>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </motion.nav>
