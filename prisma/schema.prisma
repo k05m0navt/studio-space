@@ -1,0 +1,38 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../app/generated/prisma"
+  directUrl = env("DIRECT_URL")
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DIRECT_URL")
+}
+
+model Booking {
+  id         String   @id @default(cuid())
+  name       String
+  email      String
+  phone      String?
+  date       DateTime
+  start_time String?
+  end_time   String?
+  message    String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  type       String   // 'studio' or 'coworking'
+  status     String   @default("pending") // pending, confirmed, cancelled
+}
+
+model Faq {
+  id        String   @id @default(cuid())
+  question  String
+  answer    String
+  category  String   // 'studio', 'coworking', 'general'
+  order     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
