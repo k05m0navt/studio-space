@@ -190,8 +190,8 @@ export default function BookPage() {
   };
 
   return (
-    <div className="py-12 md:py-20 bg-background">
-      <div className="container mx-auto px-6 sm:px-8 lg:px-12 xl:px-16 max-w-8xl">
+    <div className="py-8 sm:py-12 md:py-20 bg-background">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12 max-w-8xl">
         <motion.div 
           className="mx-auto max-w-4xl"
           initial={{ opacity: 0, y: 20 }}
@@ -200,36 +200,36 @@ export default function BookPage() {
         >
           {/* Header */}
           <motion.div 
-            className="text-center mb-12"
+            className="text-center mb-8 sm:mb-12"
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
           >
-            <div className="inline-flex items-center px-4 py-2 bg-accent rounded-full text-sm font-medium mb-4">
+            <div className="inline-flex items-center px-3 py-2 sm:px-4 sm:py-2 bg-accent rounded-full text-sm font-medium mb-4">
               <Camera className="w-4 h-4 mr-2 text-primary" />
               {t('badge')}
             </div>
-            <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl mb-4 text-foreground">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter mb-4 text-foreground">
               {t('title')}
             </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
               {t('description')}
             </p>
           </motion.div>
 
           {/* Progress Steps */}
-          <motion.div 
-            className="flex justify-center mb-12"
+          <motion.div
+            className="flex justify-center mb-8 sm:mb-12"
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
           >
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 sm:space-x-4 overflow-x-auto pb-2">
               {steps.map((step, index) => (
-                <div key={step.id} className="flex items-center">
+                <div key={step.id} className="flex items-center flex-shrink-0">
                   <motion.div
                     className={cn(
-                      "flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-200",
+                      "flex items-center justify-center w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 transition-all duration-200",
                       currentStep >= step.id
                         ? "bg-primary border-primary text-primary-foreground"
                         : "border-muted-foreground/30 text-muted-foreground"
@@ -238,14 +238,14 @@ export default function BookPage() {
                     transition={{ duration: 0.2 }}
                   >
                     {currentStep > step.id ? (
-                      <Check className="w-5 h-5" />
+                      <Check className="w-4 h-4 sm:w-5 sm:h-5" />
                     ) : (
-                      <span className="text-sm font-medium">{step.id}</span>
+                      <span className="text-xs sm:text-sm font-medium">{step.id}</span>
                     )}
                   </motion.div>
-                  <div className="ml-3 hidden sm:block">
+                  <div className="ml-2 sm:ml-3 hidden sm:block">
                     <p className={cn(
-                      "text-sm font-medium transition-colors",
+                      "text-sm font-medium transition-colors whitespace-nowrap",
                       currentStep >= step.id ? "text-foreground" : "text-muted-foreground"
                     )}>
                       {step.title}
@@ -253,7 +253,7 @@ export default function BookPage() {
                   </div>
                   {index < steps.length - 1 && (
                     <div className={cn(
-                      "w-8 h-0.5 mx-4 transition-colors",
+                      "w-6 sm:w-8 h-0.5 mx-2 sm:mx-4 transition-colors",
                       currentStep > step.id ? "bg-primary" : "bg-muted-foreground/30"
                     )} />
                   )}
@@ -263,8 +263,8 @@ export default function BookPage() {
           </motion.div>
 
           {/* Form Content */}
-          <Card className="border-0 shadow-xl bg-card">
-            <CardContent className="p-8">
+          <Card className="border-0 shadow-xl bg-card/80 backdrop-blur-sm">
+            <CardContent className="p-4 sm:p-6 lg:p-8">
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                   <AnimatePresence mode="wait">
@@ -277,9 +277,9 @@ export default function BookPage() {
                         exit={{ opacity: 0, x: -20 }}
                         transition={{ duration: 0.3, ease: "easeOut" }}
                       >
-                        <div className="text-center mb-8">
-                          <h2 className="text-2xl font-bold mb-2">{t('serviceSelection.title')}</h2>
-                          <p className="text-muted-foreground">{t('serviceSelection.description')}</p>
+                        <div className="text-center mb-6 sm:mb-8">
+                          <h2 className="text-xl sm:text-2xl font-bold mb-2">{t('serviceSelection.title')}</h2>
+                          <p className="text-sm sm:text-base text-muted-foreground">{t('serviceSelection.description')}</p>
                         </div>
                         
                         <FormField
@@ -287,7 +287,7 @@ export default function BookPage() {
                           name="bookingType"
                           render={({ field }) => (
                             <FormItem>
-                              <div className="grid md:grid-cols-2 gap-6">
+                              <div className="grid gap-4 sm:gap-6 md:grid-cols-2">
                                 {BOOKING_TYPES.map((type) => (
                                   <motion.div
                                     key={type.id}
@@ -304,23 +304,23 @@ export default function BookPage() {
                                       )}
                                       onClick={() => field.onChange(type.id)}
                                     >
-                                      <CardHeader className="pb-4">
+                                      <CardHeader className="pb-3 sm:pb-4">
                                         <div className="flex items-center justify-between mb-2">
-                                          <div className="flex items-center gap-3">
-                                            <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
-                                              <type.icon className="w-5 h-5 text-primary" />
+                                          <div className="flex items-center gap-2 sm:gap-3">
+                                            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                                              <type.icon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                                             </div>
-                                            <CardTitle className="text-xl">{type.title}</CardTitle>
+                                            <CardTitle className="text-lg sm:text-xl">{type.title}</CardTitle>
                                           </div>
-                                          <span className="text-lg font-bold text-primary">{type.price}</span>
+                                          <span className="text-base sm:text-lg font-bold text-primary">{type.price}</span>
                                         </div>
-                                        <p className="text-muted-foreground text-base">{type.description}</p>
+                                        <p className="text-sm sm:text-base text-muted-foreground">{type.description}</p>
                                       </CardHeader>
                                       <CardContent className="pt-0">
                                         <ul className="space-y-2">
                                           {type.features.map((feature, index) => (
-                                            <li key={index} className="flex items-center text-sm">
-                                              <Check className="w-4 h-4 text-primary mr-2 flex-shrink-0" />
+                                            <li key={index} className="flex items-center text-xs sm:text-sm">
+                                              <Check className="w-3 h-3 sm:w-4 sm:h-4 text-primary mr-2 flex-shrink-0" />
                                               {feature}
                                             </li>
                                           ))}
@@ -596,25 +596,26 @@ export default function BookPage() {
                   </AnimatePresence>
 
                   {/* Navigation Buttons */}
-                  <div className="flex justify-between mt-8">
+                  <div className="flex flex-col sm:flex-row justify-between gap-3 sm:gap-0 mt-6 sm:mt-8">
                     {currentStep > 1 ? (
                       <motion.div
                         whileHover={{ scale: 1.005 }}
                         whileTap={{ scale: 0.995 }}
                         transition={{ duration: 0.1 }}
+                        className="order-2 sm:order-1"
                       >
                         <Button
                           type="button"
                           variant="outline"
                           onClick={handlePrevious}
-                          className="flex items-center gap-2"
+                          className="w-full sm:w-auto flex items-center justify-center gap-2"
                         >
                           <ArrowLeft className="w-4 h-4" />
                           {t('navigation.previous')}
                         </Button>
                       </motion.div>
                     ) : (
-                      <div />
+                      <div className="order-2 sm:order-1" />
                     )}
 
                     {currentStep < steps.length ? (
@@ -622,11 +623,12 @@ export default function BookPage() {
                         whileHover={{ scale: 1.005 }}
                         whileTap={{ scale: 0.995 }}
                         transition={{ duration: 0.1 }}
+                        className="order-1 sm:order-2"
                       >
                         <Button
                           type="button"
                           onClick={handleNext}
-                          className="flex items-center gap-2"
+                          className="w-full sm:w-auto flex items-center justify-center gap-2"
                         >
                           {t('navigation.next')}
                           <ArrowRight className="w-4 h-4" />
@@ -637,11 +639,12 @@ export default function BookPage() {
                         whileHover={{ scale: 1.005 }}
                         whileTap={{ scale: 0.995 }}
                         transition={{ duration: 0.1 }}
+                        className="order-1 sm:order-2"
                       >
                         <Button
                           type="submit"
                           disabled={isLoading}
-                          className="flex items-center gap-2"
+                          className="w-full sm:w-auto flex items-center justify-center gap-2"
                         >
                           {isLoading ? t('navigation.submitting') : t('navigation.submitBooking')}
                           <Check className="w-4 h-4" />

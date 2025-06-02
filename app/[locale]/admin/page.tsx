@@ -29,7 +29,8 @@ import {
   MoreHorizontal,
   User,
   Settings,
-  Activity
+  Activity,
+  Zap
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
@@ -567,42 +568,45 @@ export default function AdminDashboard() {
                       </CardContent>
                     </Card>
 
-                    <Card className="border-0 shadow-sm">
-                      <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                          <TrendingUp className="w-5 h-5" />
-                          {t('quickActions.title')}
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-3">
-                          {[
-                            { icon: Plus, label: t('quickActions.addBooking'), onClick: () => setActiveTab('bookings') },
-                            { icon: Users, label: t('quickActions.manageUsers'), onClick: () => setActiveTab('users') },
-                            { icon: Shield, label: t('quickActions.createAdmin'), onClick: () => setActiveTab('admins') },
-                            { icon: Download, label: t('quickActions.exportData'), onClick: () => toast.info(t('quickActions.exportSoon')) }
-                          ].map((action, index) => (
-                            <motion.div
-                              key={action.label}
-                              initial={{ opacity: 0, x: -10 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ duration: 0.3, delay: index * 0.1 }}
-                              whileHover={{ scale: 1.02 }}
-                              whileTap={{ scale: 0.98 }}
-                            >
-                              <Button
-                                variant="ghost"
-                                className="w-full justify-start h-12"
-                                onClick={action.onClick}
+                    {/* Quick Actions */}
+                    <div className="lg:col-span-1">
+                      <Card className="h-full border-0 shadow-sm">
+                        <CardHeader>
+                          <CardTitle className="flex items-center gap-2">
+                            <Zap className="w-5 h-5 text-warning" />
+                            {t('quickActions.title')}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-3">
+                            {[
+                              { icon: Plus, label: t('quickActions.addBooking'), onClick: () => setActiveTab('bookings') },
+                              { icon: Users, label: t('quickActions.manageUsers'), onClick: () => setActiveTab('users') },
+                              { icon: Shield, label: t('quickActions.createAdmin'), onClick: () => setActiveTab('admins') },
+                              { icon: Download, label: t('quickActions.exportData'), onClick: () => toast.info(t('quickActions.exportSoon')) }
+                            ].map((action, index) => (
+                              <motion.div
+                                key={action.label}
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.15, delay: index * 0.05 }}
+                                whileHover={{ scale: 1.01, x: 2 }}
+                                whileTap={{ scale: 0.99 }}
                               >
-                                <action.icon className="w-4 h-4 mr-3" />
-                                {action.label}
-                              </Button>
-                            </motion.div>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
+                                <Button
+                                  variant="ghost"
+                                  className="w-full justify-start h-12 hover:bg-surface-container-high transition-all duration-150"
+                                  onClick={action.onClick}
+                                >
+                                  <action.icon className="w-4 h-4 mr-3 flex-shrink-0" />
+                                  <span className="truncate">{action.label}</span>
+                                </Button>
+                              </motion.div>
+                            ))}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
                   </div>
                 </motion.div>
               </TabsContent>

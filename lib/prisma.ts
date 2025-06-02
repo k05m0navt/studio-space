@@ -1,13 +1,31 @@
-import { PrismaClient } from '../app/generated/prisma'
+import { PrismaClient } from '@/app/generated/prisma'
 
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined
+declare global {
+  var prisma: PrismaClient | undefined
 }
 
 export const prisma =
-  globalForPrisma.prisma ??
+  globalThis.prisma ??
   new PrismaClient({
-    log: ['query'],
+    log: ['query', 'error', 'warn'],
+    datasources: {
+      db: {
+        url: process.env.DIRECT_URL
+      }
+    }
   })
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma 
+if (process.env.NODE_ENV !== 'production') {
+  globalThis.prisma = prisma
+}
+
+// Graceful shutdown
+process.on('SIGTERM', async () => {
+  await prisma.$disconnect()
+})
+
+process.on('SIGINT', async () => {
+  await prisma.$disconnect()
+})
+
+export default prisma 
