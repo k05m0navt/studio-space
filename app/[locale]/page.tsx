@@ -1,9 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Link } from '@/i18n/routing';
-import { ArrowRight, Camera, Users, Star, Clock, CheckCircle, Wifi, Coffee } from "lucide-react";
+import { ArrowRight, Camera, Users, Star, Wifi, Coffee, CheckCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import { LocationMap } from "@/components/location-map";
 import { useTranslations } from 'next-intl';
@@ -15,7 +15,7 @@ export default function Home() {
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+        <div className="container mx-auto px-6 sm:px-8 lg:px-12 xl:px-16 max-w-8xl">
           <div className="grid lg:grid-cols-2 gap-12 items-center min-h-[80vh] py-20">
             {/* Left Content */}
             <motion.div 
@@ -26,7 +26,7 @@ export default function Home() {
             >
               <div className="space-y-6">
                 <motion.div 
-                  className="inline-flex items-center px-4 py-2 bg-accent text-accent-foreground rounded-full text-sm font-medium"
+                  className="inline-flex items-center px-4 py-2 bg-accent rounded-full text-sm font-medium"
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
@@ -137,10 +137,10 @@ export default function Home() {
                   whileHover={{ scale: 1.005, y: -1 }}
                   transition={{ duration: 0.1, ease: "easeInOut" }}
                 >
-                  <Card className="h-full border-0 shadow-xl bg-gradient-to-br from-primary/10 via-background to-accent/20">
+                  <Card className="h-full border-0 shadow-xl bg-card">
                     <CardContent className="h-full flex flex-col justify-center items-center p-8 text-center">
                       <motion.div
-                        className="w-20 h-20 bg-primary/20 rounded-2xl flex items-center justify-center mb-6"
+                        className="w-20 h-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-6"
                         whileHover={{ rotate: 2, scale: 1.01 }}
                         transition={{ duration: 0.1, ease: "easeInOut" }}
                       >
@@ -169,13 +169,13 @@ export default function Home() {
                   whileHover={{ scale: 1.01, rotate: 0.5 }}
                   transition={{ duration: 0.1, ease: "easeInOut" }}
                 >
-                  <Card className="h-full border-0 shadow-lg bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-950 dark:to-blue-900">
+                  <Card className="h-full border-0 shadow-lg bg-card">
                     <CardContent className="h-full flex flex-col justify-center items-center p-6 text-center">
                       <motion.div
                         whileHover={{ rotate: -2, scale: 1.05 }}
                         transition={{ duration: 0.2 }}
                       >
-                        <Users className="w-8 h-8 text-blue-600 dark:text-blue-400 mb-3" />
+                        <Users className="w-8 h-8 text-primary mb-3" />
                       </motion.div>
                       <h4 className="font-semibold text-sm mb-1">{t('community.title')}</h4>
                       <p className="text-xs text-muted-foreground">{t('community.members')}</p>
@@ -191,18 +191,18 @@ export default function Home() {
                   whileHover={{ scale: 1.01, rotate: -0.5 }}
                   transition={{ duration: 0.1, ease: "easeInOut" }}
                 >
-                  <Card className="h-full border-0 shadow-lg bg-gradient-to-br from-green-50 to-green-100 dark:from-green-950 dark:to-green-900">
+                  <Card className="h-full border-0 shadow-lg bg-card">
                     <CardContent className="h-full flex flex-col justify-center items-center p-6 text-center">
                       <div className="flex gap-2 mb-3">
                         <motion.div whileHover={{ scale: 1.1 }} transition={{ duration: 0.1 }}>
-                          <Wifi className="w-4 h-4 text-green-600 dark:text-green-400" />
+                          <Wifi className="w-4 h-4 text-primary" />
                         </motion.div>
                         <motion.div whileHover={{ scale: 1.1 }} transition={{ duration: 0.1 }}>
-                          <Coffee className="w-4 h-4 text-green-600 dark:text-green-400" />
+                          <Coffee className="w-4 h-4 text-primary" />
                         </motion.div>
                       </div>
                       <h4 className="font-semibold text-sm mb-1">{t('amenities.title')}</h4>
-                      <p className="text-xs text-muted-foreground">Wi-Fi & Coffee</p>
+                      <p className="text-xs text-muted-foreground">{t('amenities.description')}</p>
                     </CardContent>
                   </Card>
                 </motion.div>
@@ -215,27 +215,27 @@ export default function Home() {
                   whileHover={{ scale: 1.005 }}
                   transition={{ duration: 0.1, ease: "easeInOut" }}
                 >
-                  <Card className="h-full border-0 shadow-lg bg-gradient-to-r from-orange-50 to-orange-100 dark:from-orange-950 dark:to-orange-900">
+                  <Card className="h-full border-0 shadow-lg bg-card">
                     <CardContent className="h-full flex items-center justify-between p-6">
                       <div className="flex items-center gap-3">
                         <motion.div 
-                          className="w-10 h-10 bg-orange-600 dark:bg-orange-400 rounded-full flex items-center justify-center"
+                          className="w-10 h-10 bg-primary rounded-full flex items-center justify-center"
                           whileHover={{ scale: 1.05, rotate: 180 }}
                           transition={{ duration: 0.3 }}
                         >
-                          <CheckCircle className="w-5 h-5 text-white dark:text-orange-900" />
+                          <CheckCircle className="w-5 h-5 text-primary-foreground" />
                         </motion.div>
                         <div>
-                          <h4 className="font-semibold text-sm">Available Now</h4>
-                          <p className="text-xs text-muted-foreground">Ready for booking</p>
+                          <h4 className="font-semibold text-sm">{t('availability.title')}</h4>
+                          <p className="text-xs text-muted-foreground">{t('availability.subtitle')}</p>
                         </div>
                       </div>
                       <motion.div
-                        className="px-3 py-1 bg-orange-600 dark:bg-orange-400 text-white dark:text-orange-900 rounded-full text-xs font-medium"
+                        className="px-3 py-1 bg-primary text-primary-foreground rounded-full text-xs font-medium"
                         whileHover={{ scale: 1.02 }}
                         transition={{ duration: 0.1 }}
                       >
-                        24/7
+                        {t('availability.badge')}
                       </motion.div>
                     </CardContent>
                   </Card>

@@ -17,6 +17,26 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Vasha Studio | Photo Studio & Coworking",
   description: "Premium photo studio and coworking space for creatives",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Vasha Studio",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  openGraph: {
+    type: "website",
+    siteName: "Vasha Studio",
+    title: "Vasha Studio | Photo Studio & Coworking",
+    description: "Premium photo studio and coworking space for creatives",
+  },
+  twitter: {
+    card: "summary",
+    title: "Vasha Studio | Photo Studio & Coworking",
+    description: "Premium photo studio and coworking space for creatives",
+  },
 };
 
 export default async function LocaleLayout({
@@ -30,7 +50,7 @@ export default async function LocaleLayout({
   const { locale } = await params;
   
   // Ensure that the incoming `locale` is valid
-  if (!routing.locales.includes(locale as any)) {
+  if (!routing.locales.includes(locale as 'en' | 'ru')) {
     notFound();
   }
 
@@ -49,13 +69,35 @@ export default async function LocaleLayout({
         />
         <title>{metadata.title as string}</title>
         <meta name="description" content={metadata.description as string} />
-        <link rel="icon" href="/favicon.ico" />
-        <meta name="theme-color" content="#18181b" />
+        
+        {/* PWA Meta Tags */}
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#1e40af" />
+        <meta name="application-name" content="Vasha Studio" />
         <meta name="mobile-web-app-capable" content="yes" />
-        <meta
-          name="apple-mobile-web-app-status-bar-style"
-          content="black-translucent"
-        />
+        <meta name="mobile-web-app-status-bar-style" content="default" />
+        <meta name="mobile-web-app-title" content="Vasha Studio" />
+        
+        {/* Apple Meta Tags */}
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+        <meta name="apple-mobile-web-app-title" content="Vasha Studio" />
+        <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+        
+        {/* Icon Links */}
+        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-192x192.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-192x192.png" />
+        
+        {/* Microsoft Meta Tags */}
+        <meta name="msapplication-TileColor" content="#1e40af" />
+        <meta name="msapplication-TileImage" content="/icons/icon-144x144.png" />
+        <meta name="msapplication-config" content="/browserconfig.xml" />
+        
+        {/* Additional PWA Tags */}
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="HandheldFriendly" content="true" />
+        <meta name="MobileOptimized" content="320" />
       </head>
       <body
         className={cn(

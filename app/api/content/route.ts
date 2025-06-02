@@ -1,23 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { PrismaClient } from '@prisma/client';
-import { requireAuth, requireRole } from '@/lib/auth';
+import { PrismaClient, ContentType } from '@/app/generated/prisma';
+import { requireRole } from '@/lib/auth';
 
 const prisma = new PrismaClient();
 
 const contentSchema = z.object({
-  type: z.enum(['PAGE', 'BLOG_POST', 'ANNOUNCEMENT', 'HERO_SECTION', 'FEATURE', 'TESTIMONIAL', 'SERVICE']),
-  key: z.string().min(1),
-  title: z.string().min(1),
-  content: z.string().min(1),
-  description: z.string().optional(),
+  type: z.nativeEnum(ContentType),
+  key: z.string().min(1, 'Key is required'),
+  title: z.string().min(1, 'Title is required'),
+  content: z.string().min(1, 'Content is required'),
+  description: z.string().min(1, 'Description is required'),
   locale: z.string().default('en'),
   isActive: z.boolean().default(true),
   metadata: z.any().optional(),
   order: z.number().optional(),
 });
-
-const updateContentSchema = contentSchema.partial();
 
 /**
  * @swagger
@@ -124,13 +122,20 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const type = searchParams.get('type');
-    const locale = searchParams.get('locale') || 'en';
     const active = searchParams.get('active');
 
-    const where: any = { locale };
+    const where: {
+      type?: ContentType;
+      published?: boolean;
+      isActive?: boolean;
+      title?: {
+        contains: string;
+        mode: 'insensitive';
+      };
+    } = {};
     
-    if (type) {
-      where.type = type;
+    if (type && Object.values(ContentType).includes(type as ContentType)) {
+      where.type = type as ContentType;
     }
     
     if (active !== null) {
@@ -173,7 +178,7 @@ export const POST = requireRole(['ADMIN', 'MODERATOR'])(async ({ user, request }
     const content = await prisma.content.create({
       data: {
         ...validatedData,
-        createdBy: user.userId,
+        createdBy: user.id,
       },
       include: {
         author: {

@@ -1,13 +1,12 @@
 // components/booking-form.tsx
 "use client";
 
-import { useState } from "react";
-import { Calendar as CalendarIcon, Check, ArrowRight, ArrowLeft, User, Mail, Phone, Clock, MessageSquare } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Calendar as CalendarIcon, Check, ArrowRight, ArrowLeft, User, Mail, Phone, Clock, MessageSquare, XCircle } from "lucide-react";
 import { format } from "date-fns";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { createBrowserClient } from "@supabase/ssr";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -40,26 +39,39 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
 const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
-  }),
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-  phone: z.string().min(10, {
-    message: "Please enter a valid phone number.",
-  }),
+  name: z.string()
+    .min(2, "Name must be at least 2 characters.")
+    .max(50, "Name must be less than 50 characters.")
+    .regex(/^[a-zA-Z\s]+$/, "Name can only contain letters and spaces."),
+  email: z.string()
+    .email("Please enter a valid email address.")
+    .max(100, "Email must be less than 100 characters."),
+  phone: z.string()
+    .min(10, "Please enter a valid phone number.")
+    .max(20, "Phone number is too long.")
+    .regex(/^[\+]?[1-9][\d]{0,15}$/, "Please enter a valid phone number."),
   bookingType: z.enum(["studio", "coworking"]),
   date: z.date({
     required_error: "A date is required.",
-  }),
-  startTime: z.string().min(1, {
-    message: "Please select a start time.",
-  }),
-  endTime: z.string().min(1, {
-    message: "Please select an end time.",
-  }),
-  message: z.string().optional(),
+  }).refine((date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return date >= today;
+  }, "Date cannot be in the past."),
+  startTime: z.string()
+    .min(1, "Please select a start time."),
+  endTime: z.string()
+    .min(1, "Please select an end time."),
+  message: z.string()
+    .max(500, "Message must be less than 500 characters.")
+    .optional(),
+}).refine((data) => {
+  const start = parseInt(data.startTime.replace(':', ''));
+  const end = parseInt(data.endTime.replace(':', ''));
+  return end > start;
+}, {
+  message: "End time must be after start time.",
+  path: ["endTime"],
 });
 
 type BookingFormValues = z.infer<typeof formSchema>;
@@ -96,10 +108,8 @@ const steps = [
 export function BookingForm() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  ) as any;
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [unavailableSlots, setUnavailableSlots] = useState<string[]>([]);
   const router = useRouter();
 
   const form = useForm<BookingFormValues>({
@@ -110,7 +120,27 @@ export function BookingForm() {
   });
 
   const watchBookingType = form.watch("bookingType");
+  const watchDate = form.watch("date");
   const selectedBookingType = BOOKING_TYPES.find(type => type.id === watchBookingType);
+
+  // Check for unavailable time slots when date changes
+  const checkAvailability = useCallback(async (date: Date) => {
+    try {
+      const response = await fetch(`/api/bookings/availability?date=${date.toISOString()}&type=${watchBookingType}`);
+      if (response.ok) {
+        const data = await response.json();
+        setUnavailableSlots(data.unavailableSlots || []);
+      }
+    } catch (error) {
+      console.error('Failed to check availability:', error);
+    }
+  }, [watchBookingType]);
+
+  useEffect(() => {
+    if (watchDate) {
+      checkAvailability(watchDate);
+    }
+  }, [watchDate, checkAvailability]);
 
   const nextStep = () => {
     if (currentStep < steps.length) {
@@ -148,36 +178,56 @@ export function BookingForm() {
   async function onSubmit(data: BookingFormValues) {
     try {
       setIsLoading(true);
+      setSubmitStatus('loading');
 
-      const { error } = await supabase.from("bookings").insert([
-        {
+      const response = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           name: data.name,
           email: data.email,
           phone: data.phone,
           type: data.bookingType,
-          date: data.date,
+          date: data.date.toISOString(),
           start_time: data.startTime,
           end_time: data.endTime,
           message: data.message,
-          status: "pending",
-        },
-      ]);
+        }),
+      });
 
-      if (error) throw error;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to submit booking');
+      }
 
+      setSubmitStatus('success');
+      
       toast.success("Booking Request Submitted", {
-        description:
-          "We've received your booking request. We'll contact you shortly to confirm.",
+        description: "We've received your booking request. You'll receive a confirmation email shortly.",
+        duration: 5000,
       });
 
-      form.reset();
-      setCurrentStep(1);
-      router.refresh();
+      // Wait a moment to show success state
+      setTimeout(() => {
+        form.reset();
+        setCurrentStep(1);
+        setSubmitStatus('idle');
+        router.push('/booking-success');
+      }, 2000);
+
     } catch (error) {
-      toast.error("Error", {
-        description:
-          "There was an error submitting your booking. Please try again.",
+      console.error('Booking submission error:', error);
+      setSubmitStatus('error');
+      
+      toast.error("Booking Failed", {
+        description: error instanceof Error ? error.message : "There was an error submitting your booking. Please try again.",
+        duration: 5000,
       });
+      
+      // Reset status after showing error
+      setTimeout(() => setSubmitStatus('idle'), 3000);
     } finally {
       setIsLoading(false);
     }
@@ -203,7 +253,7 @@ export function BookingForm() {
               Book Your Space
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Reserve your creative space in just a few simple steps. We'll confirm your booking within 24 hours.
+              Reserve your creative space in just a few simple steps. We&apos;ll confirm your booking within 24 hours.
             </p>
           </motion.div>
 
@@ -269,7 +319,7 @@ export function BookingForm() {
                       >
                         <div className="text-center mb-8">
                           <h2 className="text-2xl font-bold mb-2">Choose Your Service</h2>
-                          <p className="text-muted-foreground">Select the type of space you'd like to book</p>
+                          <p className="text-muted-foreground">Select the type of space you&apos;d like to book</p>
                         </div>
                         
                         <FormField
@@ -469,11 +519,24 @@ export function BookingForm() {
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
-                                    {TIME_SLOTS.map((time) => (
-                                      <SelectItem key={time} value={time}>
-                                        {time}
-                                      </SelectItem>
-                                    ))}
+                                    {TIME_SLOTS.map((time) => {
+                                      const isUnavailable = unavailableSlots.includes(time);
+                                      return (
+                                        <SelectItem 
+                                          key={time} 
+                                          value={time}
+                                          disabled={isUnavailable}
+                                          className={isUnavailable ? "opacity-50 cursor-not-allowed" : ""}
+                                        >
+                                          <div className="flex items-center justify-between w-full">
+                                            <span>{time}</span>
+                                            {isUnavailable && (
+                                              <span className="text-xs text-red-500 ml-2">Unavailable</span>
+                                            )}
+                                          </div>
+                                        </SelectItem>
+                                      );
+                                    })}
                                   </SelectContent>
                                 </Select>
                                 <FormMessage />
@@ -494,11 +557,31 @@ export function BookingForm() {
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
-                                    {TIME_SLOTS.map((time) => (
-                                      <SelectItem key={time} value={time}>
-                                        {time}
-                                      </SelectItem>
-                                    ))}
+                                    {TIME_SLOTS.map((time) => {
+                                      const startTime = form.getValues("startTime");
+                                      const isBeforeStart = startTime && parseInt(time.replace(':', '')) <= parseInt(startTime.replace(':', ''));
+                                      const isUnavailable = unavailableSlots.includes(time);
+                                      const disabled = isBeforeStart || isUnavailable;
+                                      
+                                      return (
+                                        <SelectItem 
+                                          key={time} 
+                                          value={time}
+                                          disabled={disabled}
+                                          className={disabled ? "opacity-50 cursor-not-allowed" : ""}
+                                        >
+                                          <div className="flex items-center justify-between w-full">
+                                            <span>{time}</span>
+                                            {isUnavailable && (
+                                              <span className="text-xs text-red-500 ml-2">Unavailable</span>
+                                            )}
+                                            {isBeforeStart && !isUnavailable && (
+                                              <span className="text-xs text-gray-500 ml-2">Before start</span>
+                                            )}
+                                          </div>
+                                        </SelectItem>
+                                      );
+                                    })}
                                   </SelectContent>
                                 </Select>
                                 <FormMessage />
@@ -610,17 +693,59 @@ export function BookingForm() {
                       </motion.div>
                     ) : (
                       <motion.div
-                        whileHover={{ scale: 1.005 }}
-                        whileTap={{ scale: 0.995 }}
+                        whileHover={{ scale: submitStatus === 'idle' ? 1.005 : 1 }}
+                        whileTap={{ scale: submitStatus === 'idle' ? 0.995 : 1 }}
                         transition={{ duration: 0.1 }}
                       >
                         <Button
                           type="submit"
-                          disabled={isLoading}
-                          className="flex items-center gap-2"
+                          disabled={isLoading || submitStatus !== 'idle'}
+                          className={cn(
+                            "flex items-center gap-2 min-w-[140px]",
+                            submitStatus === 'success' && "bg-green-600 hover:bg-green-700",
+                            submitStatus === 'error' && "bg-red-600 hover:bg-red-700"
+                          )}
                         >
-                          {isLoading ? "Submitting..." : "Submit Booking"}
-                          <Check className="w-4 h-4" />
+                          {submitStatus === 'loading' && (
+                            <>
+                              <motion.div
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                                className="w-4 h-4 border-2 border-current border-t-transparent rounded-full"
+                              />
+                              Submitting...
+                            </>
+                          )}
+                          {submitStatus === 'success' && (
+                            <>
+                              <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                              >
+                                <Check className="w-4 h-4" />
+                              </motion.div>
+                              Submitted!
+                            </>
+                          )}
+                          {submitStatus === 'error' && (
+                            <>
+                              <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                              >
+                                <XCircle className="w-4 h-4" />
+                              </motion.div>
+                              Try Again
+                            </>
+                          )}
+                          {submitStatus === 'idle' && (
+                            <>
+                              Submit Booking
+                              <Check className="w-4 h-4" />
+                            </>
+                          )}
                         </Button>
                       </motion.div>
                     )}

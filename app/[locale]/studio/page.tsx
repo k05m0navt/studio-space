@@ -1,90 +1,90 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Camera, Lightbulb, Monitor, Headphones, Wifi, Coffee, Check, Star } from "lucide-react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Camera, Lightbulb, Monitor, Headphones, Wifi, Coffee, Check } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
-
-const features = [
-  {
-    icon: Camera,
-    title: "Professional Equipment",
-    description: "High-end cameras, lenses, and photography equipment available for rent."
-  },
-  {
-    icon: Lightbulb,
-    title: "Studio Lighting", 
-    description: "Professional lighting setup with softboxes, reflectors, and colored gels."
-  },
-  {
-    icon: Monitor,
-    title: "Editing Stations",
-    description: "High-resolution monitors with Adobe Creative Suite installed."
-  },
-  {
-    icon: Headphones,
-    title: "Audio Equipment",
-    description: "Professional microphones and audio recording equipment."
-  },
-  {
-    icon: Wifi,
-    title: "High-Speed Internet",
-    description: "Fiber internet connection for seamless file uploads and streaming."
-  },
-  {
-    icon: Coffee,
-    title: "Refreshments",
-    description: "Complimentary coffee, tea, and light snacks during your session."
-  }
-];
-
-const packages = [
-  {
-    name: "Hourly Rate",
-    price: "$75",
-    duration: "per hour",
-    features: [
-      "Full studio access",
-      "Basic lighting setup", 
-      "Equipment rental available",
-      "Free Wi-Fi"
-    ]
-  },
-  {
-    name: "Half Day",
-    price: "$300",
-    duration: "4 hours",
-    features: [
-      "Everything in hourly rate",
-      "Extended equipment access",
-      "Refreshments included",
-      "Flexible scheduling"
-    ],
-    popular: true
-  },
-  {
-    name: "Full Day", 
-    price: "$500",
-    duration: "8 hours",
-    features: [
-      "Everything in half day",
-      "Premium equipment access",
-      "Dedicated support",
-      "Lunch included"
-    ]
-  }
-];
 
 export default function StudioPage() {
   const t = useTranslations('studio');
   const tCommon = useTranslations('common');
 
+  const features = [
+    {
+      icon: Camera,
+      title: t('equipment.professional.title'),
+      description: t('equipment.professional.description')
+    },
+    {
+      icon: Lightbulb,
+      title: t('equipment.lighting.title'), 
+      description: t('equipment.lighting.description')
+    },
+    {
+      icon: Monitor,
+      title: t('equipment.editing.title'),
+      description: t('equipment.editing.description')
+    },
+    {
+      icon: Headphones,
+      title: t('equipment.audio.title'),
+      description: t('equipment.audio.description')
+    },
+    {
+      icon: Wifi,
+      title: t('equipment.internet.title'),
+      description: t('equipment.internet.description')
+    },
+    {
+      icon: Coffee,
+      title: t('equipment.refreshments.title'),
+      description: t('equipment.refreshments.description')
+    }
+  ];
+
+  const packages = [
+    {
+      name: t('packages.hourly.name'),
+      price: t('packages.hourly.price'),
+      duration: t('packages.hourly.duration'),
+      features: [
+        t('packages.hourly.feature1'),
+        t('packages.hourly.feature2'),
+        t('packages.hourly.feature3'),
+        t('packages.hourly.feature4')
+      ]
+    },
+    {
+      name: t('packages.halfDay.name'),
+      price: t('packages.halfDay.price'),
+      duration: t('packages.halfDay.duration'),
+      features: [
+        t('packages.halfDay.feature1'),
+        t('packages.halfDay.feature2'),
+        t('packages.halfDay.feature3'),
+        t('packages.halfDay.feature4')
+      ],
+      popular: true
+    },
+    {
+      name: t('packages.fullDay.name'), 
+      price: t('packages.fullDay.price'),
+      duration: t('packages.fullDay.duration'),
+      features: [
+        t('packages.fullDay.feature1'),
+        t('packages.fullDay.feature2'),
+        t('packages.fullDay.feature3'),
+        t('packages.fullDay.feature4')
+      ]
+    }
+  ];
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-20 md:py-32 bg-gradient-to-br from-primary/20 via-primary/10 to-background overflow-hidden">
+      <section className="relative py-20 md:py-32 bg-primary/5 overflow-hidden">
         <div className="container mx-auto relative z-10 px-4 md:px-6 max-w-7xl">
           <motion.div 
             className="mx-auto max-w-4xl text-center"
@@ -128,12 +128,12 @@ export default function StudioPage() {
             >
               <Link href="/book">
                 <Button size="lg" className="w-full sm:w-auto h-12 px-8 text-base font-semibold">
-                  Book Studio Time
+                  {t('bookStudio')}
                 </Button>
               </Link>
               <Link href="/gallery">
                 <Button size="lg" variant="outline" className="w-full sm:w-auto h-12 px-8 text-base font-semibold">
-                  View Gallery
+                  {t('viewGallery')}
                 </Button>
               </Link>
             </motion.div>
@@ -152,10 +152,10 @@ export default function StudioPage() {
             viewport={{ once: true }}
           >
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
-              Studio Features
+              {t('featuresTitle')}
             </h2>
             <p className="text-lg text-muted-foreground">
-              Everything you need for professional photography and content creation
+              {t('featuresDescription')}
             </p>
           </motion.div>
           
@@ -163,20 +163,16 @@ export default function StudioPage() {
             {features.map((feature, index) => (
               <motion.div
                 key={feature.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
                 whileHover={{ y: -5 }}
               >
                 <Card className="group hover:shadow-lg transition-shadow h-full">
                   <CardContent className="p-8">
-                    <motion.div 
-                      className="w-16 h-16 rounded-xl bg-accent flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300"
-                      whileHover={{ rotate: 5 }}
-                    >
+                    <div className="w-16 h-16 rounded-xl bg-accent flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
                       <feature.icon className="h-8 w-8 text-primary" />
-                    </motion.div>
+                    </div>
                     <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
                     <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
                   </CardContent>
@@ -198,10 +194,10 @@ export default function StudioPage() {
             viewport={{ once: true }}
           >
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
-              Studio Packages
+              {t('pricingTitle')}
             </h2>
             <p className="text-lg text-muted-foreground">
-              Flexible pricing options for every project
+              {t('pricingDescription')}
             </p>
           </motion.div>
           
@@ -209,44 +205,38 @@ export default function StudioPage() {
             {packages.map((pkg, index) => (
               <motion.div
                 key={pkg.name}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                viewport={{ once: true }}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
                 whileHover={{ y: -5 }}
               >
-                <Card className={`group hover:shadow-xl transition-all h-full relative ${pkg.popular ? 'border-primary shadow-lg' : ''}`}>
+                <Card className={`relative h-full ${pkg.popular ? 'ring-2 ring-primary' : ''}`}>
                   {pkg.popular && (
                     <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                      <span className="bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-medium">
-                        Most Popular
+                      <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-sm font-medium">
+                        Popular
                       </span>
                     </div>
                   )}
-                  <CardContent className="p-8">
-                    <div className="text-center mb-8">
-                      <h3 className="text-2xl font-bold mb-2">{pkg.name}</h3>
-                      <div className="mb-4">
-                        <span className="text-4xl font-bold">{pkg.price}</span>
-                        <span className="text-muted-foreground ml-2">{pkg.duration}</span>
-                      </div>
+                  <CardHeader className="text-center pb-8">
+                    <CardTitle className="text-2xl">{pkg.name}</CardTitle>
+                    <div className="mt-4">
+                      <span className="text-4xl font-bold">{pkg.price}</span>
+                      <span className="text-muted-foreground ml-2">{pkg.duration}</span>
                     </div>
-                    
-                    <ul className="space-y-4 mb-8">
+                  </CardHeader>
+                  <CardContent className="pt-0">
+                    <ul className="space-y-3">
                       {pkg.features.map((feature, featureIndex) => (
                         <li key={featureIndex} className="flex items-center">
-                          <Check className="h-5 w-5 text-green-500 mr-3 flex-shrink-0" />
-                          <span className="text-sm">{feature}</span>
+                          <Check className="h-5 w-5 text-primary mr-3 flex-shrink-0" />
+                          <span>{feature}</span>
                         </li>
                       ))}
                     </ul>
-                    
-                    <Link href="/book" className="block">
-                      <Button 
-                        className={`w-full ${pkg.popular ? 'bg-primary hover:bg-primary/90' : ''}`}
-                        variant={pkg.popular ? 'default' : 'outline'}
-                      >
-                        Book Now
+                    <Link href="/book" className="block mt-8">
+                      <Button className="w-full" variant={pkg.popular ? "default" : "outline"}>
+                        {tCommon('submit')}
                       </Button>
                     </Link>
                   </CardContent>

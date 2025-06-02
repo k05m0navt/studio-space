@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { PrismaClient } from '@prisma/client';
-import { requireAuth, requireRole } from '@/lib/auth';
+import { PrismaClient } from '@/app/generated/prisma';
+import { requireRole } from '@/lib/auth';
 
 const prisma = new PrismaClient();
 
@@ -9,17 +9,11 @@ const bookingSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   email: z.string().email('Valid email is required'),
   phone: z.string().optional(),
-  date: z.string().datetime('Valid date is required'),
-  start_time: z.string().optional(),
-  end_time: z.string().optional(),
+  type: z.enum(['studio', 'coworking']),
+  date: z.string(),
+  start_time: z.string(),
+  end_time: z.string(),
   message: z.string().optional(),
-  type: z.enum(['studio', 'coworking'], {
-    required_error: 'Booking type is required',
-  }),
-});
-
-const updateBookingSchema = bookingSchema.partial().extend({
-  status: z.enum(['pending', 'confirmed', 'cancelled']).optional(),
 });
 
 /**
@@ -192,7 +186,7 @@ export async function POST(request: NextRequest) {
 }
 
 // Protected GET endpoint for listing bookings
-export const GET = requireRole(['ADMIN', 'MODERATOR'])(async ({ user, request }) => {
+export const GET = requireRole(['ADMIN', 'MODERATOR'])(async ({ request }) => {
   try {
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
@@ -201,7 +195,14 @@ export const GET = requireRole(['ADMIN', 'MODERATOR'])(async ({ user, request })
     const limit = parseInt(searchParams.get('limit') || '20');
     const offset = parseInt(searchParams.get('offset') || '0');
 
-    const where: any = {};
+    const where: {
+      status?: string;
+      type?: string;
+      date?: {
+        gte: Date;
+        lte: Date;
+      };
+    } = {};
     
     if (status) {
       where.status = status;

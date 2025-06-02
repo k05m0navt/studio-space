@@ -69,6 +69,11 @@
       "title": "Amenities",
       "description": "Wi-Fi & Coffee"
     },
+    "availability": {
+      "title": "Available Now",
+      "subtitle": "Ready for booking",
+      "badge": "24/7"
+    },
     "features": {
       "title": "Everything You Need to Create",
       "description": "Our studio combines professional equipment with a collaborative environment to support your creative projects.",
@@ -125,15 +130,154 @@
       "lighting": "Advanced Lighting",
       "space": "Spacious Environment",
       "flexible": "Flexible Booking"
+    },
+    "bookStudio": "Book Studio Time",
+    "viewGallery": "View Gallery",
+    "featuresTitle": "Studio Features",
+    "featuresDescription": "Everything you need for professional photography and content creation",
+    "pricingTitle": "Studio Packages",
+    "pricingDescription": "Choose the perfect package for your creative needs",
+    "equipment": {
+      "professional": {
+        "title": "Professional Equipment",
+        "description": "High-end cameras, lenses, and photography equipment available for rent."
+      },
+      "lighting": {
+        "title": "Studio Lighting",
+        "description": "Professional lighting setup with softboxes, reflectors, and colored gels."
+      },
+      "editing": {
+        "title": "Editing Stations",
+        "description": "High-resolution monitors with Adobe Creative Suite installed."
+      },
+      "audio": {
+        "title": "Audio Equipment",
+        "description": "Professional microphones and audio recording equipment."
+      },
+      "internet": {
+        "title": "High-Speed Internet",
+        "description": "Fiber internet connection for seamless file uploads and streaming."
+      },
+      "refreshments": {
+        "title": "Refreshments",
+        "description": "Complimentary coffee, tea, and light snacks during your session."
+      }
+    },
+    "packages": {
+      "hourly": {
+        "name": "Hourly Rate",
+        "price": "$75",
+        "duration": "per hour",
+        "feature1": "Full studio access",
+        "feature2": "Basic lighting setup",
+        "feature3": "Equipment rental available",
+        "feature4": "Free Wi-Fi"
+      },
+      "halfDay": {
+        "name": "Half Day",
+        "price": "$300",
+        "duration": "4 hours",
+        "feature1": "Everything in hourly rate",
+        "feature2": "Extended equipment access",
+        "feature3": "Refreshments included",
+        "feature4": "Flexible scheduling"
+      },
+      "fullDay": {
+        "name": "Full Day",
+        "price": "$500",
+        "duration": "8 hours",
+        "feature1": "Everything in half day",
+        "feature2": "Premium equipment access",
+        "feature3": "Dedicated support",
+        "feature4": "Lunch included"
+      }
     }
   },
   "coworking": {
     "title": "Creative Coworking Space",
     "subtitle": "Collaborative Workspace",
-    "description": "A modern coworking space designed for creative professionals, entrepreneurs, and freelancers to collaborate and thrive."
+    "description": "A modern coworking space designed for creative professionals, entrepreneurs, and freelancers to collaborate and thrive.",
+    "bookSpace": "Book Your Space",
+    "viewWorkspace": "View Workspace",
+    "amenitiesTitle": "World-Class Amenities",
+    "amenitiesDescription": "Everything you need to work productively and comfortably",
+    "pricingTitle": "Flexible Plans",
+    "pricingDescription": "Choose the plan that works best for your schedule and needs",
+    "testimonialsTitle": "What Our Members Say",
+    "amenities": {
+      "internet": {
+        "title": "High-Speed Internet",
+        "description": "Fiber internet with 1GB/s speed for seamless work and video calls."
+      },
+      "coffee": {
+        "title": "Coffee & Refreshments",
+        "description": "Unlimited coffee, tea, and healthy snacks throughout the day."
+      },
+      "workstations": {
+        "title": "Modern Workstations",
+        "description": "Ergonomic desks with dual monitor setups and adjustable chairs."
+      },
+      "equipment": {
+        "title": "Office Equipment",
+        "description": "High-quality printers, scanners, and office supplies available."
+      },
+      "meetings": {
+        "title": "Meeting Rooms",
+        "description": "Private meeting rooms with video conferencing equipment."
+      },
+      "events": {
+        "title": "Event Space",
+        "description": "Flexible event space for workshops, presentations, and networking."
+      }
+    },
+    "plans": {
+      "dayPass": {
+        "name": "Day Pass",
+        "price": "$25",
+        "duration": "per day",
+        "feature1": "8 hours access",
+        "feature2": "Desk space",
+        "feature3": "Wi-Fi & coffee",
+        "feature4": "Basic amenities"
+      },
+      "monthly": {
+        "name": "Monthly",
+        "price": "$200",
+        "duration": "per month",
+        "feature1": "24/7 access",
+        "feature2": "Dedicated desk",
+        "feature3": "Meeting room credits",
+        "feature4": "All amenities",
+        "feature5": "Mail handling"
+      },
+      "privateOffice": {
+        "name": "Private Office",
+        "price": "$500",
+        "duration": "per month",
+        "feature1": "Private office space",
+        "feature2": "24/7 access",
+        "feature3": "Meeting rooms included",
+        "feature4": "Premium amenities",
+        "feature5": "Dedicated phone line"
+      }
+    },
+    "testimonials": {
+      "sarah": {
+        "name": "Sarah Johnson",
+        "role": "Freelance Designer",
+        "content": "The perfect environment for creativity and productivity. Love the community here!"
+      },
+      "mike": {
+        "name": "Mike Chen",
+        "role": "Startup Founder",
+        "content": "Great networking opportunities and excellent facilities. Highly recommended!"
+      }
+    }
   },
   "booking": {
     "title": "Book Your Session",
+    "badge": "Book Your Creative Session",
+    "description": "Reserve your creative space in just a few simple steps. We'll confirm your booking within 24 hours.",
     "selectDate": "Select Date",
     "selectTime": "Select Time",
     "studioType": "Studio Type",
@@ -161,23 +305,19 @@
         "title": "Photography Studio",
         "description": "Professional studio with lighting and equipment",
         "price": "$75/hour",
-        "features": {
-          "lighting": "Professional lighting",
-          "equipment": "Camera equipment rental",
-          "editing": "Editing stations",
-          "props": "Props & backdrops"
-        }
+        "feature1": "Professional lighting",
+        "feature2": "Camera equipment rental",
+        "feature3": "Editing stations",
+        "feature4": "Props & backdrops"
       },
       "coworking": {
         "title": "Coworking Space",
         "description": "Flexible workspace with all amenities",
         "price": "$25/day",
-        "features": {
-          "access": "24/7 access",
-          "internet": "High-speed internet",
-          "meetings": "Meeting rooms",
-          "refreshments": "Coffee & snacks"
-        }
+        "feature1": "24/7 access",
+        "feature2": "High-speed internet",
+        "feature3": "Meeting rooms",
+        "feature4": "Coffee & snacks"
       }
     },
     "details": {
@@ -208,6 +348,39 @@
       "submitting": "Submitting...",
       "submitBooking": "Submit Booking"
     }
+  },
+  "bookingSuccess": {
+    "title": "Booking Confirmed!",
+    "thankYou": "Thank you for your booking. We've sent a confirmation email to",
+    "bookingId": "Booking ID",
+    "bookingDetails": "Booking Details",
+    "service": "Service",
+    "date": "Date",
+    "startTime": "Start Time",
+    "endTime": "End Time",
+    "contactInformation": "Contact Information",
+    "additionalMessage": "Additional Message",
+    "totalAmount": "Total Amount",
+    "payment": "Payment",
+    "paymentDescription": "Complete your payment to finalize your booking",
+    "payNow": "Pay Now",
+    "scanQr": "Scan QR code to complete payment",
+    "copyLink": "Or copy payment link:",
+    "quickActions": "Quick Actions",
+    "downloadConfirmation": "Download Confirmation",
+    "copyBookingId": "Copy Booking ID",
+    "shareBooking": "Share Booking",
+    "studioLocation": "Studio Location",
+    "getDirections": "Get Directions",
+    "whatsNext": "What's Next?",
+    "step1Title": "Check Your Email",
+    "step1Description": "We've sent detailed booking information to your email",
+    "step2Title": "Prepare for Your Session",
+    "step2Description": "Review our preparation guide and studio guidelines",
+    "step3Title": "Visit Our Studio",
+    "step3Description": "Arrive 15 minutes early for setup and equipment check",
+    "backToHome": "Back to Home",
+    "copiedToClipboard": "Copied to clipboard!"
   },
   "gallery": {
     "title": "Gallery",
@@ -249,8 +422,18 @@
   "admin": {
     "title": "Admin Dashboard",
     "welcome": "Welcome to Admin Dashboard",
+    "description": "Manage your studio bookings and users",
     "loginTitle": "Admin Login",
     "loginDescription": "Sign in to access the admin dashboard",
+    "createAdmin": "Create New Administrator",
+    "createAdminDescription": "Add a new admin user to the system with full access privileges",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "creating": "Creating...",
+    "create": "Create",
+    "cancel": "Cancel",
+    "adminCreated": "Administrator created successfully",
     "dashboard": "Dashboard",
     "bookings": "Bookings",
     "users": "Users",
@@ -260,7 +443,14 @@
     "logout": "Logout",
     "overview": "Overview",
     "recentBookings": "Recent Bookings",
-    "quickActions": "Quick Actions",
+    "quickActions": {
+      "title": "Quick Actions",
+      "addBooking": "Add New Booking",
+      "manageUsers": "Manage Users", 
+      "createAdmin": "Create Admin",
+      "exportData": "Export Data",
+      "exportSoon": "Export feature coming soon!"
+    },
     "stats": {
       "totalBookings": "Total Bookings",
       "monthlyRevenue": "Monthly Revenue",
@@ -365,6 +555,50 @@
     "phone": "+1 (555) 123-4567",
     "email": "hello@vashastudio.com",
     "followUs": "Follow Us",
-    "copyright": "© 2024 Vasha Studio. All rights reserved."
+    "copyright": "© 2024 Vasha Studio. All rights reserved.",
+    "terms": "Terms",
+    "privacy": "Privacy"
+  },
+  "location": {
+    "title": "Visit Our Studio",
+    "description": "Located in the heart of the creative district, our studio is easily accessible and surrounded by inspiration.",
+    "studioName": "Studio Space",
+    "district": "Creative District",
+    "clickToExplore": "Click to explore",
+    "address": {
+      "title": "Address",
+      "subtitle": "Visit us today",
+      "street": "123 Creative Avenue",
+      "district": "Photography District",
+      "city": "New York, NY 10001",
+      "getDirections": "Get Directions"
+    },
+    "hours": {
+      "title": "Hours",
+      "subtitle": "We're open wide",
+      "weekdays": "Monday - Friday",
+      "weekdaysTime": "6:00 AM - 10:00 PM",
+      "saturday": "Saturday",
+      "saturdayTime": "8:00 AM - 8:00 PM",
+      "sunday": "Sunday",
+      "sundayTime": "10:00 AM - 6:00 PM",
+      "memberAccess": "24/7 access available for monthly members"
+    },
+    "contact": {
+      "title": "Contact",
+      "subtitle": "Get in touch",
+      "phone": "(555) 123-4567",
+      "phoneSubtitle": "Call or text anytime",
+      "email": "hello@studiospace.com",
+      "emailSubtitle": "We respond within 24 hours"
+    },
+    "transport": {
+      "title": "Getting Here",
+      "subtitle": "Easy access",
+      "parking": "Parking",
+      "parkingDetails": "Free on-site",
+      "metro": "Metro",
+      "metroDetails": "2 blocks away"
+    }
   }
 } 

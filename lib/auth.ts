@@ -1,21 +1,58 @@
 import { NextRequest } from 'next/server';
 import jwt from 'jsonwebtoken';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@/app/generated/prisma';
+import { createClient } from '@/lib/supabase/server';
 
 const prisma = new PrismaClient();
 
-export interface AuthenticatedUser {
-  userId: string;
+export interface AuthUser {
+  id: string;
   email: string;
   role: string;
 }
 
 export interface AuthContext {
-  user: AuthenticatedUser;
+  user: AuthUser;
   request: NextRequest;
 }
 
-export async function authenticateRequest(request: NextRequest): Promise<AuthenticatedUser | null> {
+interface JWTPayload {
+  userId: string;
+  email: string;
+  iat?: number;
+  exp?: number;
+}
+
+export async function verifyToken(token: string): Promise<AuthUser | null> {
+  try {
+    jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as JWTPayload;
+    
+    // Verify token exists in database and is not expired
+    const session = await prisma.session.findFirst({
+      where: {
+        token,
+        expiresAt: {
+          gt: new Date(),
+        },
+      },
+      include: {
+        user: {
+          select: {
+            id: true,
+            email: true,
+            role: true,
+          },
+        },
+      },
+    });
+
+    return session?.user || null;
+  } catch {
+    return null;
+  }
+}
+
+export async function authenticateRequest(request: NextRequest): Promise<AuthUser | null> {
   try {
     const authHeader = request.headers.get('authorization');
     
@@ -26,10 +63,10 @@ export async function authenticateRequest(request: NextRequest): Promise<Authent
     const token = authHeader.substring(7);
     
     // Verify JWT token
-    const decoded = jwt.verify(
+    jwt.verify(
       token,
       process.env.JWT_SECRET || 'fallback-secret'
-    ) as AuthenticatedUser;
+    ) as AuthUser;
 
     // Check if session exists in database
     const session = await prisma.session.findUnique({
@@ -54,7 +91,7 @@ export async function authenticateRequest(request: NextRequest): Promise<Authent
     }
 
     return {
-      userId: session.user.id,
+      id: session.user.id,
       email: session.user.email,
       role: session.user.role,
     };
@@ -118,8 +155,7 @@ export async function logout(token: string): Promise<boolean> {
       where: { token },
     });
     return true;
-  } catch (error) {
-    console.error('Logout error:', error);
+  } catch {
     return false;
   }
 }
@@ -133,7 +169,55 @@ export async function cleanupExpiredSessions(): Promise<void> {
         },
       },
     });
-  } catch (error) {
-    console.error('Session cleanup error:', error);
+  } catch {
+    // Silently handle errors
+  }
+}
+
+export async function requireAuthSupabase(request: NextRequest) {
+  const supabase = createClient();
+  
+  const token = request.headers.get('authorization')?.replace('Bearer ', '');
+  
+  if (!token) {
+    throw new Error('No token provided');
+  }
+  
+  try {
+    jwt.verify(token, process.env.JWT_SECRET!) as JWTPayload;
+    
+    const { data: { user }, error } = await supabase.auth.getUser();
+    
+    if (error || !user) {
+      throw new Error('Invalid token');
+    }
+    
+    return user;
+  } catch {
+    throw new Error('Invalid token');
+  }
+}
+
+export async function hashPassword(password: string): Promise<string> {
+  // Using a simple hash for demo purposes
+  // In production, use bcrypt or similar
+  return Buffer.from(password).toString('base64');
+}
+
+export async function verifyPassword(password: string, hash: string): Promise<boolean> {
+  const hashedPassword = Buffer.from(password).toString('base64');
+  return hashedPassword === hash;
+}
+
+export function generateToken(payload: { userId: string; email: string }): string {
+  return jwt.sign(payload, process.env.JWT_SECRET!, { expiresIn: '7d' });
+}
+
+export function verifyTokenSupabase(token: string): JWTPayload {
+  try {
+    jwt.verify(token, process.env.JWT_SECRET!) as JWTPayload;
+    return jwt.decode(token) as JWTPayload;
+  } catch {
+    throw new Error('Invalid token');
   }
 } 

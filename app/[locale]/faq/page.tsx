@@ -269,7 +269,7 @@ export default function FAQPage() {
               Still Have Questions?
             </h2>
             <p className="text-lg text-muted-foreground">
-              Can't find what you're looking for? Get in touch with our team
+              Can&apos;t find what you&apos;re looking for? Get in touch with our team
             </p>
           </motion.div>
           

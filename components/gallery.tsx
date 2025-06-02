@@ -35,24 +35,19 @@ const GALLERY_IMAGES: GalleryImage[] = [
 
 export function Gallery() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
 
-  const categories = ["all", "studio", "coworking", "events"];
-  const tags = Array.from(new Set(GALLERY_IMAGES.flatMap((img) => img.tags)));
+  const categories = [
+    { id: "all", label: "All" },
+    { id: "studio", label: "Studio" },
+    { id: "coworking", label: "Coworking" },
+    { id: "events", label: "Events" },
+  ];
 
-  const filteredImages = GALLERY_IMAGES.filter((image) => {
-    const matchesSearch =
-      image.alt.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      image.tags.some((tag) =>
-        tag.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-
-    const matchesCategory =
-      selectedCategory === "all" || image.category === selectedCategory;
-
-    return matchesSearch && matchesCategory;
-  });
+  const filteredImages = selectedCategory === "all" 
+    ? GALLERY_IMAGES 
+    : GALLERY_IMAGES.filter(img => img.category === selectedCategory);
 
   return (
     <section className="py-12 md:py-24 lg:py-32">
@@ -118,17 +113,17 @@ export function Gallery() {
                 All
               </Button>
               {categories
-                .filter((cat) => cat !== "all")
+                .filter((cat) => cat.id !== "all")
                 .map((category) => (
                   <Button
-                    key={category}
+                    key={category.id}
                     variant={
-                      selectedCategory === category ? "default" : "outline"
+                      selectedCategory === category.id ? "default" : "outline"
                     }
                     size="sm"
-                    onClick={() => setSelectedCategory(category)}
+                    onClick={() => setSelectedCategory(category.id)}
                   >
-                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                    {category.label}
                   </Button>
                 ))}
             </div>

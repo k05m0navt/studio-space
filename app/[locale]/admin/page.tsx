@@ -1,17 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { 
   Calendar, 
   Users, 
-  Camera, 
   DollarSign, 
   TrendingUp, 
   Clock,
@@ -24,16 +23,11 @@ import {
   LogOut,
   Shield,
   BarChart3,
-  MapPin,
   RefreshCw,
   Download,
-  Filter,
   Search,
   MoreHorizontal,
   User,
-  Mail,
-  Phone,
-  AlertCircle,
   Settings,
   Activity
 } from "lucide-react";
@@ -70,9 +64,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 
 // Types
@@ -227,7 +219,7 @@ const StatsCard = ({
 }: {
   title: string;
   value: string | number;
-  icon: any;
+  icon: React.ComponentType<{ className?: string }>;
   trend?: number;
   trendLabel?: string;
   color?: "primary" | "success" | "warning" | "destructive";
@@ -243,26 +235,27 @@ const StatsCard = ({
     <motion.div
       whileHover={{ scale: 1.02, y: -2 }}
       transition={{ duration: 0.2, ease: "easeOut" }}
+      className="h-full"
     >
-      <Card className="hover:shadow-lg transition-all duration-200 border-0 bg-gradient-to-br from-card to-card/50">
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between">
-            <div className="space-y-1">
-              <p className="text-sm font-medium text-muted-foreground">{title}</p>
+      <Card className="hover:shadow-lg transition-all duration-200 border-0 bg-gradient-to-br from-card to-card/50 h-full">
+        <CardContent className="p-6 h-full flex flex-col justify-between">
+          <div className="flex items-start justify-between mb-4">
+            <div className="space-y-1 flex-1 min-h-[60px]">
+              <p className="text-sm font-medium text-muted-foreground line-clamp-2">{title}</p>
               <p className="text-2xl font-bold">{value}</p>
-              {trend !== undefined && (
-                <div className="flex items-center gap-1">
-                  <TrendingUp className={cn("w-3 h-3", trend >= 0 ? "text-green-500" : "text-red-500")} />
-                  <span className={cn("text-xs font-medium", trend >= 0 ? "text-green-500" : "text-red-500")}>
-                    {trend >= 0 ? "+" : ""}{trend}% {trendLabel}
-                  </span>
-                </div>
-              )}
             </div>
-            <div className={cn("p-3 rounded-full border", colorClasses[color])}>
+            <div className={cn("p-3 rounded-full border shrink-0", colorClasses[color])}>
               <Icon className="w-5 h-5" />
             </div>
           </div>
+          {trend !== undefined && (
+            <div className="flex items-center gap-1 mt-auto">
+              <TrendingUp className={cn("w-3 h-3", trend >= 0 ? "text-green-500" : "text-red-500")} />
+              <span className={cn("text-xs font-medium", trend >= 0 ? "text-green-500" : "text-red-500")}>
+                {trend >= 0 ? "+" : ""}{trend}% {trendLabel}
+              </span>
+            </div>
+          )}
         </CardContent>
       </Card>
     </motion.div>
@@ -293,6 +286,77 @@ export default function AdminDashboard() {
   const t = useTranslations('admin');
   const tCommon = useTranslations('common');
 
+  const loadDashboardData = useCallback(async () => {
+    setIsLoadingData(true);
+    try {
+      // Mock data for demonstration - replace with actual API calls
+      const mockBookingsData = [
+        {
+          id: '1',
+          name: 'John Doe',
+          email: 'john@example.com',
+          type: 'studio' as const,
+          date: new Date().toISOString(),
+          start_time: '10:00',
+          end_time: '12:00',
+          status: 'confirmed' as const,
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: '2',
+          name: 'Jane Smith',
+          email: 'jane@example.com',
+          type: 'coworking' as const,
+          date: new Date().toISOString(),
+          start_time: '14:00',
+          end_time: '16:00',
+          status: 'pending' as const,
+          createdAt: new Date().toISOString()
+        }
+      ];
+
+      const mockUsersData = [
+        {
+          id: '1',
+          name: 'Admin User',
+          email: 'admin@example.com',
+          role: 'admin' as const,
+          isActive: true,
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: '2',
+          name: 'Regular User',
+          email: 'user@example.com',
+          role: 'user' as const,
+          isActive: true,
+          createdAt: new Date().toISOString()
+        }
+      ];
+      
+      setStats({
+        totalBookings: mockBookingsData.length,
+        monthlyRevenue: 2500,
+        activeMembers: mockUsersData.length,
+        studioUtilization: 75,
+        pendingBookings: mockBookingsData.filter(b => b.status === 'pending').length,
+        confirmedBookings: mockBookingsData.filter(b => b.status === 'confirmed').length,
+        todayBookings: mockBookingsData.length,
+        weeklyGrowth: 12.5
+      });
+      
+      setBookings(mockBookingsData);
+      setUsers(mockUsersData);
+      
+      toast.success(t('messages.dataRefreshed'));
+    } catch (error) {
+      console.error('Failed to load dashboard data:', error);
+      toast.error(t('messages.dataLoadFailed'));
+    } finally {
+      setIsLoadingData(false);
+    }
+  }, [t]);
+
   // Check authentication on mount
   useEffect(() => {
     const adminAuth = localStorage.getItem("adminAuth");
@@ -301,96 +365,7 @@ export default function AdminDashboard() {
       loadDashboardData();
     }
     setIsLoading(false);
-  }, []);
-
-  const loadDashboardData = async () => {
-    setIsLoadingData(true);
-    try {
-      // Simulate API calls
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock data
-      const mockBookings: Booking[] = [
-        {
-          id: '1',
-          name: 'Sarah Johnson',
-          email: 'sarah@example.com',
-          phone: '+1 (555) 123-4567',
-          type: 'studio',
-          date: '2024-01-15',
-          start_time: '10:00',
-          end_time: '14:00',
-          status: 'confirmed',
-          createdAt: '2024-01-10T12:00:00Z',
-          message: 'Need extra lighting setup for portrait session'
-        },
-        {
-          id: '2',
-          name: 'Mike Chen',
-          email: 'mike@example.com',
-          phone: '+1 (555) 987-6543',
-          type: 'coworking',
-          date: '2024-01-15',
-          start_time: '09:00',
-          end_time: '17:00',
-          status: 'pending',
-          createdAt: '2024-01-12T15:30:00Z'
-        },
-        {
-          id: '3',
-          name: 'Emma Davis',
-          email: 'emma@example.com',
-          type: 'studio',
-          date: '2024-01-16',
-          start_time: '15:00',
-          end_time: '18:00',
-          status: 'confirmed',
-          createdAt: '2024-01-13T09:15:00Z'
-        }
-      ];
-
-      const mockUsers: User[] = [
-        {
-          id: '1',
-          name: 'John Admin',
-          email: 'admin@vashastudio.com',
-          role: 'admin',
-          isActive: true,
-          lastLogin: '2024-01-15T10:30:00Z',
-          createdAt: '2024-01-01T00:00:00Z'
-        },
-        {
-          id: '2',
-          name: 'Sarah Johnson',
-          email: 'sarah@example.com',
-          role: 'user',
-          isActive: true,
-          lastLogin: '2024-01-14T16:20:00Z',
-          createdAt: '2024-01-10T12:00:00Z'
-        }
-      ];
-      
-      setBookings(mockBookings);
-      setUsers(mockUsers);
-      setStats({
-        totalBookings: mockBookings.length,
-        monthlyRevenue: 12750,
-        activeMembers: 48,
-        studioUtilization: 78,
-        pendingBookings: mockBookings.filter(b => b.status === 'pending').length,
-        confirmedBookings: mockBookings.filter(b => b.status === 'confirmed').length,
-        todayBookings: 5,
-        weeklyGrowth: 12.5
-      });
-
-      toast.success(t('messages.dataRefreshed'));
-    } catch (error) {
-      console.error('Failed to load dashboard data:', error);
-      toast.error(t('messages.dataLoadFailed'));
-    } finally {
-      setIsLoadingData(false);
-    }
-  };
+  }, [loadDashboardData]);
 
   const handleLogin = (credentials: { username: string; password: string }) => {
     localStorage.setItem("adminAuth", "authenticated");
@@ -423,26 +398,26 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/10">
+    <div className="min-h-screen bg-background">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="container mx-auto px-4 py-8 max-w-7xl"
+        className="container mx-auto px-6 sm:px-8 lg:px-12 xl:px-16 max-w-8xl py-8"
       >
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="flex items-center justify-between mb-8"
+          className="flex items-center justify-between mb-12"
         >
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold text-foreground">
               {t('welcome')}
             </h1>
             <p className="text-muted-foreground mt-1">
-              Manage your studio bookings and users
+              {t('description')}
             </p>
           </div>
           <div className="flex items-center gap-4">
@@ -471,7 +446,7 @@ export default function AdminDashboard() {
         </motion.div>
 
         {/* Main Content */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
           {/* Navigation Tabs */}
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -515,7 +490,7 @@ export default function AdminDashboard() {
                   transition={{ duration: 0.3 }}
                 >
                   {/* Stats Grid */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 items-stretch">
                     <StatsCard
                       title={t('stats.totalBookings')}
                       value={stats.totalBookings}
@@ -596,16 +571,16 @@ export default function AdminDashboard() {
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                           <TrendingUp className="w-5 h-5" />
-                          {t('quickActions')}
+                          {t('quickActions.title')}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-3">
                           {[
-                            { icon: Plus, label: "Add New Booking", onClick: () => setActiveTab('bookings') },
-                            { icon: Users, label: "Manage Users", onClick: () => setActiveTab('users') },
-                            { icon: Shield, label: "Create Admin", onClick: () => setActiveTab('admins') },
-                            { icon: Download, label: "Export Data", onClick: () => toast.info("Export feature coming soon!") }
+                            { icon: Plus, label: t('quickActions.addBooking'), onClick: () => setActiveTab('bookings') },
+                            { icon: Users, label: t('quickActions.manageUsers'), onClick: () => setActiveTab('users') },
+                            { icon: Shield, label: t('quickActions.createAdmin'), onClick: () => setActiveTab('admins') },
+                            { icon: Download, label: t('quickActions.exportData'), onClick: () => toast.info(t('quickActions.exportSoon')) }
                           ].map((action, index) => (
                             <motion.div
                               key={action.label}
@@ -1070,139 +1045,78 @@ const CreateAdminDialog = ({
   onOpenChange: (open: boolean) => void;
   onSuccess: (admin: User) => void;
 }) => {
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    fullName: ''
-  });
+  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
-  const t = useTranslations('admin.adminManagement.createAdminForm');
-  const tCommon = useTranslations('common');
+  const t = useTranslations('admin');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (formData.password !== formData.confirmPassword) {
-      toast.error('Passwords do not match');
-      return;
-    }
-
     setIsLoading(true);
     
     // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    await new Promise(resolve => setTimeout(resolve, 1000));
     
     const newAdmin: User = {
       id: Date.now().toString(),
-      name: formData.fullName,
+      name: formData.name,
       email: formData.email,
       role: 'admin',
       isActive: true,
       createdAt: new Date().toISOString()
     };
-
+    
     onSuccess(newAdmin);
-    setFormData({
-      username: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      fullName: ''
-    });
+    setFormData({ name: "", email: "", password: "" });
     setIsLoading(false);
+    onOpenChange(false);
+    toast.success(t('adminCreated'));
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Shield className="w-5 h-5" />
-            {t('title')}
-          </DialogTitle>
+          <DialogTitle>{t('createAdmin')}</DialogTitle>
           <DialogDescription>
-            {t('description')}
+            {t('createAdminDescription')}
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="username">{t('username')}</Label>
-              <Input
-                id="username"
-                placeholder={t('usernamePlaceholder')}
-                value={formData.username}
-                onChange={(e) => setFormData(prev => ({ ...prev, username: e.target.value }))}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="fullName">{t('fullName')}</Label>
-              <Input
-                id="fullName"
-                placeholder={t('fullNamePlaceholder')}
-                value={formData.fullName}
-                onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
-                required
-              />
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="admin-name">{t('name')}</Label>
+            <Input
+              id="admin-name"
+              value={formData.name}
+              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+              required
+            />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email">{t('email')}</Label>
+            <Label htmlFor="admin-email">{t('email')}</Label>
             <Input
-              id="email"
+              id="admin-email"
               type="email"
-              placeholder={t('emailPlaceholder')}
               value={formData.email}
               onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
               required
             />
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="password">{t('password')}</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder={t('passwordPlaceholder')}
-                value={formData.password}
-                onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="confirmPassword">{t('confirmPassword')}</Label>
-              <Input
-                id="confirmPassword"
-                type="password"
-                placeholder={t('confirmPassword')}
-                value={formData.confirmPassword}
-                onChange={(e) => setFormData(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                required
-              />
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="admin-password">{t('password')}</Label>
+            <Input
+              id="admin-password"
+              type="password"
+              value={formData.password}
+              onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+              required
+            />
           </div>
           <DialogFooter>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              disabled={isLoading}
-            >
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               {t('cancel')}
             </Button>
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? (
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                  className="w-4 h-4 border-2 border-current border-t-transparent rounded-full"
-                />
-              ) : (
-                t('createAdmin')
-              )}
+              {isLoading ? t('creating') : t('create')}
             </Button>
           </DialogFooter>
         </form>
