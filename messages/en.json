@@ -350,37 +350,32 @@
     }
   },
   "bookingSuccess": {
-    "title": "Booking Confirmed!",
-    "thankYou": "Thank you for your booking. We've sent a confirmation email to",
-    "bookingId": "Booking ID",
-    "bookingDetails": "Booking Details",
-    "service": "Service",
-    "date": "Date",
-    "startTime": "Start Time",
-    "endTime": "End Time",
-    "contactInformation": "Contact Information",
-    "additionalMessage": "Additional Message",
-    "totalAmount": "Total Amount",
-    "payment": "Payment",
-    "paymentDescription": "Complete your payment to finalize your booking",
-    "payNow": "Pay Now",
-    "scanQr": "Scan QR code to complete payment",
-    "copyLink": "Or copy payment link:",
-    "quickActions": "Quick Actions",
-    "downloadConfirmation": "Download Confirmation",
-    "copyBookingId": "Copy Booking ID",
-    "shareBooking": "Share Booking",
-    "studioLocation": "Studio Location",
-    "getDirections": "Get Directions",
-    "whatsNext": "What's Next?",
-    "step1Title": "Check Your Email",
-    "step1Description": "We've sent detailed booking information to your email",
-    "step2Title": "Prepare for Your Session",
-    "step2Description": "Review our preparation guide and studio guidelines",
-    "step3Title": "Visit Our Studio",
-    "step3Description": "Arrive 15 minutes early for setup and equipment check",
-    "backToHome": "Back to Home",
-    "copiedToClipboard": "Copied to clipboard!"
+    "title": "Booking Request Submitted!",
+    "description": "Thank you for choosing Vasha Studio. We've received your booking request and will contact you within 24 hours to confirm your reservation.",
+    "whatNext": "What happens next?",
+    "steps": {
+      "email": {
+        "title": "Email Confirmation",
+        "description": "You'll receive a confirmation email within the next few minutes."
+      },
+      "phone": {
+        "title": "Phone Call",
+        "description": "Our team will call you within 24 hours to confirm details."
+      },
+      "calendar": {
+        "title": "Final Confirmation",
+        "description": "Once confirmed, you'll receive your booking details and any preparation instructions."
+      }
+    },
+    "buttons": {
+      "home": "Back to Home",
+      "anotherBooking": "Make Another Booking"
+    },
+    "contact": {
+      "questions": "Have questions? Contact us at",
+      "email": "hello@vashastudio.com",
+      "phone": "(555) 123-4567"
+    }
   },
   "gallery": {
     "title": "Gallery",

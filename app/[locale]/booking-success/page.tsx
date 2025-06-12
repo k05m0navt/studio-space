@@ -4,9 +4,12 @@ import { motion } from "framer-motion";
 import { Check, Calendar, Mail, Phone, ArrowRight, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import Link from "next/link";
+import { useTranslations } from 'next-intl';
+import { Link } from '@/i18n/routing';
 
 export default function BookingSuccessPage() {
+  const t = useTranslations('bookingSuccess');
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center p-4">
       <motion.div
@@ -39,10 +42,10 @@ export default function BookingSuccessPage() {
               transition={{ duration: 0.5, delay: 0.3 }}
             >
               <h1 className="text-3xl font-bold text-foreground mb-4">
-                Booking Request Submitted!
+                {t('title')}
               </h1>
               <p className="text-lg text-muted-foreground mb-8">
-                Thank you for choosing Vasha Studio. We&apos;ve received your booking request and will contact you within 24 hours to confirm your reservation.
+                {t('description')}
               </p>
             </motion.div>
 
@@ -53,23 +56,23 @@ export default function BookingSuccessPage() {
               transition={{ duration: 0.5, delay: 0.4 }}
               className="bg-muted/50 rounded-lg p-6 mb-8"
             >
-              <h2 className="text-xl font-semibold mb-4">What happens next?</h2>
+              <h2 className="text-xl font-semibold mb-4">{t('whatNext')}</h2>
               <div className="space-y-4 text-left">
                 {[
                   {
                     icon: Mail,
-                    title: "Email Confirmation",
-                    description: "You&apos;ll receive a confirmation email within the next few minutes."
+                    title: t('steps.email.title'),
+                    description: t('steps.email.description')
                   },
                   {
                     icon: Phone,
-                    title: "Phone Call",
-                    description: "Our team will call you within 24 hours to confirm details."
+                    title: t('steps.phone.title'),
+                    description: t('steps.phone.description')
                   },
                   {
                     icon: Calendar,
-                    title: "Final Confirmation",
-                    description: "Once confirmed, you&apos;ll receive your booking details and any preparation instructions."
+                    title: t('steps.calendar.title'),
+                    description: t('steps.calendar.description')
                   }
                 ].map((step, index) => (
                   <motion.div
@@ -101,12 +104,12 @@ export default function BookingSuccessPage() {
               <Button asChild variant="outline" className="flex items-center gap-2">
                 <Link href="/">
                   <Home className="w-4 h-4" />
-                  Back to Home
+                  {t('buttons.home')}
                 </Link>
               </Button>
               <Button asChild className="flex items-center gap-2">
-                <Link href="/booking">
-                  Make Another Booking
+                <Link href="/book">
+                  {t('buttons.anotherBooking')}
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </Button>
@@ -120,19 +123,19 @@ export default function BookingSuccessPage() {
               className="mt-8 pt-6 border-t border-muted"
             >
               <p className="text-sm text-muted-foreground">
-                Have questions? Contact us at{" "}
+                {t('contact.questions')}{" "}
                 <a 
-                  href="mailto:hello@vashastudio.com" 
+                  href={`mailto:${t('contact.email')}`}
                   className="text-primary hover:underline"
                 >
-                  hello@vashastudio.com
+                  {t('contact.email')}
                 </a>{" "}
                 or{" "}
                 <a 
-                  href="tel:+15551234567" 
+                  href={`tel:${t('contact.phone')}`}
                   className="text-primary hover:underline"
                 >
-                  (555) 123-4567
+                  {t('contact.phone')}
                 </a>
               </p>
             </motion.div>
