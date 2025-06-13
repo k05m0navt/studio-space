@@ -50,6 +50,11 @@ function addSecurityHeaders(response: NextResponse): NextResponse {
 const intlMiddleware = createMiddleware(routing);
 
 export default function middleware(request: NextRequest) {
+  // Handle manifest.json requests from any locale path
+  if (request.nextUrl.pathname.endsWith('/manifest.json')) {
+    return NextResponse.rewrite(new URL('/manifest.json', request.url));
+  }
+  
   // Apply rate limiting to API routes
   if (request.nextUrl.pathname.startsWith('/api/')) {
     if (!applyRateLimit(request)) {
@@ -80,6 +85,8 @@ export const config = {
     '/(api|trpc)(.*)',
     // Match internationalization
     '/',
-    '/(de|en)/:path*'
+    '/(ru|en)/:path*',
+    // Handle manifest.json in any locale path
+    '/(ru|en)/manifest.json',
   ],
 }; 

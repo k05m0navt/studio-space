@@ -33,7 +33,18 @@
     "confirmed": "Confirmed",
     "cancelled": "Cancelled",
     "active": "Active",
-    "inactive": "Inactive"
+    "inactive": "Inactive",
+    "somethingWentWrong": "Something went wrong. Please try again later.",
+    "tryAgain": "Try Again",
+    "backToHome": "Back to Home",
+    "pageNotFound": "Page Not Found",
+    "pageNotFoundDescription": "The page you are looking for does not exist or has been moved.",
+    "networkError": "Network Error",
+    "serverError": "Server Error",
+    "unauthorized": "Unauthorized",
+    "accessDenied": "Access Denied",
+    "sessionExpired": "Session Expired",
+    "loginRequired": "Login Required"
   },
   "navigation": {
     "home": "Home",

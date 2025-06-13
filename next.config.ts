@@ -9,14 +9,64 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
     domains: ["qtejvuokreytzwkdxuts.supabase.co"],
+    formats: ['image/avif', 'image/webp'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
-  turbopack: {
-    rules: {
-      '*.svg': {
-        loaders: ['@svgr/webpack'],
-        as: '*.js',
+  compress: true,
+  poweredByHeader: false, // Remove X-Powered-By header
+  experimental: {
+    // Use critters for CSS optimization, but with proper configuration
+    optimizeCss: {
+      inlineFonts: false, // Don't inline fonts for better caching
+      minify: true,
+      critters: {
+        preload: "media", // Preload only media CSS
+        pruneSource: true, // Remove unused CSS
+        reduceInlineStyles: true, // Reduce inline styles
+        mergeStylesheets: true, // Merge stylesheets when possible
       },
     },
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
+  },
+  headers: async () => {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'X-XSS-Protection',
+            value: '1; mode=block',
+          },
+        ],
+      },
+      {
+        source: '/fonts/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          }
+        ],
+      },
+      {
+        source: '/images/(.*)',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=86400',
+          }
+        ],
+      },
+    ];
   },
 };
 

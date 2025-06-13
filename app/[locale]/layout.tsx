@@ -11,6 +11,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
+import Script from 'next/script';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -31,12 +32,41 @@ export const metadata: Metadata = {
     siteName: "Vasha Studio",
     title: "Vasha Studio | Photo Studio & Coworking",
     description: "Premium photo studio and coworking space for creatives",
+    images: [
+      {
+        url: '/images/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Vasha Studio',
+      }
+    ],
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "Vasha Studio | Photo Studio & Coworking",
     description: "Premium photo studio and coworking space for creatives",
+    images: ['/images/og-image.jpg'],
   },
+  metadataBase: new URL('https://vashastudio.com'),
+};
+
+// Organization structured data
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Vasha Studio',
+  url: 'https://vashastudio.com',
+  logo: 'https://vashastudio.com/icons/icon-512x512.png',
+  sameAs: [
+    'https://facebook.com/vashastudio',
+    'https://instagram.com/vashastudio',
+  ],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    telephone: '+15551234567',
+    contactType: 'customer service',
+    email: 'hello@vashastudio.com'
+  }
 };
 
 export default async function LocaleLayout({
@@ -98,6 +128,14 @@ export default async function LocaleLayout({
         <meta name="format-detection" content="telephone=no" />
         <meta name="HandheldFriendly" content="true" />
         <meta name="MobileOptimized" content="320" />
+        
+        {/* Structured data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationJsonLd)
+          }}
+        />
       </head>
       <body
         className={cn(
@@ -122,6 +160,39 @@ export default async function LocaleLayout({
             <Toaster />
           </ThemeProvider>
         </NextIntlClientProvider>
+        
+        {/* Web Vitals Analytics */}
+        <Script
+          id="web-vitals"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              function sendToAnalytics(metric) {
+                const body = JSON.stringify({
+                  name: metric.name,
+                  value: metric.value,
+                  id: metric.id
+                });
+                
+                if (navigator.sendBeacon) {
+                  navigator.sendBeacon('/api/analytics/vitals', body);
+                } else {
+                  fetch('/api/analytics/vitals', {
+                    body,
+                    method: 'POST',
+                    keepalive: true
+                  });
+                }
+              }
+              
+              import('web-vitals').then(({ onCLS, onFID, onLCP }) => {
+                onCLS(sendToAnalytics);
+                onFID(sendToAnalytics);
+                onLCP(sendToAnalytics);
+              });
+            `
+          }}
+        />
       </body>
     </html>
   );

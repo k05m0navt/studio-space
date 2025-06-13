@@ -28,20 +28,20 @@ const AvatarImage = React.forwardRef<
   const imageSrc = typeof props.src === 'string' ? props.src : '';
   
   return (
-    <AvatarPrimitive.Image
-      ref={ref}
-      className={cn("aspect-square h-full w-full", className)}
-      asChild
-      {...props}
-    >
-      <Image
+  <AvatarPrimitive.Image
+    ref={ref}
+    className={cn("aspect-square h-full w-full", className)}
+    asChild
+    {...props}
+  >
+    <Image
         src={imageSrc || ''}
-        alt={props.alt || 'Avatar'}
-        width={40}
-        height={40}
-        className="aspect-square h-full w-full object-cover"
-      />
-    </AvatarPrimitive.Image>
+      alt={props.alt || 'Avatar'}
+      width={40}
+      height={40}
+      className="aspect-square h-full w-full object-cover"
+    />
+  </AvatarPrimitive.Image>
   );
 })
 AvatarImage.displayName = AvatarPrimitive.Image.displayName

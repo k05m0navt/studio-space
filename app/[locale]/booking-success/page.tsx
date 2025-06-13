@@ -1,45 +1,52 @@
-"use client";
-
 import { motion } from "framer-motion";
 import { Check, Calendar, Mail, Phone, ArrowRight, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/routing';
 
-export default function BookingSuccessPage() {
-  const t = useTranslations('bookingSuccess');
+// Add metadata export for better SEO
+export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
+  const t = await getTranslations({ locale, namespace: 'bookingSuccess' });
+  
+  return {
+    title: `${t('title')} | Vasha Studio`,
+    description: t('description'),
+  };
+}
+
+export default async function BookingSuccessPage({ params: { locale } }: { params: { locale: string } }) {
+  const t = await getTranslations({ locale, namespace: 'bookingSuccess' });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20, scale: 0.95 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        className="w-full max-w-2xl"
+      <div
+        className="w-full max-w-2xl opacity-0 animate-fade-in-up"
+        style={{ 
+          animation: 'fadeInUp 0.5s ease-out forwards',
+          animationDelay: '0.1s'
+        }}
       >
         <Card className="border-0 shadow-2xl bg-card/80 backdrop-blur-sm">
           <CardContent className="p-8 text-center">
             {/* Success Icon */}
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ 
-                delay: 0.2, 
-                type: "spring", 
-                stiffness: 200, 
-                damping: 10 
+            <div
+              className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 opacity-0 animate-scale-in"
+              style={{ 
+                animation: 'scaleIn 0.5s ease-out forwards',
+                animationDelay: '0.3s'
               }}
-              className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6"
             >
               <Check className="w-10 h-10 text-green-600" />
-            </motion.div>
+            </div>
 
             {/* Success Message */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
+            <div
+              className="opacity-0 animate-fade-in-up"
+              style={{ 
+                animation: 'fadeInUp 0.5s ease-out forwards',
+                animationDelay: '0.4s'
+              }}
             >
               <h1 className="text-3xl font-bold text-foreground mb-4">
                 {t('title')}
@@ -47,14 +54,15 @@ export default function BookingSuccessPage() {
               <p className="text-lg text-muted-foreground mb-8">
                 {t('description')}
               </p>
-            </motion.div>
+            </div>
 
             {/* What Happens Next */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="bg-muted/50 rounded-lg p-6 mb-8"
+            <div
+              className="bg-muted/50 rounded-lg p-6 mb-8 opacity-0 animate-fade-in-up"
+              style={{ 
+                animation: 'fadeInUp 0.5s ease-out forwards',
+                animationDelay: '0.5s'
+              }}
             >
               <h2 className="text-xl font-semibold mb-4">{t('whatNext')}</h2>
               <div className="space-y-4 text-left">
@@ -75,12 +83,13 @@ export default function BookingSuccessPage() {
                     description: t('steps.calendar.description')
                   }
                 ].map((step, index) => (
-                  <motion.div
+                  <div
                     key={step.title}
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ duration: 0.3, delay: 0.5 + index * 0.1 }}
-                    className="flex items-start gap-4"
+                    className="flex items-start gap-4 opacity-0 animate-fade-in-left"
+                    style={{ 
+                      animation: 'fadeInLeft 0.3s ease-out forwards',
+                      animationDelay: `${0.6 + index * 0.1}s`
+                    }}
                   >
                     <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                       <step.icon className="w-5 h-5 text-primary" />
@@ -89,17 +98,18 @@ export default function BookingSuccessPage() {
                       <h3 className="font-medium text-foreground">{step.title}</h3>
                       <p className="text-sm text-muted-foreground">{step.description}</p>
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
-            </motion.div>
+            </div>
 
             {/* Action Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center"
+            <div
+              className="flex flex-col sm:flex-row gap-4 justify-center opacity-0 animate-fade-in-up"
+              style={{ 
+                animation: 'fadeInUp 0.5s ease-out forwards',
+                animationDelay: '0.7s'
+              }}
             >
               <Button asChild variant="outline" className="flex items-center gap-2">
                 <Link href="/">
@@ -113,14 +123,15 @@ export default function BookingSuccessPage() {
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </Button>
-            </motion.div>
+            </div>
 
             {/* Contact Info */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.7 }}
-              className="mt-8 pt-6 border-t border-muted"
+            <div
+              className="mt-8 pt-6 border-t border-muted opacity-0 animate-fade-in"
+              style={{ 
+                animation: 'fadeIn 0.5s ease-out forwards',
+                animationDelay: '0.8s'
+              }}
             >
               <p className="text-sm text-muted-foreground">
                 {t('contact.questions')}{" "}
@@ -138,10 +149,55 @@ export default function BookingSuccessPage() {
                   {t('contact.phone')}
                 </a>
               </p>
-            </motion.div>
+            </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
+      
+      {/* Add CSS animations */}
+      <style jsx global>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        @keyframes fadeInLeft {
+          from {
+            opacity: 0;
+            transform: translateX(-10px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        
+        @keyframes scaleIn {
+          from {
+            opacity: 0;
+            transform: scale(0);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+          }
+          to {
+            opacity: 1;
+          }
+        }
+      `}</style>
     </div>
   );
 } 

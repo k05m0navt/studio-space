@@ -203,7 +203,7 @@ export function BookingForm() {
       }
 
       setSubmitStatus('success');
-      
+
       toast.success("Booking Request Submitted", {
         description: "We've received your booking request. You'll receive a confirmation email shortly.",
         duration: 5000,
@@ -211,8 +211,8 @@ export function BookingForm() {
 
       // Wait a moment to show success state
       setTimeout(() => {
-        form.reset();
-        setCurrentStep(1);
+      form.reset();
+      setCurrentStep(1);
         setSubmitStatus('idle');
         router.push('/booking-success');
       }, 2000);
@@ -534,7 +534,7 @@ export function BookingForm() {
                                               <span className="text-xs text-red-500 ml-2">Unavailable</span>
                                             )}
                                           </div>
-                                        </SelectItem>
+                                      </SelectItem>
                                       );
                                     })}
                                   </SelectContent>
@@ -579,7 +579,7 @@ export function BookingForm() {
                                               <span className="text-xs text-gray-500 ml-2">Before start</span>
                                             )}
                                           </div>
-                                        </SelectItem>
+                                      </SelectItem>
                                       );
                                     })}
                                   </SelectContent>
@@ -743,7 +743,7 @@ export function BookingForm() {
                           {submitStatus === 'idle' && (
                             <>
                               Submit Booking
-                              <Check className="w-4 h-4" />
+                          <Check className="w-4 h-4" />
                             </>
                           )}
                         </Button>

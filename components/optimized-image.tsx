@@ -101,6 +101,7 @@ export function OptimizedImage({
     onLoad: handleLoad,
     onError: handleError,
     style: { objectFit },
+    fetchPriority: priority ? 'high' : 'auto',
     className: cn(
       'transition-opacity duration-300',
       isLoading && 'opacity-0',
