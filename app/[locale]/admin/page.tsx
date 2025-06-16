@@ -290,64 +290,24 @@ export default function AdminDashboard() {
   const loadDashboardData = useCallback(async () => {
     setIsLoadingData(true);
     try {
-      // Mock data for demonstration - replace with actual API calls
-      const mockBookingsData = [
-        {
-          id: '1',
-          name: 'John Doe',
-          email: 'john@example.com',
-          type: 'studio' as const,
-          date: new Date().toISOString(),
-          start_time: '10:00',
-          end_time: '12:00',
-          status: 'confirmed' as const,
-          createdAt: new Date().toISOString()
-        },
-        {
-          id: '2',
-          name: 'Jane Smith',
-          email: 'jane@example.com',
-          type: 'coworking' as const,
-          date: new Date().toISOString(),
-          start_time: '14:00',
-          end_time: '16:00',
-          status: 'pending' as const,
-          createdAt: new Date().toISOString()
-        }
-      ];
+      // Load data from the API endpoints
+      const [bookingsResponse, usersResponse, statsResponse] = await Promise.all([
+        fetch('/api/admin/bookings'),
+        fetch('/api/admin/users'),
+        fetch('/api/admin/stats')
+      ]);
 
-      const mockUsersData = [
-        {
-          id: '1',
-          name: 'Admin User',
-          email: 'admin@example.com',
-          role: 'admin' as const,
-          isActive: true,
-          createdAt: new Date().toISOString()
-        },
-        {
-          id: '2',
-          name: 'Regular User',
-          email: 'user@example.com',
-          role: 'user' as const,
-          isActive: true,
-          createdAt: new Date().toISOString()
-        }
-      ];
+      if (!bookingsResponse.ok || !usersResponse.ok || !statsResponse.ok) {
+        throw new Error('Failed to fetch admin data');
+      }
+
+      const bookingsData = await bookingsResponse.json();
+      const usersData = await usersResponse.json();
+      const statsData = await statsResponse.json();
       
-      setStats({
-        totalBookings: mockBookingsData.length,
-        monthlyRevenue: 2500,
-        activeMembers: mockUsersData.length,
-        studioUtilization: 75,
-        pendingBookings: mockBookingsData.filter(b => b.status === 'pending').length,
-        confirmedBookings: mockBookingsData.filter(b => b.status === 'confirmed').length,
-        todayBookings: mockBookingsData.length,
-        weeklyGrowth: 12.5
-      });
-      
-      setBookings(mockBookingsData);
-      setUsers(mockUsersData);
+      setStats(statsData);
+      setBookings(bookingsData);
+      setUsers(usersData);
       
       toast.success(t('messages.dataRefreshed'));
     } catch (error) {

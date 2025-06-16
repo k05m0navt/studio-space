@@ -15,69 +15,69 @@ const categories = [
   { id: 'events', labelKey: 'events' }
 ];
 
-// Sample gallery data
+// Gallery data using local images
 const galleryItems = [
   {
     id: 1,
     title: "Portrait Session",
     category: "studio",
-    image: "https://images.unsplash.com/photo-1554844817-03f36c1cf45a?w=500&h=300&fit=crop",
+    image: "/images/gallery/portrait-session.webp",
     description: "Professional portrait photography session"
   },
   {
     id: 2,
     title: "Team Collaboration",
     category: "coworking",
-    image: "https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=500&h=300&fit=crop",
+    image: "/images/gallery/team-collaboration.webp",
     description: "Creative team working together"
   },
   {
     id: 3,
     title: "Product Photography",
     category: "studio",
-    image: "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=500&h=300&fit=crop",
+    image: "/images/gallery/product-photography.webp",
     description: "Professional product shots"
   },
   {
     id: 4,
     title: "Workshop Event",
     category: "events",
-    image: "https://images.unsplash.com/photo-1515169067868-5387ec356754?w=500&h=300&fit=crop",
+    image: "/images/gallery/workshop-event.webp",
     description: "Photography workshop in progress"
   },
   {
     id: 5,
     title: "Fashion Shoot",
     category: "studio",
-    image: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=500&h=300&fit=crop",
+    image: "/images/gallery/fashion-shoot.webp",
     description: "Fashion photography session"
   },
   {
     id: 6,
     title: "Networking Event",
     category: "events",
-    image: "https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=500&h=300&fit=crop",
+    image: "/images/gallery/networking-event.webp",
     description: "Community networking evening"
   },
   {
     id: 7,
     title: "Workspace Lifestyle",
     category: "coworking",
-    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=500&h=300&fit=crop",
+    image: "/images/gallery/workspace-lifestyle.webp",
     description: "Modern coworking environment"
   },
   {
     id: 8,
     title: "Brand Photography",
     category: "studio",
-    image: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=500&h=300&fit=crop",
+    image: "/images/gallery/brand-photography.webp",
     description: "Corporate brand photography"
   },
   {
     id: 9,
     title: "Creative Meeting",
     category: "coworking",
-    image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=500&h=300&fit=crop",
+    image: "/images/gallery/creative-meeting.webp",
     description: "Brainstorming session"
   }
 ];

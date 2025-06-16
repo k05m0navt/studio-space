@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
 import { useState, useEffect, useRef } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Menu, X, Moon, Sun, Globe } from "lucide-react";
+import { Menu, X, Moon, Sun, Globe, Calendar } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "@/i18n/routing";
@@ -64,7 +64,7 @@ function StudioLogo({ className, compact = false }: { className?: string; compac
   );
 }
 
-// Material UI 3 Dark Mode Toggle
+// Refined Dark Mode Toggle
 function DarkModeToggle({ fullWidth = false }: { fullWidth?: boolean }) {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -86,42 +86,47 @@ function DarkModeToggle({ fullWidth = false }: { fullWidth?: boolean }) {
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       onClick={toggle}
       className={cn(
-        "relative overflow-hidden rounded-full border transition-all duration-200",
-        "border-gray-300 dark:border-gray-600",
-        "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700",
-        "flex items-center justify-center gap-2 shadow-sm",
+        "relative overflow-hidden rounded-full transition-colors duration-300",
+        isDark 
+          ? "bg-zinc-800 border border-zinc-700 text-amber-400"
+          : "bg-white border border-slate-200 text-sky-600",
+        "shadow-md flex items-center justify-center",
         fullWidth
-          ? "w-full h-14 px-4 py-3"
-          : "h-12 w-12"
+          ? "w-full h-12 px-4 py-2"
+          : "h-10 w-10"
       )}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
-      transition={{ duration: 0.15, ease: "linear" }}
+      transition={{ duration: 0.2 }}
     >
       <AnimatePresence mode="wait">
         {isDark ? (
           <motion.div
             key="moon"
-            initial={{ opacity: 0, rotate: -90 }}
+            initial={{ opacity: 0, rotate: -30 }}
             animate={{ opacity: 1, rotate: 0 }}
-            exit={{ opacity: 0, rotate: 90 }}
-            transition={{ duration: 0.15, ease: "linear" }}
-            className="flex items-center gap-2 text-gray-700 dark:text-gray-300"
+            exit={{ opacity: 0, rotate: 30 }}
+            transition={{ duration: 0.2 }}
+            className="flex items-center gap-2"
           >
-            <Moon className="h-5 w-5" />
-            {fullWidth && <span className="font-medium">Dark Mode</span>}
+            <Moon className="h-4 w-4" />
+            {fullWidth && (
+              <span className="font-medium text-sm">Dark</span>
+            )}
           </motion.div>
         ) : (
           <motion.div
             key="sun"
-            initial={{ opacity: 0, rotate: 90 }}
+            initial={{ opacity: 0, rotate: 30 }}
             animate={{ opacity: 1, rotate: 0 }}
-            exit={{ opacity: 0, rotate: -90 }}
-            transition={{ duration: 0.15, ease: "linear" }}
-            className="flex items-center gap-2 text-gray-700 dark:text-gray-300"
+            exit={{ opacity: 0, rotate: -30 }}
+            transition={{ duration: 0.2 }}
+            className="flex items-center gap-2"
           >
-            <Sun className="h-5 w-5" />
-            {fullWidth && <span className="font-medium">Light Mode</span>}
+            <Sun className="h-4 w-4" />
+            {fullWidth && (
+              <span className="font-medium text-sm">Light</span>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
@@ -129,11 +134,12 @@ function DarkModeToggle({ fullWidth = false }: { fullWidth?: boolean }) {
   );
 }
 
-// Material UI 3 Language Switcher with Globe Icon
+// Refined Language Switcher with Dark Mode Support
 function LanguageSwitcher({ fullWidth = false }: { fullWidth?: boolean }) {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+  const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -141,6 +147,8 @@ function LanguageSwitcher({ fullWidth = false }: { fullWidth?: boolean }) {
   }, []);
 
   if (!mounted) return null;
+  
+  const isDark = theme === "dark";
 
   const toggleLanguage = () => {
     const newLocale = locale === 'en' ? 'ru' : 'en';
@@ -152,40 +160,41 @@ function LanguageSwitcher({ fullWidth = false }: { fullWidth?: boolean }) {
       aria-label={`Switch to ${locale === 'en' ? 'Russian' : 'English'}`}
       onClick={toggleLanguage}
       className={cn(
-        "relative overflow-hidden rounded-full border transition-all duration-200",
-        "border-gray-300 dark:border-gray-600",
-        "bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700",
-        "flex items-center justify-center gap-2 shadow-sm",
+        "relative overflow-hidden rounded-full shadow-md transition-colors duration-300",
+        "border flex items-center justify-center",
+        locale === 'en' 
+          ? isDark 
+            ? "bg-zinc-800 border-zinc-700 text-sky-400" 
+            : "bg-white border-slate-200 text-sky-600"
+          : isDark 
+            ? "bg-zinc-800 border-zinc-700 text-rose-400" 
+            : "bg-white border-slate-200 text-rose-600",
         fullWidth
-          ? "w-full h-14 px-4 py-3"
-          : "h-12 w-12"
+          ? "w-full h-12 px-4 py-2"
+          : "h-10 w-10"
       )}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
-      transition={{ duration: 0.15, ease: "linear" }}
+      transition={{ duration: 0.2 }}
     >
       <AnimatePresence mode="wait">
         <motion.div
           key={locale}
-          initial={{ opacity: 0, scale: 0.8 }}
+          initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.8 }}
-          transition={{ duration: 0.15, ease: "linear" }}
-          className="flex items-center gap-2 text-gray-700 dark:text-gray-300"
+          exit={{ opacity: 0, scale: 0.9 }}
+          transition={{ duration: 0.2 }}
+          className="flex items-center gap-1"
         >
-          <Globe className="h-5 w-5" />
-          {!fullWidth && (
+          {!fullWidth ? (
             <span className="text-xs font-bold">
               {locale === 'en' ? 'RU' : 'EN'}
             </span>
-          )}
-          {fullWidth && (
+          ) : (
             <>
-              <span className="font-medium">
+              <Globe className="h-4 w-4 mr-1" />
+              <span className="font-medium text-sm">
                 {locale === 'en' ? 'Русский' : 'English'}
-              </span>
-              <span className="text-sm text-gray-600 dark:text-gray-400 ml-auto">
-                {locale === 'en' ? 'RU' : 'EN'}
               </span>
             </>
           )}
@@ -376,12 +385,33 @@ export function Navbar() {
             <div className="flex items-center space-x-3">
               {/* Desktop Controls */}
               <div className="hidden md:flex items-center space-x-3">
+                {/* Book Now Button */}
+                <Link href="/book">
+                  <motion.button
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-2.5 px-5 rounded-full flex items-center gap-2 shadow-md"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <Calendar className="h-4 w-4" />
+                    <span>Book Now</span>
+                  </motion.button>
+                </Link>
                 <LanguageSwitcher />
                 <DarkModeToggle />
               </div>
 
               {/* Mobile Controls */}
               <div className="flex md:hidden items-center space-x-3">
+                <Link href="/book" className="mr-1">
+                  <motion.button
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground w-10 h-10 rounded-full flex items-center justify-center shadow-md"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    aria-label="Book Now"
+                  >
+                    <Calendar className="h-4 w-4" />
+                  </motion.button>
+                </Link>
                 <LanguageSwitcher />
                 <DarkModeToggle />
                 

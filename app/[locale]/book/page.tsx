@@ -67,6 +67,32 @@ const TIME_SLOTS = [
   "13:00", "14:00", "15:00", "16:00", "17:00"
 ];
 
+// Example of unavailable time slots data - in real app, fetch from API
+const UNAVAILABLE_TIME_SLOTS = [
+  { date: "2023-12-01", startTime: "09:00", endTime: "11:00" },
+  { date: "2023-12-01", startTime: "14:00", endTime: "16:00" },
+  { date: "2023-12-02", startTime: "13:00", endTime: "15:00" },
+  { date: new Date().toISOString().split('T')[0], startTime: "10:00", endTime: "13:00" },
+];
+
+// Function to check if a time slot is available
+const isTimeSlotAvailable = (date: Date, time: string): boolean => {
+  if (!date) return true; 
+  
+  const dateString = date.toISOString().split('T')[0];
+  const timeNumber = parseInt(time.split(':')[0]);
+  
+  // Check against unavailable slots
+  return !UNAVAILABLE_TIME_SLOTS.some((slot) => {
+    if (slot.date !== dateString) return false;
+    
+    const slotStartTime = parseInt(slot.startTime.split(':')[0]);
+    const slotEndTime = parseInt(slot.endTime.split(':')[0]);
+    
+    return timeNumber >= slotStartTime && timeNumber < slotEndTime;
+  });
+};
+
 export default function BookPage() {
   const t = useTranslations('booking');
   const tCommon = useTranslations('common');
@@ -431,38 +457,57 @@ export default function BookPage() {
                         </div>
 
                         <div className="grid md:grid-cols-3 gap-6">
+                          <div className="md:col-span-3 mb-6">
+                            <div className="bg-accent/20 rounded-xl p-4 mb-2">
+                              <h3 className="text-lg font-semibold mb-2 flex items-center gap-2">
+                                <Calendar className="w-5 h-5 text-primary" />
+                                {t('schedule.dateTimeSelection')}
+                              </h3>
+                              <p className="text-sm text-muted-foreground">
+                                {t('schedule.dateTimeHelpText')}
+                              </p>
+                            </div>
+                          </div>
+
                           <FormField
                             control={form.control}
                             name="date"
                             render={({ field }) => (
-                              <FormItem className="flex flex-col">
-                                <FormLabel>{tCommon('date')}</FormLabel>
+                              <FormItem className="flex flex-col md:col-span-3">
+                                <FormLabel className="text-base flex items-center gap-2 mb-2">
+                                  <Calendar className="w-4 h-4 text-primary" />
+                                  {tCommon('date')}
+                                </FormLabel>
                                 <Popover>
                                   <PopoverTrigger asChild>
                                     <FormControl>
                                       <Button
                                         variant="outline"
                                         className={cn(
-                                          "pl-3 text-left font-normal h-12",
-                                          !field.value && "text-muted-foreground"
+                                          "pl-3 text-left font-normal h-14 rounded-xl border-2 transition-all",
+                                          field.value 
+                                            ? "border-primary/50 shadow-sm shadow-primary/20" 
+                                            : "text-muted-foreground",
+                                          "hover:bg-primary/5"
                                         )}
                                       >
                                         {field.value ? (
-                                          format(field.value, "PPP")
+                                          <span className="font-medium">{format(field.value, "PPP")}</span>
                                         ) : (
                                           <span>{t('schedule.pickDate')}</span>
                                         )}
-                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                        <CalendarIcon className="ml-auto h-5 w-5 text-primary/70" />
                                       </Button>
                                     </FormControl>
                                   </PopoverTrigger>
-                                  <PopoverContent className="w-auto p-0" align="start">
+                                  <PopoverContent className="w-auto p-0 border-2 border-primary/30 rounded-xl shadow-xl shadow-primary/10" align="start">
                                     <Calendar
                                       mode="single"
                                       selected={field.value}
                                       onSelect={field.onChange}
                                       disabled={(date) => date < new Date()}
                                       initialFocus
+                                      className="rounded-xl"
                                     />
                                   </PopoverContent>
                                 </Popover>
@@ -475,20 +520,39 @@ export default function BookPage() {
                             control={form.control}
                             name="startTime"
                             render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>{t('schedule.startTime')}</FormLabel>
+                              <FormItem className="flex flex-col">
+                                <FormLabel className="text-base flex items-center gap-2 mb-2">
+                                  <Clock className="w-4 h-4 text-primary" />
+                                  {t('schedule.startTime')}
+                                </FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                   <FormControl>
-                                    <SelectTrigger className="h-12">
+                                    <SelectTrigger className="h-14 rounded-xl border-2 hover:bg-primary/5 transition-all focus:border-primary/50 focus:shadow-sm focus:shadow-primary/20">
                                       <SelectValue placeholder={t('schedule.startTime')} />
                                     </SelectTrigger>
                                   </FormControl>
-                                  <SelectContent>
-                                    {TIME_SLOTS.map((time) => (
-                                      <SelectItem key={time} value={time}>
-                                        {time}
-                                      </SelectItem>
-                                    ))}
+                                  <SelectContent className="border-2 border-primary/30 rounded-xl shadow-xl shadow-primary/10">
+                                    {TIME_SLOTS.map((time) => {
+                                      const isAvailable = isTimeSlotAvailable(form.watch("date"), time);
+                                      
+                                      return (
+                                        <SelectItem 
+                                          key={time} 
+                                          value={time}
+                                          disabled={!isAvailable}
+                                          className={cn(
+                                            "focus:bg-primary/10 focus:text-primary rounded-lg my-1 transition-colors",
+                                            !isAvailable && "text-muted-foreground opacity-50"
+                                          )}
+                                        >
+                                          <div className="flex items-center gap-2">
+                                            <Clock className={cn("w-4 h-4", !isAvailable && "text-muted-foreground")} />
+                                            <span>{time}</span>
+                                            {!isAvailable && <span className="ml-auto text-xs text-red-500">{t('schedule.unavailable')}</span>}
+                                          </div>
+                                        </SelectItem>
+                                      );
+                                    })}
                                   </SelectContent>
                                 </Select>
                                 <FormMessage />
@@ -501,19 +565,52 @@ export default function BookPage() {
                             name="endTime"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>{t('schedule.endTime')}</FormLabel>
+                                <FormLabel className="text-base flex items-center gap-2 mb-2">
+                                  <Clock className="w-4 h-4 text-primary" />
+                                  {t('schedule.endTime')}
+                                </FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                   <FormControl>
-                                    <SelectTrigger className="h-12">
+                                    <SelectTrigger className="h-14 rounded-xl border-2 hover:bg-primary/5 transition-all focus:border-primary/50 focus:shadow-sm focus:shadow-primary/20">
                                       <SelectValue placeholder={t('schedule.endTime')} />
                                     </SelectTrigger>
                                   </FormControl>
-                                  <SelectContent>
-                                    {TIME_SLOTS.map((time) => (
-                                      <SelectItem key={time} value={time}>
-                                        {time}
-                                      </SelectItem>
-                                    ))}
+                                  <SelectContent className="border-2 border-primary/30 rounded-xl shadow-xl shadow-primary/10">
+                                    {TIME_SLOTS.map((time) => {
+                                      // Getting the index of the selected start time
+                                      const startTimeIndex = TIME_SLOTS.findIndex(t => t === form.watch("startTime"));
+                                      const currentTimeIndex = TIME_SLOTS.findIndex(t => t === time);
+                                      
+                                      // Check both time order constraints and availability
+                                      const isBeforeStartTime = form.watch("startTime") && currentTimeIndex <= startTimeIndex;
+                                      const isTimeUnavailable = !isTimeSlotAvailable(form.watch("date"), time);
+                                      const isDisabled = isBeforeStartTime || isTimeUnavailable;
+                                      
+                                      // Get reason for being disabled
+                                      let disabledReason = "";
+                                      if (isBeforeStartTime) disabledReason = t('schedule.mustBeAfterStart');
+                                      if (isTimeUnavailable) disabledReason = t('schedule.unavailable');
+                                      
+                                      return (
+                                        <SelectItem 
+                                          key={time} 
+                                          value={time} 
+                                          disabled={isDisabled}
+                                          className={cn(
+                                            "focus:bg-primary/10 focus:text-primary rounded-lg my-1 transition-colors",
+                                            isDisabled && "text-muted-foreground opacity-50"
+                                          )}
+                                        >
+                                          <div className="flex items-center gap-2">
+                                            <Clock className={cn("w-4 h-4", isDisabled && "text-muted-foreground")} />
+                                            <span>{time}</span>
+                                            {isDisabled && (
+                                              <span className="ml-auto text-xs text-red-500">{disabledReason}</span>
+                                            )}
+                                          </div>
+                                        </SelectItem>
+                                      );
+                                    })}
                                   </SelectContent>
                                 </Select>
                                 <FormMessage />
