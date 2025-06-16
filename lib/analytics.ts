@@ -168,14 +168,17 @@ class Analytics {
 
   private trackPerformanceMetrics() {
     // Track Core Web Vitals
-    if ('web-vital' in window) {
-      import('web-vitals').then(({ onCLS, onFID, onFCP, onLCP, onTTFB }) => {
-        onCLS((metric) => this.track(trackingEvents.performanceMetric('CLS', metric.value, 'score')));
-        onFID((metric) => this.track(trackingEvents.performanceMetric('FID', metric.value, 'ms')));
-        onFCP((metric) => this.track(trackingEvents.performanceMetric('FCP', metric.value, 'ms')));
-        onLCP((metric) => this.track(trackingEvents.performanceMetric('LCP', metric.value, 'ms')));
-        onTTFB((metric) => this.track(trackingEvents.performanceMetric('TTFB', metric.value, 'ms')));
-      });
+    try {
+      const webVitals = require('web-vitals');
+      const { onCLS, onFID, onFCP, onLCP, onTTFB } = webVitals;
+      
+      onCLS((metric) => this.track(trackingEvents.performanceMetric('CLS', metric.value, 'score')));
+      onFID((metric) => this.track(trackingEvents.performanceMetric('FID', metric.value, 'ms')));
+      onFCP((metric) => this.track(trackingEvents.performanceMetric('FCP', metric.value, 'ms')));
+      onLCP((metric) => this.track(trackingEvents.performanceMetric('LCP', metric.value, 'ms')));
+      onTTFB((metric) => this.track(trackingEvents.performanceMetric('TTFB', metric.value, 'ms')));
+    } catch (error) {
+      console.warn('Web Vitals not available:', error);
     }
 
     // Track page load time

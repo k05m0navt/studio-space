@@ -165,33 +165,7 @@ export default async function LocaleLayout({
         <Script
           id="web-vitals"
           strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              function sendToAnalytics(metric) {
-                const body = JSON.stringify({
-                  name: metric.name,
-                  value: metric.value,
-                  id: metric.id
-                });
-                
-                if (navigator.sendBeacon) {
-                  navigator.sendBeacon('/api/analytics/vitals', body);
-                } else {
-                  fetch('/api/analytics/vitals', {
-                    body,
-                    method: 'POST',
-                    keepalive: true
-                  });
-                }
-              }
-              
-              import('web-vitals').then(({ onCLS, onFID, onLCP }) => {
-                onCLS(sendToAnalytics);
-                onFID(sendToAnalytics);
-                onLCP(sendToAnalytics);
-              });
-            `
-          }}
+          src="/scripts/web-vitals.js"
         />
       </body>
     </html>
