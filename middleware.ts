@@ -56,7 +56,8 @@ export default function middleware(request: NextRequest) {
   }
   
   // Apply rate limiting to API routes
-  if (request.nextUrl.pathname.startsWith('/api/')) {
+  if (request.nextUrl.pathname.startsWith('/api/') || 
+      /^\/(ru|en)\/api\//.test(request.nextUrl.pathname)) {
     if (!applyRateLimit(request)) {
       return new NextResponse('Too Many Requests', { 
         status: 429,
@@ -81,8 +82,9 @@ export const config = {
   matcher: [
     // Skip Next.js internals and static files
     '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // Always run for API routes
-    '/(api|trpc)(.*)',
+    // API and trpc routes (excluding admin)
+    '/api/((?!admin).+)',
+    '/trpc/(.*)',
     // Match internationalization
     '/',
     '/(ru|en)/:path*',
