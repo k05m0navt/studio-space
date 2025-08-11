@@ -2,9 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { z } from 'zod';
-import { PrismaClient } from '../../generated/prisma';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -94,32 +92,22 @@ export async function POST(request: NextRequest) {
         { expiresIn: '7d' }
       );
 
-      // Save session to database
       await prisma.session.create({
         data: {
           userId: user.id,
           token,
-          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
+          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
         },
       });
 
-      const { password: _password, ...userWithoutPassword } = user;
-      // Password is intentionally excluded from the response
-      void _password;
-
-      return NextResponse.json({
-        token,
-        user: userWithoutPassword,
-      });
+      const userSanitized = { id: user.id, email: user.email, name: user.name, role: user.role };
+      return NextResponse.json({ token, user: userSanitized });
     }
 
     if (pathname.endsWith('/register')) {
       const { email, password, name } = registerSchema.parse(body);
 
-      const existingUser = await prisma.user.findUnique({
-        where: { email },
-      });
-
+      const existingUser = await prisma.user.findUnique({ where: { email } });
       if (existingUser) {
         return NextResponse.json(
           { error: 'User already exists' },
@@ -130,17 +118,8 @@ export async function POST(request: NextRequest) {
       const hashedPassword = await bcrypt.hash(password, 12);
 
       const user = await prisma.user.create({
-        data: {
-          email,
-          password: hashedPassword,
-          name,
-        },
-        select: {
-          id: true,
-          email: true,
-          name: true,
-          role: true,
-        },
+        data: { email, password: hashedPassword, name },
+        select: { id: true, email: true, name: true, role: true },
       });
 
       const token = jwt.sign(
@@ -157,10 +136,7 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      return NextResponse.json({
-        token,
-        user,
-      });
+      return NextResponse.json({ token, user });
     }
 
     return NextResponse.json(
@@ -174,7 +150,6 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
-
     console.error('Auth error:', error);
     return NextResponse.json(
       { error: 'Internal server error' },

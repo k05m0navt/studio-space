@@ -65,6 +65,7 @@
     "@types/swagger-jsdoc": "^6.0.4",
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
+    "isomorphic-dompurify": "^2.26.0",
     "prisma": "^6.8.2",
     "supabase": "^2.23.4",
     "tailwindcss": "^4",

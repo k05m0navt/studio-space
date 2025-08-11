@@ -6,7 +6,7 @@
 - [x] If Level 2-4: switch to PLAN → CREATIVE → IMPLEMENT → QA
 ## Backlog to finish app (prioritized)
 1. Unify Prisma client usage via `lib/prisma` across all API routes.
-2. Protect admin API (`app/api/admin/*`) with `requireRole([`'ADMIN'])`; standardize JSON shape.
+2. Protect admin API (`app/api/admin/*`) with `requireRole([`ADMIN])`; standardize JSON shape.
 3. Implement real admin login using `POST /api/auth/login`; store JWT; attach Authorization header in admin fetches.
 4. Refactor `app/[locale]/book/page.tsx` to reuse `components/booking-form` or extract shared form; wire to `/api/bookings`.
 5. Internationalize `components/booking-form.tsx` and switch to localized router, fix redirect path.
@@ -20,7 +20,7 @@
 
 ## Requirements Analysis
 - Core Requirements:
-  - Secure admin endpoints with JWT auth and RBAC via `requireRole(['ADMIN'])`.
+  - Secure admin endpoints with JWT auth and RBAC via `requireRole([ADMIN])`.
   - Unify Prisma usage through `@/lib/prisma` to prevent multiple clients.
   - Single, i18n-ready booking flow using `/api/bookings` and `/api/bookings/availability`.
   - Real admin login via `/api/auth/login`; persist JWT; attach `Authorization: Bearer <token>` for admin fetches.
@@ -42,7 +42,7 @@
 - Architecture:
   - Use a single Prisma instance from `lib/prisma` in all routes.
   - Split auth endpoints into dedicated files: `app/api/auth/login/route.ts` and `app/api/auth/register/route.ts`.
-  - Wrap admin APIs with `requireRole(['ADMIN'])` (optionally allow `['ADMIN','MODERATOR']`).
+  - Wrap admin APIs with `requireRole([ADMIN])` (optionally allow `[ADMIN,MODERATOR]`).
   - Use i18n router (`@/i18n/routing`) for locale-aware navigation from client components.
 - UI/UX:
   - Replace duplicated booking page form with `components/booking-form.tsx` or extract shared subcomponents.
@@ -54,10 +54,10 @@
 1. Security & Data Layer (Phase 1)
    - Refactor all API routes to import `prisma` from `@/lib/prisma` (remove `new PrismaClient()`).
    - Create `app/api/auth/login/route.ts` and `app/api/auth/register/route.ts` by moving logic out of `app/api/auth/route.ts` and fixing imports to `@/lib/prisma`.
-   - Protect `app/api/admin/*` with `requireRole(['ADMIN'])`; standardize JSON responses and error handling.
+   - Protect `app/api/admin/*` with `requireRole([ADMIN])`; standardize JSON responses and error handling.
 2. Booking Flow (Phase 2)
    - Update `app/[locale]/book/page.tsx` to render `<BookingForm />` (remove duplicate logic) or extract shared pieces.
-   - Internationalize `components/booking-form.tsx` using `useTranslations('booking')` and use i18n `useRouter` for success redirect (e.g., `router.push('/booking-success')` locale-aware).
+   - Internationalize `components/booking-form.tsx` using `useTranslations(booking)` and use i18n `useRouter` for success redirect (e.g., `router.push(/booking-success)` locale-aware).
    - Ensure booking UI uses `/api/bookings/availability` results to disable time slots (remove hard-coded examples).
 3. UX/Performance (Phase 3)
    - Replace plain `<img>`/`motion.img` usage in `app/[locale]/gallery/page.tsx` with `OptimizedImage`/`next/image` and confirm WebP assets/sizes.
@@ -69,12 +69,12 @@
 ## Detailed Steps
 - Step A: Prisma unification
   - Files: `app/api/**/route.ts`, `app/[locale]/api/**/route.ts`, `app/api/auth/*`.
-  - Replace `import { PrismaClient } from ...` + `new PrismaClient()` with `import { prisma } from '@/lib/prisma'`.
+  - Replace `import { PrismaClient } from ...` + `new PrismaClient()` with `import { prisma } from @/lib/prisma`.
 - Step B: Auth endpoints split
   - Create `app/api/auth/login/route.ts`, `app/api/auth/register/route.ts` using logic from current `app/api/auth/route.ts` and `zod` validation.
   - Remove path-based branching on `pathname`; ensure each route returns `{ token, user }` and persists `Session`.
 - Step C: Admin API protection
-  - Wrap handlers in `requireRole(['ADMIN'])`; return 401/403 consistently; document expected response shapes.
+  - Wrap handlers in `requireRole([ADMIN])`; return 401/403 consistently; document expected response shapes.
 - Step D: Admin UI wiring
   - In `app/[locale]/admin/page.tsx`, replace local credential check with real login flow calling `/api/auth/login` and store JWT in `localStorage`.
   - For data fetches, add `Authorization` header using stored token; handle 401 by clearing token and showing login.
@@ -122,3 +122,13 @@
 ## NEXT RECOMMENDED MODE
 - IMPLEMENT MODE (no creative phases required)
 
+## Reflection Highlights (Mid-implementation)
+- **What Went Well**: RBAC enforced across admin and bookings GET; Prisma wrapper adopted in APIs; availability API live and consumed; locale-aware admin proxies in place.
+- **Challenges**: `lib/auth.ts` uses its own Prisma client; auth routes not split; booking UI duplicated; gallery not using next/image.
+- **Lessons Learned**: Consolidate data/auth layers first; prefer dedicated route files over pathname branching; standardize response shape early.
+- **Next Steps**: Refactor `lib/auth.ts` to use shared prisma; create `/api/auth/{login,register}` routes; reuse `components/booking-form` in `app/[locale]/book/page.tsx` with i18n; optimize gallery images; run build and smoke tests.
+
+## Archive
+- **Date**: 2025-08-11
+- **Archive Document**: /Users/k05m0navt/Work/VashaStudio/studio-space/docs/archive/finish-studio-space-mvp-20250812.md
+- **Status**: INTERIM

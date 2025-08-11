@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { PrismaClient } from '@/app/generated/prisma';
+import { prisma } from '@/lib/prisma';
 import { requireRole } from '@/lib/auth';
 
-const prisma = new PrismaClient();
+
 
 const bookingSchema = z.object({
   name: z.string().min(1, 'Name is required'),

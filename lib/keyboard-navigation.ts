@@ -1,5 +1,7 @@
 // Keyboard navigation utilities for accessibility
 
+import * as React from 'react'
+
 export type FocusableElement = HTMLElement & {
   focus(): void;
   blur(): void;

@@ -1,7 +1,5 @@
-import { PrismaClient } from '@/app/generated/prisma';
+import { prisma } from '@/lib/prisma';
 import { requireRole } from '@/lib/auth';
-
-const prisma = new PrismaClient();
 
 interface BookingData {
   id: string;

@@ -172,11 +172,13 @@ class Analytics {
       const webVitals = require('web-vitals');
       const { onCLS, onFID, onFCP, onLCP, onTTFB } = webVitals;
       
-      onCLS((metric) => this.track(trackingEvents.performanceMetric('CLS', metric.value, 'score')));
-      onFID((metric) => this.track(trackingEvents.performanceMetric('FID', metric.value, 'ms')));
-      onFCP((metric) => this.track(trackingEvents.performanceMetric('FCP', metric.value, 'ms')));
-      onLCP((metric) => this.track(trackingEvents.performanceMetric('LCP', metric.value, 'ms')));
-      onTTFB((metric) => this.track(trackingEvents.performanceMetric('TTFB', metric.value, 'ms')));
+      type WebVitalMetric = { value: number };
+
+      onCLS((metric: WebVitalMetric) => this.track(trackingEvents.performanceMetric('CLS', metric.value, 'score')));
+      onFID((metric: WebVitalMetric) => this.track(trackingEvents.performanceMetric('FID', metric.value, 'ms')));
+      onFCP((metric: WebVitalMetric) => this.track(trackingEvents.performanceMetric('FCP', metric.value, 'ms')));
+      onLCP((metric: WebVitalMetric) => this.track(trackingEvents.performanceMetric('LCP', metric.value, 'ms')));
+      onTTFB((metric: WebVitalMetric) => this.track(trackingEvents.performanceMetric('TTFB', metric.value, 'ms')));
     } catch (error) {
       console.warn('Web Vitals not available:', error);
     }

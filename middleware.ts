@@ -16,7 +16,9 @@ setInterval(() => {
 }, 60000); // Clean every minute
 
 function applyRateLimit(request: NextRequest): boolean {
-  const ip = request.ip || request.headers.get('x-forwarded-for') || 'unknown';
+  const forwardedFor = request.headers.get('x-forwarded-for');
+  const realIp = request.headers.get('x-real-ip');
+  const ip = (forwardedFor?.split(',')[0]?.trim()) || realIp || request.nextUrl.hostname || 'unknown';
   const now = Date.now();
   const windowMs = 15 * 60 * 1000; // 15 minutes
   const maxRequests = 100; // Max requests per window
@@ -57,7 +59,7 @@ export default function middleware(request: NextRequest) {
   
   // Apply rate limiting to API routes
   if (request.nextUrl.pathname.startsWith('/api/') || 
-      /^\/(ru|en)\/api\//.test(request.nextUrl.pathname)) {
+      /^\/\(ru|en\)\/api\//.test(request.nextUrl.pathname)) {
     if (!applyRateLimit(request)) {
       return new NextResponse('Too Many Requests', { 
         status: 429,

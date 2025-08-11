@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { Check, Calendar, Mail, Phone, ArrowRight, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -6,7 +5,8 @@ import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/routing';
 
 // Add metadata export for better SEO
-export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'bookingSuccess' });
   
   return {
@@ -15,7 +15,8 @@ export async function generateMetadata({ params: { locale } }: { params: { local
   };
 }
 
-export default async function BookingSuccessPage({ params: { locale } }: { params: { locale: string } }) {
+export default async function BookingSuccessPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'bookingSuccess' });
 
   return (
@@ -154,50 +155,7 @@ export default async function BookingSuccessPage({ params: { locale } }: { param
         </Card>
       </div>
       
-      {/* Add CSS animations */}
-      <style jsx global>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        @keyframes fadeInLeft {
-          from {
-            opacity: 0;
-            transform: translateX(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-        
-        @keyframes scaleIn {
-          from {
-            opacity: 0;
-            transform: scale(0);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-        
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-      `}</style>
+
     </div>
   );
 } 

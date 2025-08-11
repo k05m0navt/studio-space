@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Search, Filter, X, Calendar, MapPin, Clock, Users } from 'lucide-react';
+import { Search, Filter, X, Calendar, Users } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -410,21 +410,21 @@ export function SmartSearch({
 }
 
 // Debounce hook
-function useDebounce<T extends (...args: any[]) => any>(
-  callback: T,
+function useDebounce<Args extends unknown[]>(
+  callback: (...args: Args) => void,
   delay: number
-): T {
-  const debounceRef = useRef<NodeJS.Timeout>();
+) {
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const debouncedCallback = useCallback(
-    (...args: Parameters<T>) => {
+    (...args: Args) => {
       if (debounceRef.current) {
         clearTimeout(debounceRef.current);
       }
       debounceRef.current = setTimeout(() => callback(...args), delay);
     },
     [callback, delay]
-  ) as T;
+  );
 
   useEffect(() => {
     return () => {
@@ -434,5 +434,5 @@ function useDebounce<T extends (...args: any[]) => any>(
     };
   }, []);
 
-  return debouncedCallback;
+  return debouncedCallback as (...args: Args) => void;
 } 

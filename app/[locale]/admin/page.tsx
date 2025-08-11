@@ -104,8 +104,8 @@ interface Stats {
   weeklyGrowth: number;
 }
 
-const AdminLoginForm = ({ onLogin }: { onLogin: (credentials: { username: string; password: string }) => void }) => {
-  const [credentials, setCredentials] = useState({ username: "", password: "" });
+const AdminLoginForm = ({ onLogin }: { onLogin: () => void }) => {
+  const [credentials, setCredentials] = useState({ email: "", password: "" });
   const [isLoading, setIsLoading] = useState(false);
   const t = useTranslations('admin');
   const tAuth = useTranslations('auth');
@@ -113,18 +113,31 @@ const AdminLoginForm = ({ onLogin }: { onLogin: (credentials: { username: string
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    if (credentials.username === "admin" && credentials.password === "admin123") {
-      onLogin(credentials);
-      toast.success(tAuth('loginSuccess'));
-    } else {
+    try {
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: credentials.email, password: credentials.password })
+      });
+      if (!res.ok) {
+        toast.error(tAuth('loginFailed'));
+        setIsLoading(false);
+        return;
+      }
+      const data = await res.json();
+      if (data?.token) {
+        localStorage.setItem('adminToken', data.token);
+        localStorage.setItem('adminAuth', 'authenticated');
+        onLogin();
+        toast.success(tAuth('loginSuccess'));
+      } else {
+        toast.error(tAuth('loginFailed'));
+      }
+    } catch {
       toast.error(tAuth('loginFailed'));
+    } finally {
+      setIsLoading(false);
     }
-    
-    setIsLoading(false);
   };
 
   return (
@@ -158,13 +171,13 @@ const AdminLoginForm = ({ onLogin }: { onLogin: (credentials: { username: string
               className="space-y-6"
             >
               <div className="space-y-2">
-                <Label htmlFor="username">{tAuth('username')}</Label>
+                <Label htmlFor="email">{tAuth('email')}</Label>
                 <Input
-                  id="username"
-                  type="text"
-                  placeholder={tAuth('username')}
-                  value={credentials.username}
-                  onChange={(e) => setCredentials(prev => ({ ...prev, username: e.target.value }))}
+                  id="email"
+                  type="email"
+                  placeholder={tAuth('email')}
+                  value={credentials.email}
+                  onChange={(e) => setCredentials(prev => ({ ...prev, email: e.target.value }))}
                   required
                   className="h-12"
                 />
@@ -252,7 +265,7 @@ const StatsCard = ({
           {trend !== undefined && (
             <div className="flex items-center gap-1 mt-auto">
               <TrendingUp className={cn("w-3 h-3", trend >= 0 ? "text-green-500" : "text-red-500")} />
-              <span className={cn("text-xs font-medium", trend >= 0 ? "text-green-500" : "text-red-500")}>
+              <span className={cn("text-xs font-medium", trend >= 0 ? "text-green-500" : "text-red-500")}> 
                 {trend >= 0 ? "+" : ""}{trend}% {trendLabel}
               </span>
             </div>
@@ -290,20 +303,20 @@ export default function AdminDashboard() {
   const loadDashboardData = useCallback(async () => {
     setIsLoadingData(true);
     try {
-      // Get the current path to determine the locale
+      const token = localStorage.getItem('adminToken');
+      const headers: HeadersInit | undefined = token ? { Authorization: `Bearer ${token}` } : undefined;
+
       const locale = window.location.pathname.split('/')[1] || 'en';
-      
-      // Load data from the API endpoints with locale prefix
+
       const [bookingsResponse, usersResponse, statsResponse] = await Promise.all([
-        fetch(`/${locale}/api/admin/bookings`, { cache: 'no-store' }),
-        fetch(`/${locale}/api/admin/users`, { cache: 'no-store' }),
-        fetch(`/${locale}/api/admin/stats`, { cache: 'no-store' })
+        fetch(`/${locale}/api/admin/bookings`, { cache: 'no-store', headers }),
+        fetch(`/${locale}/api/admin/users`, { cache: 'no-store', headers }),
+        fetch(`/${locale}/api/admin/stats`, { cache: 'no-store', headers })
       ]);
 
-      // Default fallback data in case of API errors
-      let bookingsData = [];
-      let usersData = [];
-      let statsData = {
+      let bookingsData: Booking[] = [];
+      let usersData: User[] = [];
+      let statsData: Stats = {
         totalBookings: 0,
         monthlyRevenue: 0,
         activeMembers: 0,
@@ -314,56 +327,16 @@ export default function AdminDashboard() {
         weeklyGrowth: 0
       };
       
-      // Try to get real data from APIs if available
       if (bookingsResponse.ok) {
-        bookingsData = await bookingsResponse.json();
-      } else {
-        console.warn('Failed to fetch bookings data, using fallback');
-        bookingsData = [
-          {
-            id: '1',
-            name: 'John Doe',
-            email: 'john@example.com',
-            type: 'studio',
-            date: new Date().toISOString(),
-            start_time: '10:00',
-            end_time: '12:00',
-            status: 'confirmed',
-            createdAt: new Date().toISOString()
-          }
-        ];
+        const data = await bookingsResponse.json();
+        bookingsData = Array.isArray(data) ? data : (data?.bookings ?? []);
       }
-      
       if (usersResponse.ok) {
-        usersData = await usersResponse.json();
-      } else {
-        console.warn('Failed to fetch users data, using fallback');
-        usersData = [
-          {
-            id: '1',
-            name: 'Admin User',
-            email: 'admin@example.com',
-            role: 'admin',
-            isActive: true,
-            createdAt: new Date().toISOString()
-          }
-        ];
+        const data = await usersResponse.json();
+        usersData = Array.isArray(data) ? data : (data?.users ?? []);
       }
-      
       if (statsResponse.ok) {
         statsData = await statsResponse.json();
-      } else {
-        console.warn('Failed to fetch stats data, using fallback');
-        statsData = {
-          totalBookings: bookingsData.length,
-          monthlyRevenue: 500,
-          activeMembers: usersData.length,
-          studioUtilization: 65,
-          pendingBookings: bookingsData.filter((b: Booking) => b.status === 'pending').length,
-          confirmedBookings: bookingsData.filter((b: Booking) => b.status === 'confirmed').length,
-          todayBookings: bookingsData.length,
-          weeklyGrowth: 5
-        };
       }
       
       setStats(statsData);
@@ -379,7 +352,6 @@ export default function AdminDashboard() {
     }
   }, [t]);
 
-  // Check authentication on mount
   useEffect(() => {
     const adminAuth = localStorage.getItem("adminAuth");
     if (adminAuth === "authenticated") {
@@ -389,9 +361,7 @@ export default function AdminDashboard() {
     setIsLoading(false);
   }, [loadDashboardData]);
 
-  const handleLogin = (credentials: { username: string; password: string }) => {
-    localStorage.setItem("adminAuth", "authenticated");
-    localStorage.setItem("adminUser", JSON.stringify(credentials));
+  const handleLogin = () => {
     setIsAuthenticated(true);
     loadDashboardData();
   };
@@ -399,6 +369,7 @@ export default function AdminDashboard() {
   const handleLogout = () => {
     localStorage.removeItem("adminAuth");
     localStorage.removeItem("adminUser");
+    localStorage.removeItem("adminToken");
     setIsAuthenticated(false);
     toast.success(t('messages.logoutSuccess'));
   };

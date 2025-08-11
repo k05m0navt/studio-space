@@ -7,6 +7,12 @@ import { motion } from "framer-motion";
 import { useTranslations } from 'next-intl';
 import { useEffect, useRef } from 'react';
 
+declare global {
+  interface Window {
+    ymaps?: any;
+  }
+}
+
 // Yandex Maps component
 function YandexMap({ className }: { className?: string }) {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -22,9 +28,11 @@ function YandexMap({ className }: { className?: string }) {
         document.head.appendChild(script);
         
         script.onload = () => {
-          window.ymaps.ready(() => {
-            initMap();
-          });
+          if (window.ymaps) {
+            window.ymaps.ready(() => {
+              initMap();
+            });
+          }
         };
       } else if (window.ymaps) {
         window.ymaps.ready(() => {
@@ -34,7 +42,7 @@ function YandexMap({ className }: { className?: string }) {
     };
 
     const initMap = () => {
-      if (!mapRef.current || mapInstanceRef.current) return;
+      if (!mapRef.current || mapInstanceRef.current || !window.ymaps) return;
 
       // Studio coordinates (example: Moscow)
       const studioCoordinates = [55.7558, 37.6176];
@@ -78,7 +86,7 @@ function YandexMap({ className }: { className?: string }) {
     loadYandexMap();
 
     return () => {
-      if (mapInstanceRef.current) {
+      if (mapInstanceRef.current && typeof mapInstanceRef.current.destroy === 'function') {
         mapInstanceRef.current.destroy();
         mapInstanceRef.current = null;
       }
