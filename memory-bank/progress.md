@@ -10,3 +10,5 @@
   - Build: success with swagger-jsdoc warning (known)
 - REFLECT: Phase 1-2 reviewed; reflection.md updated; checkpoints marked — 2025-08-12T09:56:23Z
 - ARCHIVE: Created docs/archive/finish-studio-space-mvp-phases-1-2-20250812.md; tasks marked COMPLETE — 2025-08-12T10:05:23Z
+
+- ARCHIVE: Added vercel-prisma-generate-fix-20250812.md; tasks marked COMPLETED — 2025-08-12T10:44:53Z

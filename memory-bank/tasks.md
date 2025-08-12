@@ -141,3 +141,9 @@
 
 ## Deployment Fixes
 - [x] Ensure Prisma Client is generated on Vercel by adding `postinstall` and prepending `prisma generate` to `build` script in `package.json`.
+
+
+## Archive
+- **Date**: 2025-08-12
+- **Archive Document**: /Users/k05m0navt/Work/VashaStudio/studio-space/docs/archive/vercel-prisma-generate-fix-20250812.md
+- **Status**: COMPLETED
