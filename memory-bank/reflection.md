@@ -99,3 +99,34 @@ Vercel build failed with PrismaClientInitializationError due to cached dependenc
 - Merge `dev` into `master` or update Vercel to deploy the `dev` branch.
 - Trigger a redeploy and confirm successful build.
 - Add minimal endpoint smoke tests to CI to catch deployment regressions early.
+
+# Task Reflection: Booking Flow E2E + Gallery Optimization
+
+## Summary
+Converted the booking page to a Server Component rendering the client `BookingForm`, confirmed i18n usage and availability wiring in the form, and optimized gallery images by switching from `motion.img` to `OptimizedImage` with responsive sizing. Build succeeded.
+
+## What Went Well
+- Booking flow UI unified and localized; availability disables slots via `/api/bookings/availability`.
+- Server Component wrapper for booking page reduces client JS.
+- Gallery now uses optimized images with lazy loading and blur placeholder.
+
+## Challenges
+- Preserving hover/overlay animations while switching to `OptimizedImage`.
+- Ensuring locale-aware navigation still works after refactor.
+
+## Lessons Learned
+- Keep page-level components server-rendered when possible; isolate client logic to small components.
+- Encapsulating image concerns in `OptimizedImage` simplifies future migrations.
+
+## Process Improvements
+- Add a quick manual smoke-test checklist for both locales (booking submit + success navigation).
+- Capture a standard image sizing guide for gallery cards.
+
+## Technical Improvements
+- Add unit tests for booking POST conflict and availability mapping.
+- Consider reducing framer-motion on large image grids if it impacts Web Vitals.
+
+## Next Steps
+- Manually verify booking success flow in `en` and `ru`.
+- Add Jest + RTL tests for bookings and auth.
+- Evaluate CSP tightening once tests are in place.

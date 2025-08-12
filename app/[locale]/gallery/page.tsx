@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Camera, Users, Calendar, Filter } from "lucide-react";
+import { OptimizedImage } from "@/components/optimized-image";
 
 const categories = [
   { id: 'all', labelKey: 'all' },
@@ -184,13 +185,13 @@ export default function GalleryPage() {
               >
                 <Card className="overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300">
                   <div className="relative overflow-hidden">
-                    <motion.img
-                      src={item.image}
-                      alt={item.title}
-                      className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ duration: 0.3 }}
-                    />
+                    <div className="relative">
+                      <OptimizedImage
+                        src={item.image}
+                        alt={item.title}
+                        className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <motion.div 
                       className="absolute top-4 right-4"

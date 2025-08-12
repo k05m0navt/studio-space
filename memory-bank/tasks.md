@@ -147,3 +147,58 @@
 - **Date**: 2025-08-12
 - **Archive Document**: /Users/k05m0navt/Work/VashaStudio/studio-space/docs/archive/vercel-prisma-generate-fix-20250812.md
 - **Status**: COMPLETED
+
+## PLAN: Booking Flow E2E + Gallery Optimization (Level 3)
+
+### Requirements
+- [x] i18n-ready booking form uses /api/bookings and /api/bookings/availability
+- [x] Success redirect uses locale-aware router to /booking-success
+- [x] Replace gallery images with OptimizedImage/next/image using WebP + sizes
+
+### Components Affected
+- app/[locale]/book/page.tsx
+- components/booking-form.tsx
+- app/[locale]/gallery/page.tsx
+- lib/auth.ts (JWT usage in admin fetches)
+
+### Implementation Steps
+1. [ ] Render <BookingForm /> in app/[locale]/book/page.tsx
+2. [ ] Add useTranslations to components/booking-form.tsx; replace text literals
+3. [ ] Use i18n useRouter from @/i18n/routing for redirect to /booking-success
+4. [ ] Wire availability API to disable/unselect unavailable slots
+5. [ ] Swap gallery images to OptimizedImage with sizes and WebP assets
+
+### Dependencies
+- JWT_SECRET, DIRECT_URL set
+- Images available in public/images/gallery/*.webp
+
+### Challenges & Mitigations
+- Locale routing edge cases → rely on i18n router helpers
+- Availability race conditions → revalidate on submit, display conflict errors
+
+### Status
+- [x] Planning complete
+- [ ] Implementation in progress
+
+### Next Mode
+- IMPLEMENT
+
+
+## BUILD: Booking Flow E2E + Gallery Optimization
+
+### Items Completed
+- [x] Render <BookingForm /> in app/[locale]/book/page.tsx (Server Component)
+- [x] Booking form uses useTranslations for labels and copy
+- [x] Success redirect uses i18n useRouter to /booking-success
+- [x] Availability API wired to disable unavailable time slots
+- [x] Gallery images switched to OptimizedImage with responsive sizes
+
+### Verification
+- yarn build: SUCCESS (swagger-jsdoc warning only)
+
+
+## Archive
+- **Date**: 2025-08-12
+- **Archive Document**: /Users/k05m0navt/Work/VashaStudio/studio-space/docs/archive/booking-flow-e2e-gallery-optimization-20250812.md
+- **Status**: COMPLETED
+
