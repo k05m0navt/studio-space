@@ -137,3 +137,7 @@
 - **Date**: 2025-08-12
 - **Archive Document**: /Users/k05m0navt/Work/VashaStudio/studio-space/docs/archive/finish-studio-space-mvp-phases-1-2-20250812.md
 - **Status**: COMPLETED
+
+
+## Deployment Fixes
+- [x] Ensure Prisma Client is generated on Vercel by adding `postinstall` and prepending `prisma generate` to `build` script in `package.json`.
