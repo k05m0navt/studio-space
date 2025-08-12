@@ -178,7 +178,7 @@
 
 ### Status
 - [x] Planning complete
-- [ ] Implementation in progress
+- [x] Implementation complete
 
 ### Next Mode
 - IMPLEMENT
@@ -254,8 +254,8 @@
 
 ### Status
 - [x] Planning complete
-- [ ] Implementation in progress
+- [x] Implementation complete
 
 ### Next Mode
-- IMPLEMENT
+- QA
 
