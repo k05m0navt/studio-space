@@ -130,3 +130,97 @@ Converted the booking page to a Server Component rendering the client `BookingFo
 - Manually verify booking success flow in `en` and `ru`.
 - Add Jest + RTL tests for bookings and auth.
 - Evaluate CSP tightening once tests are in place.
+# Task Reflection: Admin Login Wiring
+## PLAN: Admin Login Wiring (Level 3)
+
+## Summary
+Implemented real admin login via POST /api/auth/login with JWT issuance and persisted session. Admin UI stores token and uses authorizedFetch; locale proxies forward Authorization. RBAC enforced on admin APIs. Build succeeded.
+
+## What Went Well
+- Centralized header injection via authorizedFetch
+- Clear error handling and toasts for 401/403
+- Thin locale-aware proxy routes kept client paths stable
+
+## Challenges
+- Ensuring consistent role casing (ADMIN/admin)
+- Coordinating localStorage state and UI gating without flicker
+
+## Lessons Learned
+- Keep auth helpers co-located with consumer or in tiny lib to minimize coupling
+- Validate session on mount to reduce invalid state windows
+
+## Process Improvements
+- Add integration test for login + authorized admin fetch
+- Extract shared JSON/error helpers for API routes
+
+## Technical Improvements
+- Consider httpOnly cookie for admin auth in future
+- Add token refresh/short TTL with rolling sessions
+
+## Next Steps
+- Archive task and link document
+- Plan cookie-based auth migration (optional)
+
+
+### Requirements
+- [x] Use `POST /api/auth/login` to authenticate and receive `{ token, user }`
+- [x] Store JWT in `localStorage` as `adminToken` and set `adminAuth=authenticated`
+- [x] Attach `Authorization: Bearer <token>` to all admin fetches
+- [x] Handle 401/403 by clearing token, showing login form, and surfacing i18n toast
+- [x] Keep locale-aware admin proxy routes; forward headers intact
+- [x] Use `messages/*` i18n keys for auth toasts and states
+
+### Components Affected
+- `app/[locale]/admin/page.tsx`
+- `app/[locale]/api/admin/{bookings,users,stats}/route.ts` (verify header forwarding)
+- `lib/auth.ts` (no change required for this task)
+- `messages/{en,ru}.json` (strings already present)
+
+### Architecture Considerations
+- Introduce a small client helper to centralize token header injection and 401 handling:
+  - `authorizedFetch(input, init?)` → adds `Authorization` header if token exists; on 401/403 clears auth storage and returns an error shape
+  - `getAuthHeaders()` → returns `{ Authorization: Bearer <token> } | {}`
+- Keep token in `localStorage` for now (future: httpOnly cookie)
+- Use locale-aware paths for client fetches (existing proxies)
+
+### Implementation Strategy
+1. Add `authorizedFetch` and `getAuthHeaders` inside `app/[locale]/admin/page.tsx` (scoped for now) or a tiny `lib/client-auth.ts`.
+2. Update `AdminLoginForm` submit to also persist `user` as `adminUser` (stringified) and keep existing token/adminAuth writes.
+3. Replace direct `fetch` calls in `loadDashboardData` with `authorizedFetch` and handle unauthorized by:
+   - Clearing token/admin flags
+   - `setIsAuthenticated(false)` and showing login form
+   - Toast `auth.sessionExpired` or `common.unauthorized`
+4. On mount, if token present, attempt a lightweight authorized call (e.g., stats) to validate session; fallback to login on 401.
+5. Ensure proxy routes keep forwarding `Authorization` (already implemented); no changes expected.
+6. Add minimal JSDoc comments for helpers and key functions.
+
+### Detailed Steps
+- [x] Create `authorizedFetch` + `getAuthHeaders`
+- [x] Store `user` in `localStorage` on successful login
+- [x] Migrate admin data fetches to `authorizedFetch`
+- [x] Add 401/403 handling: clear storage, set unauthenticated, toast
+- [x] Validate session on mount via a single authorized call
+
+### Dependencies
+- `JWT_SECRET` set in environment (server)
+- Working endpoints: `/api/auth/login`, `/api/admin/{bookings,users,stats}`
+
+### Challenges & Mitigations
+- Token expiry / invalidation → centralized 401 handler resets state and prompts login
+- UI state flicker on re-auth → gate data loads behind `isAuthenticated`, show spinner while validating
+
+### Status
+- [x] Planning complete
+- [x] Implementation complete
+
+### Next Mode
+- ARCHIVE
+
+
+### Reflection Verification
+- Implementation thoroughly reviewed? YES
+- Successes documented? YES
+- Challenges documented? YES
+- Lessons Learned documented? YES
+- Process/Technical Improvements identified? YES
+- Next Steps documented? YES
