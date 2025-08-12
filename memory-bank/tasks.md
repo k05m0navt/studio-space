@@ -257,5 +257,5 @@
 - [x] Implementation complete
 
 ### Next Mode
-- QA
+- REFLECT
 

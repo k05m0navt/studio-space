@@ -27,3 +27,5 @@
 - ARCHIVE(Admin Login Wiring): docs/archive/admin-login-wiring-20250812.md — 2025-08-12T19:57:58Z
 
 - VAN->QA sync: 2025-08-12T20:01:22Z
+
+- QA(Admin Login Wiring): build SUCCESS; code wiring verified; proxies forward Authorization; requireRole enforced — 2025-08-12T20:03:09Z
