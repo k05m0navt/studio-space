@@ -68,6 +68,23 @@ import {
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 
+// Helpers
+/** Returns Authorization header from localStorage token if available (client-only). */
+function getAuthHeaders(): HeadersInit {
+  if (typeof window === 'undefined') return {};
+  const token = localStorage.getItem('adminToken');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
+/**
+ * Wraps fetch to attach Authorization header and no-store. Does not throw on 401/403.
+ * Caller should handle unauthorized responses to reset UI state.
+ */
+async function authorizedFetch(input: RequestInfo | URL, init: RequestInit = {}): Promise<Response> {
+  const mergedHeaders: HeadersInit = { ...(init.headers || {}), ...getAuthHeaders() };
+  return fetch(input, { ...init, headers: mergedHeaders, cache: init.cache ?? 'no-store' });
+}
+
 // Types
 interface Booking {
   id: string;
@@ -112,28 +129,43 @@ const AdminLoginForm = ({ onLogin }: { onLogin: () => void }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isLoading) return; // guard against duplicate submits
     setIsLoading(true);
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
       const res = await fetch('/api/auth/login', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: credentials.email, password: credentials.password })
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ email: credentials.email, password: credentials.password }),
+        cache: 'no-store',
+        signal: controller.signal,
+        credentials: 'omit'
       });
+      clearTimeout(timeoutId);
       if (!res.ok) {
         toast.error(tAuth('loginFailed'));
         setIsLoading(false);
         return;
       }
       const data = await res.json();
-      if (data?.token) {
+      if (data?.token && data?.user) {
+        // Enforce admin role for dashboard access
+        const roleUpper = String(data.user.role).toUpperCase();
+        if (roleUpper !== 'ADMIN') {
+          toast.error(tAuth('accessDenied'));
+          setIsLoading(false);
+          return;
+        }
         localStorage.setItem('adminToken', data.token);
         localStorage.setItem('adminAuth', 'authenticated');
+        localStorage.setItem('adminUser', JSON.stringify(data.user));
         onLogin();
         toast.success(tAuth('loginSuccess'));
       } else {
         toast.error(tAuth('loginFailed'));
       }
-    } catch {
+    } catch (err) {
       toast.error(tAuth('loginFailed'));
     } finally {
       setIsLoading(false);
@@ -299,20 +331,33 @@ export default function AdminDashboard() {
   
   const t = useTranslations('admin');
   const tCommon = useTranslations('common');
+  const tAuth = useTranslations('auth');
+
+  const handleUnauthorized = useCallback(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('adminAuth');
+      localStorage.removeItem('adminUser');
+      localStorage.removeItem('adminToken');
+    }
+    setIsAuthenticated(false);
+    toast.error(tAuth('sessionExpired'));
+  }, [tAuth]);
 
   const loadDashboardData = useCallback(async () => {
     setIsLoadingData(true);
     try {
-      const token = localStorage.getItem('adminToken');
-      const headers: HeadersInit | undefined = token ? { Authorization: `Bearer ${token}` } : undefined;
-
       const locale = window.location.pathname.split('/')[1] || 'en';
 
       const [bookingsResponse, usersResponse, statsResponse] = await Promise.all([
-        fetch(`/${locale}/api/admin/bookings`, { cache: 'no-store', headers }),
-        fetch(`/${locale}/api/admin/users`, { cache: 'no-store', headers }),
-        fetch(`/${locale}/api/admin/stats`, { cache: 'no-store', headers })
+        authorizedFetch(`/${locale}/api/admin/bookings`),
+        authorizedFetch(`/${locale}/api/admin/users`),
+        authorizedFetch(`/${locale}/api/admin/stats`)
       ]);
+
+      if ([bookingsResponse, usersResponse, statsResponse].some(r => r.status === 401 || r.status === 403)) {
+        handleUnauthorized();
+        return;
+      }
 
       let bookingsData: Booking[] = [];
       let usersData: User[] = [];
@@ -350,7 +395,7 @@ export default function AdminDashboard() {
     } finally {
       setIsLoadingData(false);
     }
-  }, [t]);
+  }, [t, handleUnauthorized]);
 
   useEffect(() => {
     const adminAuth = localStorage.getItem("adminAuth");

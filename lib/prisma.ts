@@ -11,7 +11,8 @@ export const prisma =
     log: ['query', 'error', 'warn'],
     datasources: {
       db: {
-        url: process.env.DIRECT_URL
+        // Use pooled connection for runtime; DIRECT_URL is for migrations
+        url: process.env.DATABASE_URL
       }
     }
   })

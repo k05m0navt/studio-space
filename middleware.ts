@@ -57,9 +57,13 @@ export default function middleware(request: NextRequest) {
     return NextResponse.rewrite(new URL('/manifest.json', request.url));
   }
   
-  // Apply rate limiting to API routes
-  if (request.nextUrl.pathname.startsWith('/api/') || 
-      /^\/\(ru|en\)\/api\//.test(request.nextUrl.pathname)) {
+  // Determine if API path
+  const isBaseApi = request.nextUrl.pathname.startsWith('/api/');
+  const isLocaleApi = /^\/(ru|en)\/api\//.test(request.nextUrl.pathname);
+  const isAuthEndpoint = /\/api\/auth\//.test(request.nextUrl.pathname);
+
+  // Apply rate limiting to API routes (skip auth endpoints)
+  if ((isBaseApi || isLocaleApi) && !isAuthEndpoint) {
     if (!applyRateLimit(request)) {
       return new NextResponse('Too Many Requests', { 
         status: 429,
@@ -73,8 +77,14 @@ export default function middleware(request: NextRequest) {
     }
   }
   
-  // Handle internationalization
-  const response = intlMiddleware(request);
+  // For API requests, skip next-intl locale routing to avoid rewriting /api -> /en/api
+  let response: NextResponse;
+  if (isBaseApi || isLocaleApi) {
+    response = NextResponse.next();
+  } else {
+    // Handle internationalization for non-API requests
+    response = intlMiddleware(request);
+  }
   
   // Add security headers to all responses
   return addSecurityHeaders(response);

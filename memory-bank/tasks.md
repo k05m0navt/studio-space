@@ -202,3 +202,60 @@
 - **Archive Document**: /Users/k05m0navt/Work/VashaStudio/studio-space/docs/archive/booking-flow-e2e-gallery-optimization-20250812.md
 - **Status**: COMPLETED
 
+
+## PLAN: Admin Login Wiring (Level 3)
+
+### Requirements
+- [x] Use `POST /api/auth/login` to authenticate and receive `{ token, user }`
+- [x] Store JWT in `localStorage` as `adminToken` and set `adminAuth=authenticated`
+- [x] Attach `Authorization: Bearer <token>` to all admin fetches
+- [x] Handle 401/403 by clearing token, showing login form, and surfacing i18n toast
+- [x] Keep locale-aware admin proxy routes; forward headers intact
+- [x] Use `messages/*` i18n keys for auth toasts and states
+
+### Components Affected
+- `app/[locale]/admin/page.tsx`
+- `app/[locale]/api/admin/{bookings,users,stats}/route.ts` (verify header forwarding)
+- `lib/auth.ts` (no change required for this task)
+- `messages/{en,ru}.json` (strings already present)
+
+### Architecture Considerations
+- Introduce a small client helper to centralize token header injection and 401 handling:
+  - `authorizedFetch(input, init?)` → adds `Authorization` header if token exists; on 401/403 clears auth storage and returns an error shape
+  - `getAuthHeaders()` → returns `{ Authorization: Bearer <token> } | {}`
+- Keep token in `localStorage` for now (future: httpOnly cookie)
+- Use locale-aware paths for client fetches (existing proxies)
+
+### Implementation Strategy
+1. Add `authorizedFetch` and `getAuthHeaders` inside `app/[locale]/admin/page.tsx` (scoped for now) or a tiny `lib/client-auth.ts`.
+2. Update `AdminLoginForm` submit to also persist `user` as `adminUser` (stringified) and keep existing token/adminAuth writes.
+3. Replace direct `fetch` calls in `loadDashboardData` with `authorizedFetch` and handle unauthorized by:
+   - Clearing token/admin flags
+   - `setIsAuthenticated(false)` and showing login form
+   - Toast `auth.sessionExpired` or `common.unauthorized`
+4. On mount, if token present, attempt a lightweight authorized call (e.g., stats) to validate session; fallback to login on 401.
+5. Ensure proxy routes keep forwarding `Authorization` (already implemented); no changes expected.
+6. Add minimal JSDoc comments for helpers and key functions.
+
+### Detailed Steps
+- [x] Create `authorizedFetch` + `getAuthHeaders`
+- [x] Store `user` in `localStorage` on successful login
+- [x] Migrate admin data fetches to `authorizedFetch`
+- [x] Add 401/403 handling: clear storage, set unauthenticated, toast
+- [x] Validate session on mount via a single authorized call
+
+### Dependencies
+- `JWT_SECRET` set in environment (server)
+- Working endpoints: `/api/auth/login`, `/api/admin/{bookings,users,stats}`
+
+### Challenges & Mitigations
+- Token expiry / invalidation → centralized 401 handler resets state and prompts login
+- UI state flicker on re-auth → gate data loads behind `isAuthenticated`, show spinner while validating
+
+### Status
+- [x] Planning complete
+- [ ] Implementation in progress
+
+### Next Mode
+- IMPLEMENT
+
