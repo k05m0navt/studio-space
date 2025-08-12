@@ -33,3 +33,8 @@
 - REFLECT(Admin Login Wiring): reflection.md updated; next ARCHIVE — 2025-08-12T20:05:18Z
 
 - ARCHIVE(Admin Login Wiring): archived with link; tasks marked COMPLETED — 2025-08-12T20:05:54Z
+- VAN sync completed: 2025-08-12T20:08:04Z
+- IMPLEMENT(Security & Tests): 2025-08-12T20:16:04Z\n  - Added Jest + ts-jest config, setup polyfills\n  - Wrote tests: bookings POST, admin stats GET, auth login POST\n  - Tightened CSP (removed 'unsafe-eval')\n  - yarn test: PASS (3 suites)\n  - yarn build: SUCCESS (swagger-jsdoc warning)
+- QA(Security & Tests): 2025-08-12T20:24:16Z — tests pass; build success; CSP tightened
+- REFLECT(Security & Tests): 2025-08-12T20:28:27Z — reflection.md updated; Next Mode set to ARCHIVE
+- ARCHIVE(Security & Tests): 2025-08-12T20:30:09Z — archived docs/archive/security-tests-20250812.md; tasks updated

@@ -224,3 +224,34 @@ Implemented real admin login via POST /api/auth/login with JWT issuance and pers
 - Lessons Learned documented? YES
 - Process/Technical Improvements identified? YES
 - Next Steps documented? YES
+# Task Reflection: Security & Test Coverage (Level 2)
+
+## Summary
+Added Jest + ts-jest with ESM, polyfilled fetch APIs for route tests, wrote unit tests for bookings POST, admin stats GET, and auth login POST. Tightened CSP by removing \unsafe-eval\ while keeping app functional. All tests pass; build succeeds.
+
+## What Went Well
+- Direct invocation of route handlers kept tests fast and deterministic
+- Prisma access mocked via spies; JWT/session path validated for admin
+- CSP tightening did not break build/runtime
+
+## Challenges
+- Jest ESM + ts-jest config required enabling useESM and alias mapping
+- Admin stats route uses RBAC; needed to mock prisma.session.findUnique and sign JWT
+- Bcrypt compare had to be mocked to avoid hashing in tests
+
+## Lessons Learned
+- Favor small, isolated tests around route handlers using web-standard Request/Response
+- Establish a consistent auth/session mock pattern for RBAC-protected routes
+- Keep CSP strict by default; extend only as needed
+
+## Process Improvements
+- Add these tests to CI with `yarn build && yarn test --ci --runInBand`
+- Create a shared test util to build authorized Request with JWT/session mocks
+
+## Technical Improvements
+- Consider moving JSON/error helpers to a shared util for consistent responses
+- Explore removing \unsafe-inline\ by adopting non-inline scripts/styles where possible
+
+## Next Steps
+- Archive this task and link docs
+- Evaluate migrating to cookie-based admin auth in future

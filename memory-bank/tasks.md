@@ -181,7 +181,7 @@
 - [x] Implementation complete
 
 ### Next Mode
-- IMPLEMENT
+- REFLECT
 
 
 ## BUILD: Booking Flow E2E + Gallery Optimization
@@ -259,3 +259,69 @@
 ### Next Mode
 - REFLECT
 
+undefined
+
+### Requirements
+- [ ] Add Jest + RTL and unit tests for bookings, admin stats, and auth login
+- [ ] Tighten CSP headers; remove unsafe-eval if feasible
+
+### Components Affected
+- app/api/bookings/*
+- app/api/admin/*
+- app/api/auth/*
+- middleware.ts
+
+### Implementation Steps
+1. [x] Configure Jest + RTL in project; add scripts
+2. [x] Write tests for POST /api/bookings (validation, conflict)
+3. [x] Write tests for admin stats aggregation
+4. [x] Write tests for /api/auth/login happy/error paths
+5. [x] Audit CSP in middleware.ts; reduce unsafe-* and add necessary sources
+6. [x] Build and run tests locally
+
+### Dependencies
+- Node 18+, jest, @testing-library/react, ts-jest
+
+### Status
+- [x] Planning complete
+- [x] Implementation complete
+- [x] QA complete
+
+### Next Mode
+- ARCHIVE
+### Overview
+- Add Jest + RTL testing setup; create unit tests for critical APIs (bookings, admin stats, auth login).
+- Harden CSP in `middleware.ts` to reduce unsafe directives while keeping app functional.
+
+### Files to Modify
+- `package.json` (scripts: test, test:watch, coverage; devDependencies: jest, ts-jest, @types/jest, @testing-library/react, @testing-library/jest-dom, whatwg-node/fetch or undici)
+- `jest.config.ts` (ts-jest preset, ESM support, testEnvironment: node, setupFilesAfterEnv)
+- `tsconfig.json` (include `types: ["jest", "@testing-library/jest-dom"]` in tests context or create `tsconfig.test.json`)
+- `tests/api/bookings.test.ts`
+- `tests/api/admin-stats.test.ts`
+- `tests/api/auth-login.test.ts`
+- `middleware.ts` (CSP header adjustments)
+
+### Testing Strategy
+- Unit-test route handlers by invoking exported `GET/POST` with `Request` from undici (Node 18) and asserting `Response` JSON/status.
+- Mock Prisma via `jest.mock("@/lib/prisma")` returning controlled data for each test.
+- Validate error paths (validation failures, 401/403) and happy paths.
+- Use coverage thresholds to ensure meaningful coverage.
+- CI-ready: `yarn build && yarn test --ci --runInBand`.
+
+### Potential Challenges
+- Next.js route handler testing in Node: ensure `global.fetch/Request/Response` via undici polyfill in Jest setup.
+- Prisma mocking complexity: export a minimal interface from `@/lib/prisma` to simplify mocks.
+- CSP tightening may break analytics or external assets; iterate by whitelisting exact origins.
+
+### Technology Validation
+- [x] Node 18+ with undici fetch available in Jest env
+- [x] jest + ts-jest configuration compiles TS tests
+- [x] Minimal sample test runs and passes
+- [x] `yarn build` remains successful after adding configs
+
+### Status
+- [x] Planning complete
+
+### Next Mode
+- IMPLEMENT
