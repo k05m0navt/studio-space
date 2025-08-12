@@ -12,6 +12,32 @@ datasource db {
   url      = env("DIRECT_URL")
 }
 
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  role      Role     @default(USER)
+  password  String   // hashed password
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  sessions  Session[]
+  bookings  Booking[]
+  contents  Content[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  // Relations
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
 model Booking {
   id         String   @id @default(cuid())
   name       String
@@ -25,6 +51,10 @@ model Booking {
   updatedAt  DateTime @updatedAt
   type       String   // 'studio' or 'coworking'
   status     String   @default("pending") // pending, confirmed, cancelled
+  userId     String?
+
+  // Relations
+  user User? @relation(fields: [userId], references: [id])
 }
 
 model Faq {
@@ -33,6 +63,107 @@ model Faq {
   answer    String
   category  String   // 'studio', 'coworking', 'general'
   order     Int
+  isActive  Boolean  @default(true)
+  locale    String   @default("en") // for i18n support
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Content {
+  id          String      @id @default(cuid())
+  type        ContentType
+  key         String      // unique identifier for the content
+  title       String
+  content     String      @db.Text
+  description String?
+  locale      String      @default("en") // for i18n support
+  isActive    Boolean     @default(true)
+  metadata    Json?       // for additional data like images, links, etc.
+  order       Int?        // for ordering content
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  createdBy   String?
+
+  // Relations
+  author User? @relation(fields: [createdBy], references: [id])
+
+  @@unique([key, locale]) // ensure unique content per locale
+}
+
+model Settings {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String   @db.Text
+  type      String   // 'string', 'number', 'boolean', 'json'
+  group     String?  // for grouping settings
+  isPublic  Boolean  @default(false) // whether the setting can be accessed publicly
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ContactMessage {
+  id        String            @id @default(cuid())
+  name      String
+  email     String
+  subject   String?
+  message   String            @db.Text
+  type      ContactType       @default(GENERAL)
+  status    MessageStatus     @default(UNREAD)
+  priority  MessagePriority   @default(NORMAL)
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+}
+
+model Gallery {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  imageUrl    String
+  category    String   // 'studio', 'coworking', 'events'
+  tags        String[] // for filtering
+  isActive    Boolean  @default(true)
+  order       Int?
+  metadata    Json?    // for additional image data
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Enums
+enum Role {
+  USER
+  ADMIN
+  MODERATOR
+}
+
+enum ContentType {
+  PAGE
+  BLOG_POST
+  ANNOUNCEMENT
+  HERO_SECTION
+  FEATURE
+  TESTIMONIAL
+  SERVICE
+}
+
+enum ContactType {
+  GENERAL
+  BOOKING
+  SUPPORT
+  PARTNERSHIP
+  MEDIA
+}
+
+enum MessageStatus {
+  UNREAD
+  READ
+  IN_PROGRESS
+  RESOLVED
+  ARCHIVED
+}
+
+enum MessagePriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
 }

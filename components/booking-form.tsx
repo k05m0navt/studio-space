@@ -1,14 +1,14 @@
 // components/booking-form.tsx
 "use client";
 
-import { useState } from "react";
-import { Calendar as CalendarIcon, Check, ArrowRight, ArrowLeft, User, Mail, Phone, Clock, MessageSquare } from "lucide-react";
+import { useState, useEffect, useCallback, useMemo } from "react";
+import { Calendar as CalendarIcon, Check, ArrowRight, ArrowLeft, User, Mail, Phone, Clock, MessageSquare, XCircle } from "lucide-react";
 import { format } from "date-fns";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { createBrowserClient } from "@supabase/ssr";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -40,26 +40,39 @@ import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
 const formSchema = z.object({
-  name: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
-  }),
-  email: z.string().email({
-    message: "Please enter a valid email address.",
-  }),
-  phone: z.string().min(10, {
-    message: "Please enter a valid phone number.",
-  }),
+  name: z.string()
+    .min(2, "Name must be at least 2 characters.")
+    .max(50, "Name must be less than 50 characters.")
+    .regex(/^[a-zA-Z\s]+$/, "Name can only contain letters and spaces."),
+  email: z.string()
+    .email("Please enter a valid email address.")
+    .max(100, "Email must be less than 100 characters."),
+  phone: z.string()
+    .min(10, "Please enter a valid phone number.")
+    .max(20, "Phone number is too long.")
+    .regex(/^[\+]?[1-9][\d]{0,15}$/, "Please enter a valid phone number."),
   bookingType: z.enum(["studio", "coworking"]),
   date: z.date({
     required_error: "A date is required.",
-  }),
-  startTime: z.string().min(1, {
-    message: "Please select a start time.",
-  }),
-  endTime: z.string().min(1, {
-    message: "Please select an end time.",
-  }),
-  message: z.string().optional(),
+  }).refine((date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return date >= today;
+  }, "Date cannot be in the past."),
+  startTime: z.string()
+    .min(1, "Please select a start time."),
+  endTime: z.string()
+    .min(1, "Please select an end time."),
+  message: z.string()
+    .max(500, "Message must be less than 500 characters.")
+    .optional(),
+}).refine((data) => {
+  const start = parseInt(data.startTime.replace(':', ''));
+  const end = parseInt(data.endTime.replace(':', ''));
+  return end > start;
+}, {
+  message: "End time must be after start time.",
+  path: ["endTime"],
 });
 
 type BookingFormValues = z.infer<typeof formSchema>;
@@ -69,38 +82,15 @@ const TIME_SLOTS = [
   "13:00", "14:00", "15:00", "16:00", "17:00"
 ];
 
-const BOOKING_TYPES = [
-  {
-    id: "studio",
-    title: "Photography Studio",
-    description: "Professional studio with lighting and equipment",
-    price: "$75/hour",
-    features: ["Professional lighting", "Camera equipment rental", "Editing stations", "Props & backdrops"]
-  },
-  {
-    id: "coworking",
-    title: "Coworking Space",
-    description: "Flexible workspace with all amenities",
-    price: "$25/day",
-    features: ["24/7 access", "High-speed internet", "Meeting rooms", "Coffee & snacks"]
-  }
-];
-
-const steps = [
-  { id: 1, title: "Service", icon: Check },
-  { id: 2, title: "Details", icon: User },
-  { id: 3, title: "Schedule", icon: Clock },
-  { id: 4, title: "Confirm", icon: Check },
-];
-
 export function BookingForm() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  ) as any;
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
+  const [unavailableSlots, setUnavailableSlots] = useState<string[]>([]);
   const router = useRouter();
+  const t = useTranslations('booking');
+  const tCommon = useTranslations('common');
+  const tSuccess = useTranslations('bookingSuccess');
 
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(formSchema),
@@ -110,7 +100,62 @@ export function BookingForm() {
   });
 
   const watchBookingType = form.watch("bookingType");
-  const selectedBookingType = BOOKING_TYPES.find(type => type.id === watchBookingType);
+  const watchDate = form.watch("date");
+
+  const bookingTypes = useMemo(() => ([
+    {
+      id: "studio",
+      title: t('serviceSelection.studio.title'),
+      description: t('serviceSelection.studio.description'),
+      price: t('serviceSelection.studio.price'),
+      features: [
+        t('serviceSelection.studio.feature1'),
+        t('serviceSelection.studio.feature2'),
+        t('serviceSelection.studio.feature3'),
+        t('serviceSelection.studio.feature4')
+      ]
+    },
+    {
+      id: "coworking",
+      title: t('serviceSelection.coworking.title'),
+      description: t('serviceSelection.coworking.description'),
+      price: t('serviceSelection.coworking.price'),
+      features: [
+        t('serviceSelection.coworking.feature1'),
+        t('serviceSelection.coworking.feature2'),
+        t('serviceSelection.coworking.feature3'),
+        t('serviceSelection.coworking.feature4')
+      ]
+    }
+  ]), [t]);
+
+  const steps = useMemo(() => ([
+    { id: 1, title: t('steps.service'), icon: Check },
+    { id: 2, title: t('steps.details'), icon: User },
+    { id: 3, title: t('steps.schedule'), icon: Clock },
+    { id: 4, title: t('steps.confirm'), icon: Check }
+  ]), [t]);
+
+  const selectedBookingType = bookingTypes.find(type => type.id === watchBookingType);
+
+  // Check for unavailable time slots when date changes
+  const checkAvailability = useCallback(async (date: Date) => {
+    try {
+      const response = await fetch(`/api/bookings/availability?date=${date.toISOString()}&type=${watchBookingType}`);
+      if (response.ok) {
+        const data = await response.json();
+        setUnavailableSlots(data.unavailableSlots || []);
+      }
+    } catch (error) {
+      console.error('Failed to check availability:', error);
+    }
+  }, [watchBookingType]);
+
+  useEffect(() => {
+    if (watchDate) {
+      checkAvailability(watchDate);
+    }
+  }, [watchDate, checkAvailability]);
 
   const nextStep = () => {
     if (currentStep < steps.length) {
@@ -148,36 +193,56 @@ export function BookingForm() {
   async function onSubmit(data: BookingFormValues) {
     try {
       setIsLoading(true);
+      setSubmitStatus('loading');
 
-      const { error } = await supabase.from("bookings").insert([
-        {
+      const response = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           name: data.name,
           email: data.email,
           phone: data.phone,
           type: data.bookingType,
-          date: data.date,
+          date: data.date.toISOString(),
           start_time: data.startTime,
           end_time: data.endTime,
           message: data.message,
-          status: "pending",
-        },
-      ]);
-
-      if (error) throw error;
-
-      toast.success("Booking Request Submitted", {
-        description:
-          "We've received your booking request. We'll contact you shortly to confirm.",
+        }),
       });
 
-      form.reset();
-      setCurrentStep(1);
-      router.refresh();
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to submit booking');
+      }
+
+      setSubmitStatus('success');
+
+      toast.success(tSuccess('title'), {
+        description: tSuccess('description'),
+        duration: 5000,
+      });
+
+      // Wait a moment to show success state
+      setTimeout(() => {
+        form.reset();
+        setCurrentStep(1);
+        setSubmitStatus('idle');
+        router.push('/booking-success');
+      }, 2000);
+
     } catch (error) {
-      toast.error("Error", {
-        description:
-          "There was an error submitting your booking. Please try again.",
+      console.error('Booking submission error:', error);
+      setSubmitStatus('error');
+      
+      toast.error(tCommon('error'), {
+        description: error instanceof Error ? error.message : tCommon('somethingWentWrong'),
+        duration: 5000,
       });
+      
+      // Reset status after showing error
+      setTimeout(() => setSubmitStatus('idle'), 3000);
     } finally {
       setIsLoading(false);
     }
@@ -200,10 +265,10 @@ export function BookingForm() {
             transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
           >
             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl mb-4">
-              Book Your Space
+              {t('title')}
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Reserve your creative space in just a few simple steps. We'll confirm your booking within 24 hours.
+              {t('description')}
             </p>
           </motion.div>
 
@@ -268,8 +333,8 @@ export function BookingForm() {
                         transition={{ duration: 0.3, ease: "easeOut" }}
                       >
                         <div className="text-center mb-8">
-                          <h2 className="text-2xl font-bold mb-2">Choose Your Service</h2>
-                          <p className="text-muted-foreground">Select the type of space you'd like to book</p>
+                          <h2 className="text-2xl font-bold mb-2">{t('serviceSelection.title')}</h2>
+                          <p className="text-muted-foreground">{t('serviceSelection.description')}</p>
                         </div>
                         
                         <FormField
@@ -278,7 +343,7 @@ export function BookingForm() {
                           render={({ field }) => (
                             <FormItem>
                               <div className="grid md:grid-cols-2 gap-6">
-                                {BOOKING_TYPES.map((type) => (
+                                {bookingTypes.map((type) => (
                                   <motion.div
                                     key={type.id}
                                     whileHover={{ scale: 1.005 }}
@@ -332,8 +397,8 @@ export function BookingForm() {
                         transition={{ duration: 0.3, ease: "easeOut" }}
                       >
                         <div className="text-center mb-8">
-                          <h2 className="text-2xl font-bold mb-2">Your Details</h2>
-                          <p className="text-muted-foreground">Tell us how to reach you</p>
+                          <h2 className="text-2xl font-bold mb-2">{t('details.title')}</h2>
+                          <p className="text-muted-foreground">{t('details.description')}</p>
                         </div>
 
                         <div className="grid md:grid-cols-2 gap-6">
@@ -344,7 +409,7 @@ export function BookingForm() {
                               <FormItem>
                                 <FormLabel className="flex items-center gap-2">
                                   <User className="w-4 h-4" />
-                                  Full Name
+                                  {t('fullName')}
                                 </FormLabel>
                                 <FormControl>
                                   <Input placeholder="John Doe" {...field} className="h-12" />
@@ -361,7 +426,7 @@ export function BookingForm() {
                               <FormItem>
                                 <FormLabel className="flex items-center gap-2">
                                   <Mail className="w-4 h-4" />
-                                  Email Address
+                                  {t('email')}
                                 </FormLabel>
                                 <FormControl>
                                   <Input
@@ -383,7 +448,7 @@ export function BookingForm() {
                               <FormItem className="md:col-span-2">
                                 <FormLabel className="flex items-center gap-2">
                                   <Phone className="w-4 h-4" />
-                                  Phone Number
+                                  {t('phone')}
                                 </FormLabel>
                                 <FormControl>
                                   <Input
@@ -411,8 +476,8 @@ export function BookingForm() {
                         transition={{ duration: 0.3, ease: "easeOut" }}
                       >
                         <div className="text-center mb-8">
-                          <h2 className="text-2xl font-bold mb-2">Select Date & Time</h2>
-                          <p className="text-muted-foreground">When would you like to book?</p>
+                          <h2 className="text-2xl font-bold mb-2">{t('schedule.title')}</h2>
+                          <p className="text-muted-foreground">{t('schedule.description')}</p>
                         </div>
 
                         <div className="grid md:grid-cols-3 gap-6">
@@ -421,7 +486,7 @@ export function BookingForm() {
                             name="date"
                             render={({ field }) => (
                               <FormItem className="flex flex-col">
-                                <FormLabel>Date</FormLabel>
+                                <FormLabel>{tCommon('date')}</FormLabel>
                                 <Popover>
                                   <PopoverTrigger asChild>
                                     <FormControl>
@@ -435,7 +500,7 @@ export function BookingForm() {
                                         {field.value ? (
                                           format(field.value, "PPP")
                                         ) : (
-                                          <span>Pick a date</span>
+                                          <span>{t('schedule.pickDate')}</span>
                                         )}
                                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                       </Button>
@@ -461,19 +526,32 @@ export function BookingForm() {
                             name="startTime"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Start Time</FormLabel>
+                                <FormLabel>{t('schedule.startTime')}</FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                   <FormControl>
                                     <SelectTrigger className="h-12">
-                                      <SelectValue placeholder="Start time" />
+                                      <SelectValue placeholder={t('schedule.startTime')} />
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
-                                    {TIME_SLOTS.map((time) => (
-                                      <SelectItem key={time} value={time}>
-                                        {time}
+                                    {TIME_SLOTS.map((time) => {
+                                      const isUnavailable = unavailableSlots.includes(time);
+                                      return (
+                                        <SelectItem 
+                                          key={time} 
+                                          value={time}
+                                          disabled={isUnavailable}
+                                          className={isUnavailable ? "opacity-50 cursor-not-allowed" : ""}
+                                        >
+                                          <div className="flex items-center justify-between w-full">
+                                            <span>{time}</span>
+                                            {isUnavailable && (
+                                              <span className="text-xs text-red-500 ml-2">{t('schedule.unavailable')}</span>
+                                            )}
+                                          </div>
                                       </SelectItem>
-                                    ))}
+                                      );
+                                    })}
                                   </SelectContent>
                                 </Select>
                                 <FormMessage />
@@ -486,19 +564,39 @@ export function BookingForm() {
                             name="endTime"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>End Time</FormLabel>
+                                <FormLabel>{t('schedule.endTime')}</FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                   <FormControl>
                                     <SelectTrigger className="h-12">
-                                      <SelectValue placeholder="End time" />
+                                      <SelectValue placeholder={t('schedule.endTime')} />
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
-                                    {TIME_SLOTS.map((time) => (
-                                      <SelectItem key={time} value={time}>
-                                        {time}
+                                    {TIME_SLOTS.map((time) => {
+                                      const startTime = form.getValues("startTime");
+                                      const isBeforeStart = startTime && parseInt(time.replace(':', '')) <= parseInt(startTime.replace(':', ''));
+                                      const isUnavailable = unavailableSlots.includes(time);
+                                      const disabled = isBeforeStart || isUnavailable;
+                                      
+                                      return (
+                                        <SelectItem 
+                                          key={time} 
+                                          value={time}
+                                          disabled={disabled}
+                                          className={disabled ? "opacity-50 cursor-not-allowed" : ""}
+                                        >
+                                          <div className="flex items-center justify-between w-full">
+                                            <span>{time}</span>
+                                            {isUnavailable && (
+                                              <span className="text-xs text-red-500 ml-2">{t('schedule.unavailable')}</span>
+                                            )}
+                                            {isBeforeStart && !isUnavailable && (
+                                              <span className="text-xs text-gray-500 ml-2">{t('schedule.mustBeAfterStart')}</span>
+                                            )}
+                                          </div>
                                       </SelectItem>
-                                    ))}
+                                      );
+                                    })}
                                   </SelectContent>
                                 </Select>
                                 <FormMessage />
@@ -514,17 +612,17 @@ export function BookingForm() {
                             <FormItem className="mt-6">
                               <FormLabel className="flex items-center gap-2">
                                 <MessageSquare className="w-4 h-4" />
-                                Additional Message (Optional)
+                                {t('schedule.additionalMessage')}
                               </FormLabel>
                               <FormControl>
                                 <Textarea
-                                  placeholder="Tell us about your project or any special requirements..."
+                                  placeholder={t('schedule.messagePlaceholder')}
                                   className="resize-none min-h-[120px]"
                                   {...field}
                                 />
                               </FormControl>
                               <FormDescription>
-                                Let us know about your specific needs or any questions you have.
+                                {t('schedule.messageDescription')}
                               </FormDescription>
                               <FormMessage />
                             </FormItem>
@@ -543,25 +641,25 @@ export function BookingForm() {
                         transition={{ duration: 0.3, ease: "easeOut" }}
                       >
                         <div className="text-center mb-8">
-                          <h2 className="text-2xl font-bold mb-2">Review Your Booking</h2>
-                          <p className="text-muted-foreground">Please confirm your details below</p>
+                          <h2 className="text-2xl font-bold mb-2">{t('review.title')}</h2>
+                          <p className="text-muted-foreground">{t('review.description')}</p>
                         </div>
 
                         <div className="bg-muted/50 rounded-lg p-6 space-y-4">
                           <div className="grid md:grid-cols-2 gap-4">
                             <div>
-                              <h3 className="font-semibold mb-2">Service</h3>
+                              <h3 className="font-semibold mb-2">{t('review.service')}</h3>
                               <p className="text-muted-foreground">{selectedBookingType?.title}</p>
                             </div>
                             <div>
-                              <h3 className="font-semibold mb-2">Date & Time</h3>
+                              <h3 className="font-semibold mb-2">{t('review.dateTime')}</h3>
                               <p className="text-muted-foreground">
                                 {form.getValues("date") && format(form.getValues("date"), "PPP")}<br/>
                                 {form.getValues("startTime")} - {form.getValues("endTime")}
                               </p>
                             </div>
                             <div>
-                              <h3 className="font-semibold mb-2">Contact</h3>
+                              <h3 className="font-semibold mb-2">{t('review.contact')}</h3>
                               <p className="text-muted-foreground">
                                 {form.getValues("name")}<br/>
                                 {form.getValues("email")}<br/>
@@ -570,7 +668,7 @@ export function BookingForm() {
                             </div>
                             {form.getValues("message") && (
                               <div>
-                                <h3 className="font-semibold mb-2">Message</h3>
+                                <h3 className="font-semibold mb-2">{t('review.additionalMessage')}</h3>
                                 <p className="text-muted-foreground">{form.getValues("message")}</p>
                               </div>
                             )}
@@ -590,7 +688,7 @@ export function BookingForm() {
                       className="flex items-center gap-2"
                     >
                       <ArrowLeft className="w-4 h-4" />
-                      Previous
+                      {t('navigation.previous')}
                     </Button>
 
                     {currentStep < steps.length ? (
@@ -604,23 +702,65 @@ export function BookingForm() {
                           onClick={handleNext}
                           className="flex items-center gap-2"
                         >
-                          Next
+                          {t('navigation.next')}
                           <ArrowRight className="w-4 h-4" />
                         </Button>
                       </motion.div>
                     ) : (
                       <motion.div
-                        whileHover={{ scale: 1.005 }}
-                        whileTap={{ scale: 0.995 }}
+                        whileHover={{ scale: submitStatus === 'idle' ? 1.005 : 1 }}
+                        whileTap={{ scale: submitStatus === 'idle' ? 0.995 : 1 }}
                         transition={{ duration: 0.1 }}
                       >
                         <Button
                           type="submit"
-                          disabled={isLoading}
-                          className="flex items-center gap-2"
+                          disabled={isLoading || submitStatus !== 'idle'}
+                          className={cn(
+                            "flex items-center gap-2 min-w-[140px]",
+                            submitStatus === 'success' && "bg-green-600 hover:bg-green-700",
+                            submitStatus === 'error' && "bg-red-600 hover:bg-red-700"
+                          )}
                         >
-                          {isLoading ? "Submitting..." : "Submit Booking"}
-                          <Check className="w-4 h-4" />
+                          {submitStatus === 'loading' && (
+                            <>
+                              <motion.div
+                                animate={{ rotate: 360 }}
+                                transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                                className="w-4 h-4 border-2 border-current border-t-transparent rounded-full"
+                              />
+                              {t('navigation.submitting')}
+                            </>
+                          )}
+                          {submitStatus === 'success' && (
+                            <>
+                              <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                              >
+                                <Check className="w-4 h-4" />
+                              </motion.div>
+                              {tCommon('success')}
+                            </>
+                          )}
+                          {submitStatus === 'error' && (
+                            <>
+                              <motion.div
+                                initial={{ scale: 0 }}
+                                animate={{ scale: 1 }}
+                                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                              >
+                                <XCircle className="w-4 h-4" />
+                              </motion.div>
+                              {tCommon('tryAgain')}
+                            </>
+                          )}
+                          {submitStatus === 'idle' && (
+                            <>
+                              {t('navigation.submitBooking')}
+                              <Check className="w-4 h-4" />
+                            </>
+                          )}
                         </Button>
                       </motion.div>
                     )}

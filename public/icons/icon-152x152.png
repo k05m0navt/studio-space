@@ -1,0 +1,38 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="256" cy="256" r="256" fill="#1e40af"/>
+  
+  <!-- Camera Icon -->
+  <g transform="translate(156, 176)">
+    <!-- Camera Body -->
+    <rect x="20" y="40" width="160" height="120" rx="12" fill="white"/>
+    <rect x="30" y="50" width="140" height="100" rx="8" fill="#f8fafc"/>
+    
+    <!-- Lens -->
+    <circle cx="100" cy="100" r="35" fill="white"/>
+    <circle cx="100" cy="100" r="28" fill="#1e40af"/>
+    <circle cx="100" cy="100" r="20" fill="white"/>
+    <circle cx="100" cy="100" r="12" fill="#1e40af"/>
+    
+    <!-- Flash -->
+    <rect x="140" y="25" width="20" height="15" rx="3" fill="white"/>
+    
+    <!-- Viewfinder -->
+    <rect x="60" y="25" width="30" height="15" rx="3" fill="white"/>
+    
+    <!-- Studio Light Rays -->
+    <g stroke="white" stroke-width="3" stroke-linecap="round" opacity="0.6">
+      <line x1="50" y1="20" x2="55" y2="10"/>
+      <line x1="100" y1="15" x2="100" y2="5"/>
+      <line x1="150" y1="20" x2="145" y2="10"/>
+      <line x1="30" y1="40" x2="20" y2="35"/>
+      <line x1="170" y1="40" x2="180" y2="35"/>
+    </g>
+  </g>
+  
+  <!-- Letter V -->
+  <path d="M180 280 L220 380 L240 380 L280 280 L260 280 L230 350 L200 280 Z" fill="white" opacity="0.9"/>
+  
+  <!-- Letter S -->
+  <path d="M300 280 Q320 280 320 300 Q320 320 300 320 L320 320 Q340 320 340 340 Q340 360 320 360 L300 360 Q280 360 280 340 L300 340 Q300 350 300 350 L320 350 Q320 340 320 340 L300 340 Q280 340 280 320 Q280 300 300 300 L280 300 Q280 280 300 280 Z" fill="white" opacity="0.9"/>
+</svg> 
