@@ -1,13 +1,14 @@
 // components/booking-form.tsx
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Calendar as CalendarIcon, Check, ArrowRight, ArrowLeft, User, Mail, Phone, Clock, MessageSquare, XCircle } from "lucide-react";
 import { format } from "date-fns";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -81,36 +82,15 @@ const TIME_SLOTS = [
   "13:00", "14:00", "15:00", "16:00", "17:00"
 ];
 
-const BOOKING_TYPES = [
-  {
-    id: "studio",
-    title: "Photography Studio",
-    description: "Professional studio with lighting and equipment",
-    price: "$75/hour",
-    features: ["Professional lighting", "Camera equipment rental", "Editing stations", "Props & backdrops"]
-  },
-  {
-    id: "coworking",
-    title: "Coworking Space",
-    description: "Flexible workspace with all amenities",
-    price: "$25/day",
-    features: ["24/7 access", "High-speed internet", "Meeting rooms", "Coffee & snacks"]
-  }
-];
-
-const steps = [
-  { id: 1, title: "Service", icon: Check },
-  { id: 2, title: "Details", icon: User },
-  { id: 3, title: "Schedule", icon: Clock },
-  { id: 4, title: "Confirm", icon: Check },
-];
-
 export function BookingForm() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [unavailableSlots, setUnavailableSlots] = useState<string[]>([]);
   const router = useRouter();
+  const t = useTranslations('booking');
+  const tCommon = useTranslations('common');
+  const tSuccess = useTranslations('bookingSuccess');
 
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(formSchema),
@@ -121,7 +101,42 @@ export function BookingForm() {
 
   const watchBookingType = form.watch("bookingType");
   const watchDate = form.watch("date");
-  const selectedBookingType = BOOKING_TYPES.find(type => type.id === watchBookingType);
+
+  const bookingTypes = useMemo(() => ([
+    {
+      id: "studio",
+      title: t('serviceSelection.studio.title'),
+      description: t('serviceSelection.studio.description'),
+      price: t('serviceSelection.studio.price'),
+      features: [
+        t('serviceSelection.studio.feature1'),
+        t('serviceSelection.studio.feature2'),
+        t('serviceSelection.studio.feature3'),
+        t('serviceSelection.studio.feature4')
+      ]
+    },
+    {
+      id: "coworking",
+      title: t('serviceSelection.coworking.title'),
+      description: t('serviceSelection.coworking.description'),
+      price: t('serviceSelection.coworking.price'),
+      features: [
+        t('serviceSelection.coworking.feature1'),
+        t('serviceSelection.coworking.feature2'),
+        t('serviceSelection.coworking.feature3'),
+        t('serviceSelection.coworking.feature4')
+      ]
+    }
+  ]), [t]);
+
+  const steps = useMemo(() => ([
+    { id: 1, title: t('steps.service'), icon: Check },
+    { id: 2, title: t('steps.details'), icon: User },
+    { id: 3, title: t('steps.schedule'), icon: Clock },
+    { id: 4, title: t('steps.confirm'), icon: Check }
+  ]), [t]);
+
+  const selectedBookingType = bookingTypes.find(type => type.id === watchBookingType);
 
   // Check for unavailable time slots when date changes
   const checkAvailability = useCallback(async (date: Date) => {
@@ -204,15 +219,15 @@ export function BookingForm() {
 
       setSubmitStatus('success');
 
-      toast.success("Booking Request Submitted", {
-        description: "We've received your booking request. You'll receive a confirmation email shortly.",
+      toast.success(tSuccess('title'), {
+        description: tSuccess('description'),
         duration: 5000,
       });
 
       // Wait a moment to show success state
       setTimeout(() => {
-      form.reset();
-      setCurrentStep(1);
+        form.reset();
+        setCurrentStep(1);
         setSubmitStatus('idle');
         router.push('/booking-success');
       }, 2000);
@@ -221,8 +236,8 @@ export function BookingForm() {
       console.error('Booking submission error:', error);
       setSubmitStatus('error');
       
-      toast.error("Booking Failed", {
-        description: error instanceof Error ? error.message : "There was an error submitting your booking. Please try again.",
+      toast.error(tCommon('error'), {
+        description: error instanceof Error ? error.message : tCommon('somethingWentWrong'),
         duration: 5000,
       });
       
@@ -250,10 +265,10 @@ export function BookingForm() {
             transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
           >
             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl mb-4">
-              Book Your Space
+              {t('title')}
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Reserve your creative space in just a few simple steps. We&apos;ll confirm your booking within 24 hours.
+              {t('description')}
             </p>
           </motion.div>
 
@@ -318,8 +333,8 @@ export function BookingForm() {
                         transition={{ duration: 0.3, ease: "easeOut" }}
                       >
                         <div className="text-center mb-8">
-                          <h2 className="text-2xl font-bold mb-2">Choose Your Service</h2>
-                          <p className="text-muted-foreground">Select the type of space you&apos;d like to book</p>
+                          <h2 className="text-2xl font-bold mb-2">{t('serviceSelection.title')}</h2>
+                          <p className="text-muted-foreground">{t('serviceSelection.description')}</p>
                         </div>
                         
                         <FormField
@@ -328,7 +343,7 @@ export function BookingForm() {
                           render={({ field }) => (
                             <FormItem>
                               <div className="grid md:grid-cols-2 gap-6">
-                                {BOOKING_TYPES.map((type) => (
+                                {bookingTypes.map((type) => (
                                   <motion.div
                                     key={type.id}
                                     whileHover={{ scale: 1.005 }}
@@ -382,8 +397,8 @@ export function BookingForm() {
                         transition={{ duration: 0.3, ease: "easeOut" }}
                       >
                         <div className="text-center mb-8">
-                          <h2 className="text-2xl font-bold mb-2">Your Details</h2>
-                          <p className="text-muted-foreground">Tell us how to reach you</p>
+                          <h2 className="text-2xl font-bold mb-2">{t('details.title')}</h2>
+                          <p className="text-muted-foreground">{t('details.description')}</p>
                         </div>
 
                         <div className="grid md:grid-cols-2 gap-6">
@@ -394,7 +409,7 @@ export function BookingForm() {
                               <FormItem>
                                 <FormLabel className="flex items-center gap-2">
                                   <User className="w-4 h-4" />
-                                  Full Name
+                                  {t('fullName')}
                                 </FormLabel>
                                 <FormControl>
                                   <Input placeholder="John Doe" {...field} className="h-12" />
@@ -411,7 +426,7 @@ export function BookingForm() {
                               <FormItem>
                                 <FormLabel className="flex items-center gap-2">
                                   <Mail className="w-4 h-4" />
-                                  Email Address
+                                  {t('email')}
                                 </FormLabel>
                                 <FormControl>
                                   <Input
@@ -433,7 +448,7 @@ export function BookingForm() {
                               <FormItem className="md:col-span-2">
                                 <FormLabel className="flex items-center gap-2">
                                   <Phone className="w-4 h-4" />
-                                  Phone Number
+                                  {t('phone')}
                                 </FormLabel>
                                 <FormControl>
                                   <Input
@@ -461,8 +476,8 @@ export function BookingForm() {
                         transition={{ duration: 0.3, ease: "easeOut" }}
                       >
                         <div className="text-center mb-8">
-                          <h2 className="text-2xl font-bold mb-2">Select Date & Time</h2>
-                          <p className="text-muted-foreground">When would you like to book?</p>
+                          <h2 className="text-2xl font-bold mb-2">{t('schedule.title')}</h2>
+                          <p className="text-muted-foreground">{t('schedule.description')}</p>
                         </div>
 
                         <div className="grid md:grid-cols-3 gap-6">
@@ -471,7 +486,7 @@ export function BookingForm() {
                             name="date"
                             render={({ field }) => (
                               <FormItem className="flex flex-col">
-                                <FormLabel>Date</FormLabel>
+                                <FormLabel>{tCommon('date')}</FormLabel>
                                 <Popover>
                                   <PopoverTrigger asChild>
                                     <FormControl>
@@ -485,7 +500,7 @@ export function BookingForm() {
                                         {field.value ? (
                                           format(field.value, "PPP")
                                         ) : (
-                                          <span>Pick a date</span>
+                                          <span>{t('schedule.pickDate')}</span>
                                         )}
                                         <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                       </Button>
@@ -511,11 +526,11 @@ export function BookingForm() {
                             name="startTime"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>Start Time</FormLabel>
+                                <FormLabel>{t('schedule.startTime')}</FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                   <FormControl>
                                     <SelectTrigger className="h-12">
-                                      <SelectValue placeholder="Start time" />
+                                      <SelectValue placeholder={t('schedule.startTime')} />
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
@@ -531,7 +546,7 @@ export function BookingForm() {
                                           <div className="flex items-center justify-between w-full">
                                             <span>{time}</span>
                                             {isUnavailable && (
-                                              <span className="text-xs text-red-500 ml-2">Unavailable</span>
+                                              <span className="text-xs text-red-500 ml-2">{t('schedule.unavailable')}</span>
                                             )}
                                           </div>
                                       </SelectItem>
@@ -549,11 +564,11 @@ export function BookingForm() {
                             name="endTime"
                             render={({ field }) => (
                               <FormItem>
-                                <FormLabel>End Time</FormLabel>
+                                <FormLabel>{t('schedule.endTime')}</FormLabel>
                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                   <FormControl>
                                     <SelectTrigger className="h-12">
-                                      <SelectValue placeholder="End time" />
+                                      <SelectValue placeholder={t('schedule.endTime')} />
                                     </SelectTrigger>
                                   </FormControl>
                                   <SelectContent>
@@ -573,10 +588,10 @@ export function BookingForm() {
                                           <div className="flex items-center justify-between w-full">
                                             <span>{time}</span>
                                             {isUnavailable && (
-                                              <span className="text-xs text-red-500 ml-2">Unavailable</span>
+                                              <span className="text-xs text-red-500 ml-2">{t('schedule.unavailable')}</span>
                                             )}
                                             {isBeforeStart && !isUnavailable && (
-                                              <span className="text-xs text-gray-500 ml-2">Before start</span>
+                                              <span className="text-xs text-gray-500 ml-2">{t('schedule.mustBeAfterStart')}</span>
                                             )}
                                           </div>
                                       </SelectItem>
@@ -597,17 +612,17 @@ export function BookingForm() {
                             <FormItem className="mt-6">
                               <FormLabel className="flex items-center gap-2">
                                 <MessageSquare className="w-4 h-4" />
-                                Additional Message (Optional)
+                                {t('schedule.additionalMessage')}
                               </FormLabel>
                               <FormControl>
                                 <Textarea
-                                  placeholder="Tell us about your project or any special requirements..."
+                                  placeholder={t('schedule.messagePlaceholder')}
                                   className="resize-none min-h-[120px]"
                                   {...field}
                                 />
                               </FormControl>
                               <FormDescription>
-                                Let us know about your specific needs or any questions you have.
+                                {t('schedule.messageDescription')}
                               </FormDescription>
                               <FormMessage />
                             </FormItem>
@@ -626,25 +641,25 @@ export function BookingForm() {
                         transition={{ duration: 0.3, ease: "easeOut" }}
                       >
                         <div className="text-center mb-8">
-                          <h2 className="text-2xl font-bold mb-2">Review Your Booking</h2>
-                          <p className="text-muted-foreground">Please confirm your details below</p>
+                          <h2 className="text-2xl font-bold mb-2">{t('review.title')}</h2>
+                          <p className="text-muted-foreground">{t('review.description')}</p>
                         </div>
 
                         <div className="bg-muted/50 rounded-lg p-6 space-y-4">
                           <div className="grid md:grid-cols-2 gap-4">
                             <div>
-                              <h3 className="font-semibold mb-2">Service</h3>
+                              <h3 className="font-semibold mb-2">{t('review.service')}</h3>
                               <p className="text-muted-foreground">{selectedBookingType?.title}</p>
                             </div>
                             <div>
-                              <h3 className="font-semibold mb-2">Date & Time</h3>
+                              <h3 className="font-semibold mb-2">{t('review.dateTime')}</h3>
                               <p className="text-muted-foreground">
                                 {form.getValues("date") && format(form.getValues("date"), "PPP")}<br/>
                                 {form.getValues("startTime")} - {form.getValues("endTime")}
                               </p>
                             </div>
                             <div>
-                              <h3 className="font-semibold mb-2">Contact</h3>
+                              <h3 className="font-semibold mb-2">{t('review.contact')}</h3>
                               <p className="text-muted-foreground">
                                 {form.getValues("name")}<br/>
                                 {form.getValues("email")}<br/>
@@ -653,7 +668,7 @@ export function BookingForm() {
                             </div>
                             {form.getValues("message") && (
                               <div>
-                                <h3 className="font-semibold mb-2">Message</h3>
+                                <h3 className="font-semibold mb-2">{t('review.additionalMessage')}</h3>
                                 <p className="text-muted-foreground">{form.getValues("message")}</p>
                               </div>
                             )}
@@ -673,7 +688,7 @@ export function BookingForm() {
                       className="flex items-center gap-2"
                     >
                       <ArrowLeft className="w-4 h-4" />
-                      Previous
+                      {t('navigation.previous')}
                     </Button>
 
                     {currentStep < steps.length ? (
@@ -687,7 +702,7 @@ export function BookingForm() {
                           onClick={handleNext}
                           className="flex items-center gap-2"
                         >
-                          Next
+                          {t('navigation.next')}
                           <ArrowRight className="w-4 h-4" />
                         </Button>
                       </motion.div>
@@ -713,7 +728,7 @@ export function BookingForm() {
                                 transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
                                 className="w-4 h-4 border-2 border-current border-t-transparent rounded-full"
                               />
-                              Submitting...
+                              {t('navigation.submitting')}
                             </>
                           )}
                           {submitStatus === 'success' && (
@@ -725,7 +740,7 @@ export function BookingForm() {
                               >
                                 <Check className="w-4 h-4" />
                               </motion.div>
-                              Submitted!
+                              {tCommon('success')}
                             </>
                           )}
                           {submitStatus === 'error' && (
@@ -737,13 +752,13 @@ export function BookingForm() {
                               >
                                 <XCircle className="w-4 h-4" />
                               </motion.div>
-                              Try Again
+                              {tCommon('tryAgain')}
                             </>
                           )}
                           {submitStatus === 'idle' && (
                             <>
-                              Submit Booking
-                          <Check className="w-4 h-4" />
+                              {t('navigation.submitBooking')}
+                              <Check className="w-4 h-4" />
                             </>
                           )}
                         </Button>

@@ -6,6 +6,9 @@
 - [x] If Level 2-4: switch to PLAN → CREATIVE → IMPLEMENT → QA
 ## Backlog to finish app (prioritized)
 1. Unify Prisma client usage via `lib/prisma` across all API routes.
+
+   - Include `lib/auth.ts` to use shared `prisma` wrapper.
+
 2. Protect admin API (`app/api/admin/*`) with `requireRole([`ADMIN])`; standardize JSON shape.
 3. Implement real admin login using `POST /api/auth/login`; store JWT; attach Authorization header in admin fetches.
 4. Refactor `app/[locale]/book/page.tsx` to reuse `components/booking-form` or extract shared form; wire to `/api/bookings`.
@@ -103,8 +106,10 @@
 ## Status
 - [x] Initialization complete
 - [x] Planning complete
-- [ ] Technology validation complete
-- [ ] Implementation in progress
+- [x] Technology validation complete
+- [x] Implementation complete
+- [x] Reflection complete
+- [x] Archiving complete
 
 ## Technology Stack
 - Framework: Next.js 15 (App Router, RSC priority)
@@ -114,9 +119,9 @@
 - i18n: next-intl
 
 ## Technology Validation Checkpoints
-- [ ] Build runs after Prisma import unification
-- [ ] Auth routes respond at `/api/auth/login` and `/api/auth/register`
-- [ ] Admin endpoints enforce RBAC
+- [x] Build runs after Prisma import unification
+- [x] Auth routes respond at `/api/auth/login` and `/api/auth/register`
+- [x] Admin endpoints enforce RBAC
 - [ ] Booking flow works end-to-end in both locales
 
 ## NEXT RECOMMENDED MODE
@@ -129,6 +134,6 @@
 - **Next Steps**: Refactor `lib/auth.ts` to use shared prisma; create `/api/auth/{login,register}` routes; reuse `components/booking-form` in `app/[locale]/book/page.tsx` with i18n; optimize gallery images; run build and smoke tests.
 
 ## Archive
-- **Date**: 2025-08-11
-- **Archive Document**: /Users/k05m0navt/Work/VashaStudio/studio-space/docs/archive/finish-studio-space-mvp-20250812.md
-- **Status**: INTERIM
+- **Date**: 2025-08-12
+- **Archive Document**: /Users/k05m0navt/Work/VashaStudio/studio-space/docs/archive/finish-studio-space-mvp-phases-1-2-20250812.md
+- **Status**: COMPLETED

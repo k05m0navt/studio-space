@@ -1,7 +1,7 @@
-# Task Reflection: Finish Studio Space MVP (Mid-implementation)
+# Task Reflection: Finish Studio Space MVP (Post Phase 2)
 
 ## Summary
-Implementation is partially complete. Security and data layers are mostly aligned: admin APIs enforce RBAC and share the Prisma wrapper; booking APIs validate inputs and compute availability. Gaps remain around auth route structure, Prisma client usage in `lib/auth`, booking UI unification/i18n, and image optimization.
+Implementation progressed through Phases 1-2. Security/data layers are aligned via a unified Prisma client; auth routes are split; admin APIs enforce RBAC. Booking flow now reuses a single `BookingForm` component with i18n and locale-aware navigation; availability API is used to disable time slots. Remaining gap: gallery image optimization and tests/CSP tightening.
 
 ## Implementation Review (vs Plan)
 - Admin RBAC: Enforced via `requireRole(['ADMIN'])` in admin APIs.
@@ -9,11 +9,11 @@ Implementation is partially complete. Security and data layers are mostly aligne
     - app/api/admin/bookings/route.ts
     - app/api/admin/users/route.ts
     - app/api/admin/stats/route.ts
-- Prisma unification: `@/lib/prisma` exists and is used in APIs; however `lib/auth.ts` instantiates its own `PrismaClient` (duplication risk).
+- Prisma unification: `@/lib/prisma` is used across APIs and in `lib/auth.ts`; direct `new PrismaClient()` removed.
   - See wrapper: lib/prisma.ts
-  - Duplication: lib/auth.ts (uses `new PrismaClient()`)
-- Auth endpoints: Single `app/api/auth/route.ts` multiplexes `/login` and `/register` by pathname; not yet split into dedicated route files as planned, but endpoints respond.
-  - See: app/api/auth/route.ts
+  - Auth helper: lib/auth.ts now imports `{ prisma }` from `@/lib/prisma`.
+- Auth endpoints: Split into dedicated routes.
+  - See: app/api/auth/login/route.ts, app/api/auth/register/route.ts; `app/api/auth/route.ts` returns 404.
 - Booking APIs: POST validates and prevents conflicts; GET is protected; availability endpoint returns unavailable slots.
   - See:
     - app/api/bookings/route.ts
@@ -21,58 +21,51 @@ Implementation is partially complete. Security and data layers are mostly aligne
     - app/api/bookings/confirm/route.ts
 - Admin UI: Uses token from `/api/auth/login`, stores in `localStorage`, forwards to localized admin proxy routes with Authorization header.
   - See: app/[locale]/admin/page.tsx
-- Booking UI: Duplicate flows exist. `components/booking-form.tsx` uses availability API but lacks i18n and locale-aware redirect; `app/[locale]/book/page.tsx` is i18n-aware but not wired to backend and has mocked availability.
-  - See:
-    - components/booking-form.tsx
-    - app/[locale]/book/page.tsx
+- Booking UI: Unified.
+  - `app/[locale]/book/page.tsx` now renders `components/booking-form`.
+  - `components/booking-form.tsx` uses `useTranslations('booking')`, `@/i18n/routing` router, and availability API.
 - Gallery: Uses `motion.img` instead of `next/image`/`OptimizedImage`; assets are already WebP.
   - See: app/[locale]/gallery/page.tsx
 
 ## What Went Well
-- RBAC implemented consistently in admin and bookings GET endpoints.
-- Prisma wrapper present; majority of APIs import it correctly.
-- Availability API integrated and consumed by one booking form.
-- Localized admin proxy routes simplify header/locale handling.
+- Prisma unification complete; single client via `@/lib/prisma` (including `lib/auth.ts`).
+- Auth routes split; clear contracts for `/api/auth/login` and `/api/auth/register`.
+- RBAC enforced consistently in admin endpoints and bookings GET.
+- Booking UI unified and localized; availability accurately disables slots.
 
 ## Challenges
-- `lib/auth.ts` creates its own Prisma client; risks multiple connections in dev/hot reload.
-- Auth routes not split; future maintenance and typing are harder.
-- Booking UI is duplicated; only one variant uses availability API and neither is fully i18n-correct end-to-end.
+- Ensuring no stray `new PrismaClient()` usages (fixed `app/api/content/route.ts`).
+- Keeping i18n keys consistent between form variants during unification.
 - Image optimization pending in gallery.
 
 ## Lessons Learned
-- Finish data-layer consolidation before expanding UI changes.
-- Centralize auth/session verification to a single Prisma instance.
-- Prefer dedicated routes over pathname branching for clarity and DX.
+- Consolidate data/auth layers first; then unify UI to reduce duplicated effort.
+- Dedicated route files improve clarity and testing strategy.
+- Localized router wrappers simplify navigation logic compared to manual path handling.
 
 ## Process Improvements
-- Validate each phase with a build + minimal smoke tests before moving on.
-- Share a single error/JSON response helper across routes.
-- Add lightweight contract tests for critical APIs (auth, bookings, admin stats).
+- Build after each phase; add minimal endpoint smoke tests to CI.
+- Standardize JSON response helpers across routes.
+- Add contract tests for auth, bookings, and admin stats.
 
 ## Technical Improvements
-- Refactor `lib/auth.ts` to import `{ prisma }` from `@/lib/prisma` and remove `new PrismaClient()`.
-- Split auth into `app/api/auth/login/route.ts` and `app/api/auth/register/route.ts` with shared Zod schemas.
-- Unify booking UI by rendering `components/booking-form` in `app/[locale]/book/page.tsx`; add i18n via `useTranslations('booking')` and use locale-aware `useRouter` for redirects.
-- Replace `motion.img` with `next/image` or `components/optimized-image` in gallery; include sizes.
+- Replace `motion.img` with `next/image` or `components/optimized-image` in gallery; include sizes and `sizes` prop.
+- Add Jest + RTL smoke tests for auth/login, bookings POST conflict, and admin stats aggregation.
+- Consider extracting shared error/JSON response util.
 
 ## Next Steps
-1. Update `lib/auth.ts` to use the shared Prisma wrapper.
-2. Create dedicated auth route files and migrate logic from the multiplexed route.
-3. Refactor `app/[locale]/book/page.tsx` to reuse `components/booking-form`; internationalize the form and fix locale redirect.
-4. Swap gallery images to `next/image`/`OptimizedImage` with width/height or responsive sizes.
-5. Run build and add smoke tests for auth, bookings, and admin stats.
+1. Optimize gallery images using `next/image`/`OptimizedImage` with WebP and proper `sizes`.
+2. Add smoke tests (auth, bookings, admin stats) and integrate into CI.
+3. Review CSP to reduce `unsafe-eval` if compatible.
 
 ---
 
 ### Reflection Verification
-- Implementation thoroughly reviewed? YES (code-level)
+- Implementation thoroughly reviewed? YES
 - Successes documented? YES
 - Challenges documented? YES
 - Lessons Learned documented? YES
 - Process/Technical Improvements identified? YES
 - Next Steps documented? YES
-- reflection.md created/updated? YES
+- reflection.md updated? YES
 - tasks.md updated with reflection highlights? YES
-
-Note: Runtime validation (build/tests) pending; do not archive yet.

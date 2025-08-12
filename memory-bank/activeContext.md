@@ -1,6 +1,6 @@
 # Active Context
 
-- Mode: PLAN (Scoping)
-- Focus: Define plan to finish app; prioritize security, data consistency, booking flow.
+- Mode: VAN (Context Sync)
+- Focus: Task archived. Ready for next task initialization.
 - OS: macOS darwin 25; Path: /Users/k05m0navt/Work/VashaStudio/studio-space
-- Next steps: produce PLAN with milestones, then IMPLEMENT top items.
+- Next steps: Switch to VAN to start the next task cycle.

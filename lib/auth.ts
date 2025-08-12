@@ -1,9 +1,7 @@
 import { NextRequest } from 'next/server';
 import jwt from 'jsonwebtoken';
-import { PrismaClient } from '@/app/generated/prisma';
+import { prisma } from '@/lib/prisma';
 import { createClient } from '@/lib/supabase/server';
-
-const prisma = new PrismaClient();
 
 export interface AuthUser {
   id: string;

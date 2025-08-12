@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { PrismaClient, ContentType } from '@/app/generated/prisma';
+import { ContentType } from '@/app/generated/prisma';
 import { requireRole } from '@/lib/auth';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 const contentSchema = z.object({
   type: z.nativeEnum(ContentType),
