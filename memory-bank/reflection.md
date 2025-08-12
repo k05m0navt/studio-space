@@ -69,3 +69,33 @@ Implementation progressed through Phases 1-2. Security/data layers are aligned v
 - Next Steps documented? YES
 - reflection.md updated? YES
 - tasks.md updated with reflection highlights? YES
+
+## Deployment Reflection: Prisma Client generation on Vercel (2025-08-12)
+
+### Summary
+Vercel build failed with PrismaClientInitializationError due to cached dependencies skipping Prisma Client generation. We added `prisma generate` to `postinstall` and prefixed the `build` script to ensure the client is generated during every deploy.
+
+### What Went Well
+- Rapid diagnosis from Vercel logs pointing to Prisma generation.
+- Single Prisma entrypoint via `@/lib/prisma` kept the fix surface minimal.
+
+### Challenges
+- Vercel caching caused an outdated Prisma Client to be used at build time.
+- Deployment branch mismatch: Vercel targets `master` while changes were on `dev`.
+
+### Lessons Learned
+- Always run `prisma generate` on Vercel builds; include it in `postinstall` and `build`.
+- Keep build scripts deterministic and idempotent to play well with caching.
+
+### Process Improvements
+- Add CI check to run `prisma generate` and fail if generation is missing or output changed.
+- Document Vercel build commands in project setup to avoid regressions.
+
+### Technical Improvements
+- Keep `prisma` and `@prisma/client` versions aligned and pinned to minimize cache inconsistencies.
+- Ensure Prisma Client output path `app/generated/prisma` remains stable across builds.
+
+### Next Steps
+- Merge `dev` into `master` or update Vercel to deploy the `dev` branch.
+- Trigger a redeploy and confirm successful build.
+- Add minimal endpoint smoke tests to CI to catch deployment regressions early.
