@@ -204,7 +204,7 @@ function LanguageSwitcher({ fullWidth = false }: { fullWidth?: boolean }) {
   );
 }
 
-export function Navbar() {
+export function Navbar({ services: initialServices = null }: { services?: { studio?: { enabled: boolean }; coworking?: { enabled: boolean } } | null }) {
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -215,10 +215,43 @@ export function Navbar() {
     setMounted(true);
   }, []);
 
+  // Initialize services from server-provided prop (layout) or default to enabled
+  const [svc, setSvc] = useState<{ studio: { enabled: boolean }; coworking: { enabled: boolean } }>(() => {
+    return (
+      (initialServices as any) ?? { studio: { enabled: true }, coworking: { enabled: true } }
+    );
+  });
+
+  // Keep client-side copy fresh
+  useEffect(() => {
+    let alive = true;
+    (async () => {
+      try {
+        const res = await fetch('/api/settings/services', { cache: 'no-store' });
+        if (!res.ok) return;
+        const json = await res.json();
+        if (!alive) return;
+        if (json?.data) {
+          setSvc((prev) => ({ ...prev, ...json.data }));
+        }
+      } catch (err) {
+        // ignore
+      }
+    })();
+    return () => { alive = false; };
+  }, []);
+
+  // Determine visible nav items (show until we know the flags)
+  const visibleNavItems = NAV_ITEMS.filter((item) => {
+    if (!svc) return true;
+    if (item.href === '/coworking') return Boolean(svc.coworking?.enabled);
+    if (item.href === '/studio') return Boolean(svc.studio?.enabled);
+    return true;
+  });
+
   // Close menu on route change and reset state
   useEffect(() => {
     setMenuOpen(false);
-    // Small delay to ensure smooth transition
     const timer = setTimeout(() => {
       document.body.classList.remove('mobile-menu-open');
     }, 100);
@@ -276,19 +309,19 @@ export function Navbar() {
     if (!menuOpen) return;
     const drawer = drawerRef.current;
     if (!drawer) return;
-    
+
     const focusable = drawer.querySelectorAll<HTMLElement>(
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
     );
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
-    
+
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
+      if (e.key === 'Escape') {
         setMenuOpen(false);
         return;
       }
-      if (e.key === "Tab") {
+      if (e.key === 'Tab') {
         if (e.shiftKey) {
           if (document.activeElement === first) {
             e.preventDefault();
@@ -302,11 +335,11 @@ export function Navbar() {
         }
       }
     };
-    
-    drawer.addEventListener("keydown", handleKey);
+
+    drawer.addEventListener('keydown', handleKey);
     first?.focus();
-    
-    return () => drawer.removeEventListener("keydown", handleKey);
+
+    return () => drawer.removeEventListener('keydown', handleKey);
   }, [menuOpen]);
 
   if (!mounted) {
@@ -335,27 +368,17 @@ export function Navbar() {
 
   return (
     <>
-      {/* Skip to content for accessibility */}
-      <a href="#main-content" className="skip-to-content">
-        Skip to main content
-      </a>
-      
-      {/* Material UI 3 Header */}
+      <a href="#main-content" className="skip-to-content">Skip to main content</a>
+
       <header className="sticky top-0 z-[60] w-full border-b border-outline-variant bg-surface-container/95 backdrop-blur-md shadow-sm">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 sm:h-20 lg:h-24 items-center justify-between">
-            
-            {/* Logo Section */}
-            <Link 
-              href="/" 
-              className="flex items-center rounded-2xl p-2 -ml-2 transition-all duration-200 hover:bg-surface-container-high focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-            >
+            <Link href="/" className="flex items-center rounded-2xl p-2 -ml-2 transition-all duration-200 hover:bg-surface-container-high focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
               <StudioLogo />
             </Link>
 
-            {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-2 lg:space-x-4" role="navigation">
-              {NAV_ITEMS.map((item) => (
+              {visibleNavItems.map((item: { href: string; labelKey: string }) => (
                 <Link
                   key={item.href}
                   href={item.href}
@@ -363,35 +386,21 @@ export function Navbar() {
                     "relative overflow-hidden rounded-full px-6 py-3 lg:px-8 lg:py-4 transition-all duration-200",
                     "text-base lg:text-lg font-medium",
                     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
-                    pathname === item.href
-                      ? "bg-tertiary-container text-tertiary-container-foreground shadow-sm"
-                      : "text-surface-foreground hover:bg-surface-container-high"
+                    pathname === item.href ? "bg-tertiary-container text-tertiary-container-foreground shadow-sm" : "text-surface-foreground hover:bg-surface-container-high"
                   )}
                 >
                   {t(item.labelKey)}
                   {pathname === item.href && (
-                    <motion.div
-                      className="absolute bottom-1 left-1/2 w-6 h-1 bg-tertiary rounded-full"
-                      initial={{ scale: 0, x: "-50%" }}
-                      animate={{ scale: 1, x: "-50%" }}
-                      transition={{ duration: 0.2, ease: "linear" }}
-                    />
+                    <motion.div className="absolute bottom-1 left-1/2 w-6 h-1 bg-tertiary rounded-full" initial={{ scale: 0, x: "-50%" }} animate={{ scale: 1, x: "-50%" }} transition={{ duration: 0.2, ease: "linear" }} />
                   )}
                 </Link>
               ))}
             </nav>
 
-            {/* Controls Section */}
             <div className="flex items-center space-x-3">
-              {/* Desktop Controls */}
               <div className="hidden md:flex items-center space-x-3">
-                {/* Book Now Button */}
                 <Link href="/book">
-                  <motion.button
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-2.5 px-5 rounded-full flex items-center gap-2 shadow-md"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
+                  <motion.button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-2.5 px-5 rounded-full flex items-center gap-2 shadow-md" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                     <Calendar className="h-4 w-4" />
                     <span>Book Now</span>
                   </motion.button>
@@ -400,47 +409,23 @@ export function Navbar() {
                 <DarkModeToggle />
               </div>
 
-              {/* Mobile Controls */}
               <div className="flex md:hidden items-center space-x-3">
                 <Link href="/book" className="mr-1">
-                  <motion.button
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground w-10 h-10 rounded-full flex items-center justify-center shadow-md"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    aria-label="Book Now"
-                  >
+                  <motion.button className="bg-primary hover:bg-primary/90 text-primary-foreground w-10 h-10 rounded-full flex items-center justify-center shadow-md" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} aria-label="Book Now">
                     <Calendar className="h-4 w-4" />
                   </motion.button>
                 </Link>
                 <LanguageSwitcher />
                 <DarkModeToggle />
-                
-                {/* Mobile Menu Button */}
-                <button
-                  className="h-12 w-12 rounded-full border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 shadow-sm flex items-center justify-center transition-colors"
-                  onClick={() => setMenuOpen(!menuOpen)}
-                  aria-label="Toggle menu"
-                  aria-expanded={menuOpen}
-                >
+
+                <button className="h-12 w-12 rounded-full border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 shadow-sm flex items-center justify-center transition-colors" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu" aria-expanded={menuOpen}>
                   <AnimatePresence mode="wait">
                     {menuOpen ? (
-                      <motion.div
-                        key="close"
-                        initial={{ rotate: 0 }}
-                        animate={{ rotate: 90 }}
-                        exit={{ rotate: 0 }}
-                        transition={{ duration: 0.15, ease: "linear" }}
-                      >
+                      <motion.div key="close" initial={{ rotate: 0 }} animate={{ rotate: 90 }} exit={{ rotate: 0 }} transition={{ duration: 0.15, ease: "linear" }}>
                         <X className="h-6 w-6 text-gray-700 dark:text-gray-300" />
                       </motion.div>
                     ) : (
-                      <motion.div
-                        key="menu"
-                        initial={{ rotate: 90 }}
-                        animate={{ rotate: 0 }}
-                        exit={{ rotate: 90 }}
-                        transition={{ duration: 0.15, ease: "linear" }}
-                      >
+                      <motion.div key="menu" initial={{ rotate: 90 }} animate={{ rotate: 0 }} exit={{ rotate: 90 }} transition={{ duration: 0.15, ease: "linear" }}>
                         <Menu className="h-6 w-6 text-gray-700 dark:text-gray-300" />
                       </motion.div>
                     )}
@@ -452,69 +437,23 @@ export function Navbar() {
         </div>
       </header>
 
-      {/* Material UI 3 Mobile Navigation Drawer - OUTSIDE OF HEADER */}
       <AnimatePresence>
         {menuOpen && (
           <>
-            {/* Backdrop */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2, ease: "linear" }}
-              className="fixed inset-0 bg-black/60"
-              style={{
-                position: 'fixed',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: 'rgba(0, 0, 0, 0.6)',
-                zIndex: 100,
-              }}
-              onClick={() => setMenuOpen(false)}
-            />
-            
-            {/* Mobile Drawer */}
-            <motion.div
-              ref={drawerRef}
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ duration: 0.25, ease: "linear" }}
-              style={{
-                position: 'fixed',
-                top: 0,
-                right: 0,
-                bottom: 0,
-                width: '320px',
-                maxWidth: '85vw',
-                zIndex: 101,
-              }}
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="mobile-menu-title"
-            >
-              {/* Inner container */}
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2, ease: "linear" }} className="fixed inset-0 bg-black/60" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0, 0, 0, 0.6)', zIndex: 100 }} onClick={() => setMenuOpen(false)} />
+
+            <motion.div ref={drawerRef} initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }} transition={{ duration: 0.25, ease: "linear" }} style={{ position: 'fixed', top: 0, right: 0, bottom: 0, width: '320px', maxWidth: '85vw', zIndex: 101 }} role="dialog" aria-modal="true" aria-labelledby="mobile-menu-title">
               <div className="h-full bg-white dark:bg-gray-900 rounded-l-3xl shadow-2xl border-l border-gray-200 dark:border-gray-700">
-                
-                {/* Header Section */}
+
                 <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-                  <motion.div
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1, duration: 0.2, ease: "linear" }}
-                    className="flex items-center gap-3"
-                  >
+                  <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1, duration: 0.2, ease: "linear" }} className="flex items-center gap-3">
                     <StudioLogo compact />
                     <div>
-                      <h2 id="mobile-menu-title" className="font-semibold text-lg text-gray-900 dark:text-white">
-                        Navigation
-                      </h2>
+                      <h2 id="mobile-menu-title" className="font-semibold text-lg text-gray-900 dark:text-white">Navigation</h2>
                       <p className="text-sm text-gray-600 dark:text-gray-400">Menu</p>
                     </div>
                   </motion.div>
-                  
+
                   <motion.div
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}

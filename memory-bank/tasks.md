@@ -586,3 +586,6 @@ Create a user-friendly system allowing admins to easily enable/disable studio an
 
 → **NEXT RECOMMENDED MODE: REFLECT MODE** - Implementation complete with robust authentication handling
 
+
+- [x] Reflection & Archive: service visibility + server guards implemented and archived (2025-09-05)
+  Archive: `docs/archive/service-visibility-and-guards-20250905.md`

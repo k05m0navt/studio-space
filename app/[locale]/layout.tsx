@@ -12,6 +12,7 @@ import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import Script from 'next/script';
+import { prisma } from '@/lib/prisma';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -88,6 +89,25 @@ export default async function LocaleLayout({
   // side is the easiest way to get started
   const messages = await getMessages({ locale });
 
+  // Server-side: load service settings to pass to client Navbar (defaults to enabled)
+  let services: { studio: { enabled: boolean }; coworking: { enabled: boolean } } = {
+    studio: { enabled: true },
+    coworking: { enabled: true },
+  };
+  try {
+    const [studioSetting, coworkingSetting] = await Promise.all([
+      prisma.settings.findUnique({ where: { key: 'services.studio.enabled' } }),
+      prisma.settings.findUnique({ where: { key: 'services.coworking.enabled' } }),
+    ]);
+    services = {
+      studio: { enabled: studioSetting ? studioSetting.value === 'true' : true },
+      coworking: { enabled: coworkingSetting ? coworkingSetting.value === 'true' : true },
+    };
+  } catch (err) {
+    // Fail-open: keep defaults
+    console.error('Error loading service settings in layout:', err);
+  }
+
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
@@ -151,7 +171,7 @@ export default async function LocaleLayout({
             disableTransitionOnChange
           >
             <div className="min-h-screen flex flex-col">
-              <Navbar />
+              <Navbar services={services} />
               <main id="main-content" className="flex-1">
                 {children}
               </main>
