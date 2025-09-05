@@ -9,14 +9,11 @@ export async function GET(request: NextRequest) {
       cache: 'no-store'
     });
 
-    if (!response.ok) {
-      throw new Error(`API responded with status: ${response.status}`);
-    }
-
+    // Forward the original status code for auth errors and other API responses
     const contentType = response.headers.get('content-type');
     if (contentType && contentType.includes('application/json')) {
       const data = await response.json();
-      return NextResponse.json(data);
+      return NextResponse.json(data, { status: response.status });
     } else {
       const text = await response.text();
       return new NextResponse(text, {

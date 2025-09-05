@@ -67,6 +67,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import { QueryProvider } from "@/components/providers/QueryProvider";
+import { ServiceManagementSection } from "@/components/admin/ServiceManagementSection";
 
 // Helpers
 /** Returns Authorization header from localStorage token if available (client-only). */
@@ -436,8 +438,9 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <motion.div
+    <QueryProvider>
+      <div className="min-h-screen bg-background">
+        <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
@@ -511,6 +514,10 @@ export default function AdminDashboard() {
               <TabsTrigger value="settings" className="flex items-center gap-2">
                 <Settings className="w-4 h-4" />
                 <span className="hidden sm:inline">{t('settings')}</span>
+              </TabsTrigger>
+              <TabsTrigger value="services" className="flex items-center gap-2">
+                <Zap className="w-4 h-4" />
+                <span className="hidden sm:inline">Services</span>
               </TabsTrigger>
             </TabsList>
           </motion.div>
@@ -931,6 +938,21 @@ export default function AdminDashboard() {
               </TabsContent>
             )}
 
+            {/* Services Tab */}
+            {activeTab === "services" && (
+              <TabsContent value="services" className="space-y-6">
+                <motion.div
+                  key="services"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <ServiceManagementSection />
+                </motion.div>
+              </TabsContent>
+            )}
+
             {/* Admins Tab */}
             {activeTab === "admins" && (
               <TabsContent value="admins" className="space-y-6">
@@ -1072,7 +1094,8 @@ export default function AdminDashboard() {
           }}
         />
       </motion.div>
-    </div>
+      </div>
+    </QueryProvider>
   );
 }
 
