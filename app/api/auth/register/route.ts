@@ -1,52 +1,32 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { z } from 'zod'
-import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
-import { prisma } from '@/lib/prisma'
+import { NextRequest, NextResponse } from 'next/server';
+import bcrypt from 'bcryptjs';
+import { z } from 'zod';
+import { prisma } from '@/lib/prisma';
 
 const registerSchema = z.object({
   email: z.string().email(),
   password: z.string().min(6),
-  name: z.string().min(2)
-})
+  name: z.string().min(2),
+});
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json()
-    const { email, password, name } = registerSchema.parse(body)
-
-    const existingUser = await prisma.user.findUnique({ where: { email } })
-    if (existingUser) {
-      return NextResponse.json({ error: 'User already exists' }, { status: 400 })
+    const body = await request.json();
+    const parsed = registerSchema.safeParse(body);
+    if (!parsed.success) {
+      return NextResponse.json({ error: 'Validation error', details: parsed.error.format() }, { status: 400 });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 12)
+    const { email, password, name } = parsed.data;
+    const existing = await prisma.user.findUnique({ where: { email } });
+    if (existing) return NextResponse.json({ error: 'Email already in use' }, { status: 409 });
 
-    const user = await prisma.user.create({
-      data: { email, password: hashedPassword, name },
-      select: { id: true, email: true, name: true, role: true }
-    })
+    const passwordHash = await bcrypt.hash(password, 10);
+    const user = await prisma.user.create({ data: { email, name, password: passwordHash, role: 'USER' } });
 
-    const token = jwt.sign(
-      { userId: user.id, email: user.email, role: user.role },
-      process.env.JWT_SECRET || 'fallback-secret',
-      { expiresIn: '7d' }
-    )
-
-    await prisma.session.create({
-      data: {
-        userId: user.id,
-        token,
-        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-      }
-    })
-
-    return NextResponse.json({ token, user })
+    return NextResponse.json({ user: { id: user.id, email: user.email, name: user.name, role: user.role } });
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: 'Validation error', details: error.errors }, { status: 400 })
-    }
-    console.error('Auth register error:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    console.error('Register error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

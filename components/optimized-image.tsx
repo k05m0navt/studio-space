@@ -21,133 +21,25 @@ interface OptimizedImageProps {
   onError?: () => void;
 }
 
-export function OptimizedImage({
-  src,
-  alt,
-  width,
-  height,
-  className,
-  priority = false,
-  placeholder = 'empty',
-  blurDataURL,
-  sizes = '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw',
-  quality = 75,
-  objectFit = 'cover',
-  loading = 'lazy',
-  onLoad,
-  onError,
-}: OptimizedImageProps) {
-  const [isLoading, setIsLoading] = useState(true);
-  const [hasError, setHasError] = useState(false);
-  const [isInView, setIsInView] = useState(false);
-  const imgRef = useRef<HTMLDivElement>(null);
-
-  // Intersection Observer for lazy loading
-  useEffect(() => {
-    if (!imgRef.current || priority) {
-      setIsInView(true);
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsInView(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.1, rootMargin: '50px' }
+export function OptimizedImage({ src, alt, width, height, className, priority = false, sizes, quality = 75 }: OptimizedImageProps) {
+  // Simple, reliable wrapper for Next.js Image — preserves existing props used throughout the app.
+  if (width && height) {
+    return (
+      <Image
+        src={src}
+        alt={alt}
+        width={width}
+        height={height}
+        sizes={sizes}
+        quality={quality}
+        priority={priority}
+        className={className}
+      />
     );
-
-    observer.observe(imgRef.current);
-    return () => observer.disconnect();
-  }, [priority]);
-
-  // Generate blur placeholder if not provided
-  const generateBlurDataURL = (w: number, h: number) => {
-    const canvas = document.createElement('canvas');
-    canvas.width = w;
-    canvas.height = h;
-    const ctx = canvas.getContext('2d');
-    if (ctx) {
-      ctx.fillStyle = '#f3f4f6';
-      ctx.fillRect(0, 0, w, h);
-    }
-    return canvas.toDataURL();
-  };
-
-  const defaultBlurDataURL = blurDataURL || (width && height ? generateBlurDataURL(width, height) : undefined);
-
-  const handleLoad = () => {
-    setIsLoading(false);
-    onLoad?.();
-  };
-
-  const handleError = () => {
-    setIsLoading(false);
-    setHasError(true);
-    onError?.();
-  };
-
-  const imageProps = {
-    src,
-    alt,
-    quality,
-    sizes,
-    priority,
-    loading: (priority ? 'eager' : loading) as 'lazy' | 'eager',
-    ...(defaultBlurDataURL ? { placeholder: placeholder, blurDataURL: defaultBlurDataURL } : { placeholder: 'empty' }),
-    onLoad: handleLoad,
-    onError: handleError,
-    style: { objectFit },
-    fetchPriority: (priority ? 'high' : 'auto') as 'auto' | 'low' | 'high',
-    className: cn(
-      'transition-opacity duration-300',
-      isLoading && 'opacity-0',
-      !isLoading && 'opacity-100',
-      className
-    ),
-  };
+  }
 
   return (
-    <div 
-      ref={imgRef}
-      className={cn(
-        'relative overflow-hidden bg-gray-100',
-        isLoading && 'animate-pulse',
-        className
-      )}
-      style={{ width, height }}
-    >
-      {hasError ? (
-        <div className="flex items-center justify-center w-full h-full bg-gray-200 text-gray-500">
-          <span className="text-sm">Failed to load image</span>
-        </div>
-      ) : isInView ? (
-        width && height ? (
-          <Image
-            {...imageProps}
-            width={width}
-            height={height}
-            fill={false}
-          />
-        ) : (
-          <Image
-            {...imageProps}
-            fill
-          />
-        )
-      ) : (
-        <div className="w-full h-full bg-gray-100" />
-      )}
-      
-      {/* Loading spinner */}
-      {isLoading && !hasError && (
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-6 h-6 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin" />
-        </div>
-      )}
-    </div>
+    <Image src={src} alt={alt} fill quality={quality} sizes={sizes} priority={priority} className={className} />
   );
 }
 

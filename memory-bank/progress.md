@@ -14,7 +14,8 @@
 - ARCHIVE: Added vercel-prisma-generate-fix-20250812.md; tasks marked COMPLETED — 2025-08-12T10:44:53Z
 - VAN sync completed: 2025-08-12T11:40:04Z
 - PLAN sync completed: 2025-08-12T13:17:33Z
-]633;E;{   echo "- IMPLEMENT build completed: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"\x3b   echo "  - Files edited:"\x3b   echo "    - app/[locale]/book/page.tsx (removed 'use client')"\x3b   echo "    - app/[locale]/gallery/page.tsx (OptimizedImage integration)"\x3b   echo "  - Build: yarn build SUCCESS (warnings: swagger-jsdoc critical dependency expression)"\x3b } >> '/Users/k05m0navt/Work/VashaStudio/studio-space/memory-bank/progress.md';a1536709-b40c-4907-89c2-2b65980487a7]633;C- IMPLEMENT build completed: 2025-08-12T13:21:11Z
+]633;E;{   echo "- IMPLEMENT build completed: $(date -u +"%Y-%m-%dT%H:%M:%SZ")"\x3b   echo "  - Files edited:"\x3b   echo "    - app/[locale]/book/page.tsx (removed 'use client')"\x3b   echo "    - app/[locale]/gallery/page.tsx (OptimizedImage integration)"\x3b   echo "  - Build: yarn build SUCCESS (warnings: swagger-jsdoc critical dependency expression)"\x3b } >> '/Users/k05m0navt/Work/VashaStudio/studio-space/memory-bank/progress.md';a1536709-b40c-4907-89c2-2b65980487a7]633;C
+- IMPLEMENT build completed: 2025-08-12T13:21:11Z
   - Files edited:
     - app/[locale]/book/page.tsx (removed 'use client')
     - app/[locale]/gallery/page.tsx (OptimizedImage integration)
@@ -41,3 +42,9 @@
 - UI/UX design for service management interface completed
 - ARCHIVE: Service Management System archive created: 2025-09-05T12:13:19Z -> memory-bank/archive/archive-service-management-20250905.md
 2025-09-05 — Service visibility & server guards implemented. Archive: `docs/archive/service-visibility-and-guards-20250905.md`
+- IMPLEMENT: Auth routes split & prisma unification — 2025-09-06T12:00:00Z
+  - Files created/edited:
+    - app/api/auth/login/route.ts
+    - app/api/auth/register/route.ts
+    - lib/prisma.ts (verified unified export)
+  - Notes: Login/register endpoints implemented using `@/lib/prisma`; build and local smoke test recommended.

@@ -1,7 +1,8 @@
 import { prisma } from '@/lib/prisma';
 import React from 'react';
 
-export default async function StudioPage({ params }: { params: { locale: string } }) {
+export default async function StudioPage(props: any) {
+  const { params } = props as { params: { locale: string } };
   try {
     const setting = await prisma.settings.findUnique({ where: { key: 'services.studio.enabled' } });
     const enabled = setting ? setting.value === 'true' : true;

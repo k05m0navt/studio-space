@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
 
-export default async function CoworkingPage({ params }: { params: { locale: string } }) {
+export default async function CoworkingPage(props: any) {
+  const { params } = props as { params: { locale: string } };
   try {
     const setting = await prisma.settings.findUnique({ where: { key: 'services.coworking.enabled' } });
     const enabled = setting ? setting.value === 'true' : true;
