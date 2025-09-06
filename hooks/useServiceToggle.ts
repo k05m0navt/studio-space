@@ -23,15 +23,21 @@ interface ApiResponse<T> {
 }
 
 async function fetchServiceConfig(): Promise<ServiceConfig> {
-  const response = await fetch('/api/settings/services', { cache: 'no-store' });
-  if (!response.ok) {
-    if (response.status === 401 || response.status === 403) throw new Error('Unauthorized access');
-    const errorResult = await response.json().catch(() => null);
-    throw new Error(errorResult?.error || `HTTP ${response.status}: Failed to fetch`);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
+  try {
+    const response = await fetch('/api/settings/services', { signal: controller.signal });
+    if (!response.ok) {
+      if (response.status === 401 || response.status === 403) throw new Error('Unauthorized access');
+      const errorResult = await response.json().catch(() => null);
+      throw new Error(errorResult?.error || `HTTP ${response.status}: Failed to fetch`);
+    }
+    const result: ApiResponse<ServiceConfig> = await response.json();
+    if (!result.success) throw new Error(result.error || 'Failed to fetch service configuration');
+    return result.data!;
+  } finally {
+    clearTimeout(timeout);
   }
-  const result: ApiResponse<ServiceConfig> = await response.json();
-  if (!result.success) throw new Error(result.error || 'Failed to fetch service configuration');
-  return result.data!;
 }
 
 async function updateServiceConfig(config: Partial<ServiceConfig>): Promise<ServiceConfig> {
@@ -65,6 +71,7 @@ export function useServiceToggle() {
     queryKey: ['service-config'],
     queryFn: fetchServiceConfig,
     staleTime: 5 * 60 * 1000,
+    refetchOnMount: false,
     retry: (fc, err: any) => { if (err?.message?.includes('401') || err?.message?.includes('403')) return false; return fc < 3; },
   });
 

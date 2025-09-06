@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { ServiceIcon } from "./ServiceIcon";
@@ -15,6 +15,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Trash2, Edit } from "lucide-react";
+import { OptimizedImage } from "@/components/optimized-image";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const CURRENCIES = ['USD','EUR','GBP','UAH'];
@@ -38,7 +39,7 @@ interface Props {
   refetch?: () => void;
 }
 
-export function ServiceToggleCard({
+export const ServiceToggleCard = memo(function ServiceToggleCard({
   service,
   enabled,
   isLoading = false,
@@ -246,7 +247,7 @@ export function ServiceToggleCard({
               <div className="flex gap-2 flex-wrap">
                 {(images || []).map((img) => (
                   <div key={img} className="w-24 h-24 rounded overflow-hidden relative border">
-                    <img src={img} alt="preview" className="object-cover w-full h-full" />
+                    <OptimizedImage src={img} alt="preview" width={96} height={96} className="object-cover w-full h-full" />
                     <button
                       onClick={() => handleDeleteImage(img)}
                       className="absolute top-1 right-1 bg-white/80 p-1 rounded-full"
@@ -272,4 +273,4 @@ export function ServiceToggleCard({
       </Dialog>
     </>
   );
-}
+});

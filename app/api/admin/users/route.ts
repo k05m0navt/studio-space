@@ -1,18 +1,22 @@
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/auth";
 
-export const GET = requireRole(['ADMIN'])(async () => {
+export const GET = requireRole(['ADMIN'])(async ({ user, request }) => {
   try {
-    const dbUsers = await prisma.user.findMany({
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        createdAt: true
-      },
-      orderBy: { createdAt: "desc" }
-    });
+    const url = new URL(request.url);
+    const page = Math.max(1, Number(url.searchParams.get('page') || '1'));
+    const limit = Math.min(100, Math.max(1, Number(url.searchParams.get('limit') || '25')));
+    const skip = (page - 1) * limit;
+
+    const [dbUsers, total] = await Promise.all([
+      prisma.user.findMany({
+        select: { id: true, name: true, email: true, role: true, createdAt: true },
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take: limit,
+      }),
+      prisma.user.count()
+    ]);
 
     const users = dbUsers.map(u => ({
       id: u.id,
@@ -24,7 +28,7 @@ export const GET = requireRole(['ADMIN'])(async () => {
       createdAt: u.createdAt
     }));
 
-    return new Response(JSON.stringify({ users }), {
+    return new Response(JSON.stringify({ users, pagination: { page, limit, total, pages: Math.ceil(total / limit) } }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' }
     });

@@ -1,8 +1,15 @@
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/auth";
 
+let _statsCache: { data: any; expiresAt: number } | null = null;
+
 export const GET = requireRole(['ADMIN'])(async () => {
   try {
+    const now = Date.now();
+    if (_statsCache && _statsCache.expiresAt > now) {
+      return new Response(JSON.stringify(_statsCache.data), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    }
+
     const today = new Date();
     const startOfToday = new Date(today.setHours(0, 0, 0, 0));
     const endOfToday = new Date(today.setHours(23, 59, 59, 999));
@@ -45,7 +52,7 @@ export const GET = requireRole(['ADMIN'])(async () => {
       return total + price;
     }, 0);
 
-    return new Response(JSON.stringify({
+    const result = {
       totalBookings,
       monthlyRevenue,
       activeMembers: activeUsers,
@@ -54,7 +61,9 @@ export const GET = requireRole(['ADMIN'])(async () => {
       confirmedBookings,
       todayBookings,
       weeklyGrowth: Math.round(weeklyGrowth * 10) / 10
-    }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    };
+    _statsCache = { data: result, expiresAt: Date.now() + 30 * 1000 };
+    return new Response(JSON.stringify(result), { status: 200, headers: { 'Content-Type': 'application/json' } });
   } catch (error) {
     console.error("Error fetching stats:", error);
     return new Response(

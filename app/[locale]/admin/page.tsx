@@ -421,6 +421,17 @@ export default function AdminDashboard() {
     toast.success(t('messages.logoutSuccess'));
   };
 
+  // Local handlers for bookings actions (update UI optimistically)
+  const handleConfirmBooking = (id: string) => {
+    setBookings(prev => prev.map(b => b.id === id ? { ...b, status: 'confirmed' as const } : b));
+    toast.success(t('messages.bookingConfirmed'));
+  };
+
+  const handleCancelBooking = (id: string) => {
+    setBookings(prev => prev.map(b => b.id === id ? { ...b, status: 'cancelled' as const } : b));
+    toast.success(t('messages.bookingCancelled'));
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
