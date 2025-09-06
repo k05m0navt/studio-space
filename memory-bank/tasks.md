@@ -589,3 +589,7 @@ Create a user-friendly system allowing admins to easily enable/disable studio an
 
 - [x] Reflection & Archive: service visibility + server guards implemented and archived (2025-09-05)
   Archive: `docs/archive/service-visibility-and-guards-20250905.md`
+
+
+- [x] Implemented service pricing, currency, unit, and image management in admin UI and API.
+- ReflectionRecorded: 2025-09-06 17:50:03Z
