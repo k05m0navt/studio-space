@@ -48,3 +48,5 @@
     - app/api/auth/register/route.ts
     - lib/prisma.ts (verified unified export)
   - Notes: Login/register endpoints implemented using `@/lib/prisma`; build and local smoke test recommended.
+
+- ARCHIVE: Auth & Prisma Unification: 2025-09-06T19:52:30Z -> docs/archive/auth-prisma-unification-20250906.md

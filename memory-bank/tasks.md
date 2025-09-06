@@ -593,3 +593,9 @@ Create a user-friendly system allowing admins to easily enable/disable studio an
 
 - [x] Implemented service pricing, currency, unit, and image management in admin UI and API.
 - ReflectionRecorded: 2025-09-06 17:50:03Z
+
+
+## Archive: Auth & Prisma Unification (2025-09-06T19:52:30Z)
+- Archive file: `memory-bank/archive/archive-auth-prisma-20250906.md`
+- Docs archive: `docs/archive/auth-prisma-unification-20250906.md`
+- Status: ARCHIVED
