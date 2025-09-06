@@ -138,6 +138,38 @@ export function BookingForm() {
 
   const selectedBookingType = bookingTypes.find(type => type.id === watchBookingType);
 
+  // Service rates fetched from settings (price, currency, unit)
+  const [serviceRates, setServiceRates] = useState<{ [k: string]: any } | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const res = await fetch('/api/settings/services');
+        if (!res.ok) return;
+        const json = await res.json();
+        if (json?.success && mounted) setServiceRates(json.data);
+      } catch (err) {
+        console.error('Failed to load service rates', err);
+      }
+    })();
+    return () => { mounted = false; };
+  }, []);
+
+  const computeHours = (start?: string, end?: string) => {
+    if (!start || !end) return 0;
+    const [sh, sm] = start.split(':').map(Number);
+    const [eh, em] = end.split(':').map(Number);
+    const s = new Date(); s.setHours(sh, sm, 0, 0);
+    const e = new Date(); e.setHours(eh, em, 0, 0);
+    const diff = Math.max(0, (e.getTime() - s.getTime()) / (1000 * 60 * 60));
+    return diff;
+  };
+
+  const formatCurrency = (amount: number, currency: string) => {
+    try { return new Intl.NumberFormat(undefined, { style: 'currency', currency }).format(amount); } catch { return `${currency} ${amount}`; }
+  };
+
   // Check for unavailable time slots when date changes
   const checkAvailability = useCallback(async (date: Date) => {
     try {

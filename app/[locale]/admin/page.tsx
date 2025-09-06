@@ -494,7 +494,7 @@ export default function AdminDashboard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <TabsList className="grid w-full grid-cols-5 lg:w-fit lg:grid-cols-5">
+            <TabsList className="grid w-full grid-cols-6 lg:w-fit lg:grid-cols-6">
               <TabsTrigger value="overview" className="flex items-center gap-2">
                 <BarChart3 className="w-4 h-4" />
                 <span className="hidden sm:inline">{t('overview')}</span>

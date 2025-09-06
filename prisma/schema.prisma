@@ -52,6 +52,9 @@ model Booking {
   type       String   // 'studio' or 'coworking'
   status     String   @default("pending") // pending, confirmed, cancelled
   userId     String?
+  // Pricing
+  amount     Decimal? @db.Decimal(10, 2)
+  currency   String?
 
   // Relations
   user User? @relation(fields: [userId], references: [id])

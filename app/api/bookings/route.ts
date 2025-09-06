@@ -161,10 +161,38 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Compute amount based on service rate and duration
+    // Parse start/end times like '09:00'
+    let amount: string | undefined = undefined;
+    let currency: string | undefined = undefined;
+    try {
+      const rateSetting = await prisma.settings.findUnique({ where: { key: `services.${validatedData.type}.price` } });
+      const currencySetting = await prisma.settings.findUnique({ where: { key: `services.${validatedData.type}.currency` } });
+      const rate = rateSetting?.value ? Number(rateSetting.value) : 0;
+      currency = currencySetting?.value ?? 'USD';
+
+      if (validatedData.start_time && validatedData.end_time) {
+        const [sh, sm] = validatedData.start_time.split(':').map(Number);
+        const [eh, em] = validatedData.end_time.split(':').map(Number);
+        const start = new Date();
+        start.setHours(sh, sm, 0, 0);
+        const end = new Date();
+        end.setHours(eh, em, 0, 0);
+        const diffMs = end.getTime() - start.getTime();
+        const hours = Math.max(0, diffMs / (1000 * 60 * 60));
+        const computed = Number((rate * hours).toFixed(2));
+        amount = String(computed);
+      }
+    } catch (err) {
+      console.error('Failed to compute amount from settings:', err);
+    }
+
     const booking = await prisma.booking.create({
       data: {
         ...validatedData,
         date: new Date(validatedData.date),
+        amount: amount ?? undefined,
+        currency: currency ?? undefined,
       },
     });
 

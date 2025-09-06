@@ -147,12 +147,16 @@ export function ServiceManagementSection({ className }: ServiceManagementSection
                 enabled={serviceConfig.studio.enabled}
                 isLoading={isUpdating}
                 onToggleRequest={handleToggleRequest}
+                config={serviceConfig}
+                refetch={refetch}
               />
               <ServiceToggleCard
                 service="coworking"
                 enabled={serviceConfig.coworking.enabled}
                 isLoading={isUpdating}
                 onToggleRequest={handleToggleRequest}
+                config={serviceConfig}
+                refetch={refetch}
               />
             </div>
           ) : null}
