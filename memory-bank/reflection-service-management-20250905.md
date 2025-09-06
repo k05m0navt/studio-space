@@ -36,3 +36,12 @@ Implemented a configurable Service Management system allowing admins to enable/d
 - [x] Reflection documented
 - [x] tasks.md updated with reflection link and status
 
+
+
+## Update: Pricing & Images (AUTO)
+- Date: 2025-09-06 17:49:50Z
+- Added per-service `price`, `currency`, `unit` support in settings API and admin UI.
+- Implemented image upload/delete (Supabase `service-images` bucket) and public URL exposure.
+- Booking POST computes `amount` (duration × rate) and stores `amount` and `currency` on booking.
+- Admin card UI includes select controls for currency and unit and validates inputs.
+- Next steps: run Prisma migration to add `Booking.amount` and `Booking.currency`, create bucket, and add CI smoke tests.
