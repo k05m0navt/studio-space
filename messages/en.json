@@ -53,17 +53,7 @@
     "gallery": "Gallery",
     "faq": "FAQ",
     "admin": "Admin",
-    "bookNow": "Book Now",
-    "aria": {
-      "switchToRussian": "Switch to Russian",
-      "switchToEnglish": "Switch to English",
-      "switchToDark": "Switch to dark mode",
-      "switchToLight": "Switch to light mode"
-    },
-    "theme": {
-      "dark": "Dark",
-      "light": "Light"
-    }
+    "bookNow": "Book Now"
   },
   "home": {
     "badge": "Professional Photography Studio",
@@ -299,41 +289,6 @@
     "title": "Book Your Session",
     "badge": "Book Your Creative Session",
     "description": "Reserve your creative space in just a few simple steps. We'll confirm your booking within 24 hours.",
-    "placeholders": {
-      "name": "John Doe",
-      "email": "john@example.com",
-      "phone": "+1 (555) 000-0000"
-    },
-    "validation": {
-      "name": {
-        "min": "Name must be at least 2 characters.",
-        "max": "Name must be less than 50 characters.",
-        "pattern": "Name can only contain letters and spaces."
-      },
-      "email": {
-        "invalid": "Please enter a valid email address.",
-        "max": "Email must be less than 100 characters."
-      },
-      "phone": {
-        "min": "Please enter a valid phone number.",
-        "max": "Phone number is too long.",
-        "pattern": "Please enter a valid phone number."
-      },
-      "date": {
-        "required": "A date is required.",
-        "past": "Date cannot be in the past."
-      },
-      "startTime": {
-        "required": "Please select a start time."
-      },
-      "endTime": {
-        "required": "Please select an end time.",
-        "after": "End time must be after start time."
-      },
-      "message": {
-        "max": "Message must be less than 500 characters."
-      }
-    },
     "selectDate": "Select Date",
     "selectTime": "Select Time",
     "studioType": "Studio Type",
@@ -444,33 +399,53 @@
     }
   },
   "faq": {
+    "helpBadge": "Help & Support",
     "title": "Frequently Asked Questions",
     "subtitle": "Find answers to common questions about our studio and services",
     "categories": {
-      "general": "General",
+      "all": "All",
       "studio": "Studio",
-      "coworking": "Coworking"
+      "coworking": "Coworking",
+      "booking": "Booking",
+      "general": "General"
+    },
+    "q1": {"question": "What equipment is included with studio rental?","answer": "Our studio comes fully equipped with professional lighting setups, backdrops, reflectors, and basic photography equipment. We also have high-end cameras and lenses available for rent at an additional cost."},
+    "q2": {"question": "Can I bring my own equipment?","answer": "You're welcome to bring your own cameras, lenses, and specialized equipment. Our studio accommodates various setups."},
+    "q3": {"question": "What are the coworking space hours?","answer": "Coworking is open 24/7 for monthly members. Day pass users have access from 8 AM to 8 PM on weekdays and 9 AM to 6 PM on weekends."},
+    "q4": {"question": "Is there parking available?","answer": "Yes — free parking available for members and visitors; first-come, first-served."},
+    "q5": {"question": "How far in advance can I book?","answer": "Studio time can be booked up to 3 months in advance; day passes up to 1 month."},
+    "q6": {"question": "What is your cancellation policy?","answer": "Studio bookings can be cancelled up to 24 hours before session for a full refund. Day passes can be cancelled up to 2 hours before."},
+    "q7": {"question": "Do you offer photography services?","answer": "We primarily rent space but can connect you with photographers and host workshops."},
+    "q8": {"question": "Is food and drink allowed in the space?","answer": "Light snacks allowed in coworking; in studio please keep food in designated areas to protect equipment."},
+    "help": {
+      "stillHaveQuestions": {"title":"Still Have Questions?","subtitle":"Can't find what you're looking for? Get in touch with our team"},
+      "contactCta": "Book a Consultation"
     }
   },
   "contact": {
-    "title": "Contact Us",
-    "subtitle": "Get in touch with our team",
-    "address": "Address",
     "phone": "Phone",
+    "call": "Call us",
     "email": "Email",
+    "emailAction": "Send email",
+    "address": "Address",
+    "addressShort": "123 Creative Street, Art District",
+    "getDirections": "Get directions",
     "hours": "Hours",
-    "monday_friday": "Monday - Friday",
-    "saturday": "Saturday",
-    "sunday": "Sunday",
-    "parking": "Parking",
-    "metro": "Metro",
-    "freeOnSite": "Free on-site",
-    "blocksAway": "blocks away",
-    "getDirections": "Get Directions",
-    "gettingHere": "Getting Here",
-    "memberAccess": "24/7 access available for monthly members"
+    "hoursShort": "Mon-Fri: 8AM-8PM, Sat-Sun: 9AM-6PM",
+    "viewSchedule": "View schedule",
+    "cta": "Book a Consultation"
   },
   "admin": {
+    "serviceManagement": {
+      "title": "Service Management",
+      "refreshPage": "Refresh Page",
+      "failedToLoad": "Failed to load service settings",
+      "unexpectedError": "An unexpected error occurred",
+      "description": "Enable or disable services throughout the application. Changes take effect immediately.",
+      "sessionExpiredHelp": "Your admin session has expired. Please refresh the page to log in again.",
+      "updating": "Updating services...",
+      "affects": "Affects"
+    },
     "title": "Admin Dashboard",
     "welcome": "Welcome to Admin Dashboard",
     "description": "Manage your studio bookings and users",

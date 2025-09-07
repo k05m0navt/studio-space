@@ -48,10 +48,11 @@ export const ServiceToggleCard = memo(function ServiceToggleCard({
   config,
   refetch,
 }: Props) {
-  const serviceName = service === 'studio' ? 'Studio' : 'Coworking';
+  const t = (typeof window === 'undefined') ? ((k: string) => k) as any : undefined;
+const serviceName = service === 'studio' ? t ? t('services.studio.name') : 'Studio' : t ? t('services.coworking.name') : 'Coworking';
   const serviceDescription = service === 'studio'
-    ? 'Professional photography and video production space'
-    : 'Shared workspace for freelancers and teams';
+    ? (t ? t('services.studio.description') : 'Professional photography and video production space')
+    : (t ? t('services.coworking.description') : 'Shared workspace for freelancers and teams');
 
   const impactAreas = service === 'studio'
     ? ['Navigation', 'Booking', 'Studio Page']

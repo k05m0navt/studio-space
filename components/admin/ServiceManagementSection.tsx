@@ -8,6 +8,7 @@ import { ServiceToggleCard } from "./ServiceToggleCard";
 import { ServiceConfirmDialog } from "./ServiceConfirmDialog";
 import { useServiceToggle } from "@/hooks/useServiceToggle";
 import { cn } from "@/lib/utils";
+import { useTranslations } from 'next-intl';
 
 interface ServiceManagementSectionProps {
   className?: string;
@@ -29,6 +30,8 @@ export function ServiceManagementSection({ className }: ServiceManagementSection
     handleCancelToggle,
     refetch,
   } = useServiceToggle();
+  const t = useTranslations('admin');
+  const tCommon = useTranslations('common');
 
   if (error) {
     const isAuthError = error instanceof Error && error.message.includes('Unauthorized access');
@@ -39,7 +42,7 @@ export function ServiceManagementSection({ className }: ServiceManagementSection
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2 text-error">
               <Settings className="h-5 w-5" />
-              Service Management
+              {t('serviceManagement.title')}
             </CardTitle>
             {!isAuthError && (
               <Button
@@ -58,23 +61,23 @@ export function ServiceManagementSection({ className }: ServiceManagementSection
           <div className="text-center py-8">
             {isAuthError ? (
               <>
-                <p className="text-error mb-2">Session Expired</p>
+                <p className="text-error mb-2">{tCommon('sessionExpired')}</p>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Your admin session has expired. Please refresh the page to log in again.
+                  {t('serviceManagement.sessionExpiredHelp')}
                 </p>
                 <Button 
                   onClick={() => window.location.reload()} 
                   variant="outline"
                   className="text-error border-error/20 hover:bg-error/5"
                 >
-                  Refresh Page
+                  {t('serviceManagement.refreshPage')}
                 </Button>
               </>
             ) : (
               <>
-                <p className="text-error mb-2">Failed to load service settings</p>
+                <p className="text-error mb-2">{t('serviceManagement.failedToLoad')}</p>
                 <p className="text-sm text-muted-foreground">
-                  {error instanceof Error ? error.message : 'An unexpected error occurred'}
+                  {error instanceof Error ? error.message : t('serviceManagement.unexpectedError')}
                 </p>
               </>
             )}
@@ -91,7 +94,7 @@ export function ServiceManagementSection({ className }: ServiceManagementSection
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
               <Settings className="h-5 w-5" />
-              Service Management
+              {t('serviceManagement.title')}
             </CardTitle>
             <Button
               variant="outline"
@@ -106,11 +109,11 @@ export function ServiceManagementSection({ className }: ServiceManagementSection
                   (isLoading || isUpdating) && "animate-spin"
                 )} 
               />
-              Refresh
+              {tCommon('refresh')}
             </Button>
           </div>
           <p className="text-sm text-muted-foreground">
-            Enable or disable services throughout the application. Changes take effect immediately.
+            {t('serviceManagement.description')}
           </p>
         </CardHeader>
         
@@ -183,7 +186,7 @@ export function ServiceManagementSection({ className }: ServiceManagementSection
             <div className="bg-background border rounded-lg p-4 shadow-lg">
               <div className="flex items-center gap-3">
                 <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                <span className="text-sm font-medium">Updating services...</span>
+                <span className="text-sm font-medium">{t('serviceManagement.updating')}</span>
               </div>
             </div>
           </div>

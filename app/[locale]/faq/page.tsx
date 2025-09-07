@@ -60,42 +60,22 @@ const faqData = [
   }
 ];
 
-const categories = ["All", "Studio", "Coworking", "Booking", "General"];
-
-const contactInfo = [
-  {
-    icon: Phone,
-    title: "Phone",
-    details: "+1 (555) 123-4567",
-    action: "Call us"
-  },
-  {
-    icon: Mail,
-    title: "Email",
-    details: "hello@vashastudio.com",
-    action: "Send email"
-  },
-  {
-    icon: MapPin,
-    title: "Address",
-    details: "123 Creative Street, Art District",
-    action: "Get directions"
-  },
-  {
-    icon: Clock,
-    title: "Hours",
-    details: "Mon-Fri: 8AM-8PM, Sat-Sun: 9AM-6PM",
-    action: "View schedule"
-  }
-];
-
 export default function FAQPage() {
   const t = useTranslations('faq');
   const [activeCategory, setActiveCategory] = useState("All");
   const [openItems, setOpenItems] = useState<number[]>([]);
 
-  const filteredFAQs = activeCategory === "All" 
-    ? faqData 
+  const categories = [t('categories.all'), t('categories.studio'), t('categories.coworking'), t('categories.booking'), t('categories.general')];
+
+  const contactInfo = [
+    { icon: Phone, title: t('contact.phone'), details: "+1 (555) 123-4567", action: t('contact.call') },
+    { icon: Mail, title: t('contact.email'), details: "hello@vashastudio.com", action: t('contact.emailAction') },
+    { icon: MapPin, title: t('contact.address'), details: t('contact.addressShort'), action: t('contact.getDirections') },
+    { icon: Clock, title: t('contact.hours'), details: t('contact.hoursShort'), action: t('contact.viewSchedule') },
+  ];
+
+  const filteredFAQs = activeCategory === "All"
+    ? faqData
     : faqData.filter(item => item.category === activeCategory);
 
   const toggleItem = (id: number) => {
@@ -124,7 +104,7 @@ export default function FAQPage() {
               transition={{ duration: 0.6, delay: 0.2 }}
             >
               <HelpCircle className="w-4 h-4 mr-2" />
-              Help & Support
+              {t('helpBadge')}
             </motion.div>
 
             <motion.h1 
@@ -207,7 +187,7 @@ export default function FAQPage() {
                           <Badge variant="secondary" className="text-xs">
                             {faq.category}
                           </Badge>
-                          <h3 className="text-lg font-semibold">{faq.question}</h3>
+                          <h3 className="text-lg font-semibold">{t(faq.question)}</h3>
                         </div>
                         <motion.div
                           animate={{ rotate: openItems.includes(faq.id) ? 180 : 0 }}
@@ -228,7 +208,7 @@ export default function FAQPage() {
                         >
                           <CardContent className="px-6 pb-6 pt-0">
                             <p className="text-muted-foreground leading-relaxed">
-                              {faq.answer}
+                              {t(faq.answer)}
                             </p>
                           </CardContent>
                         </motion.div>
@@ -266,10 +246,10 @@ export default function FAQPage() {
             viewport={{ once: true }}
           >
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">
-              Still Have Questions?
+              {t('help.stillHaveQuestions.title')}
             </h2>
             <p className="text-lg text-muted-foreground">
-              Can&apos;t find what you&apos;re looking for? Get in touch with our team
+              {t('help.stillHaveQuestions.subtitle')}
             </p>
           </motion.div>
           
@@ -311,7 +291,7 @@ export default function FAQPage() {
           >
             <Link href="/book">
               <Button size="lg" className="h-12 px-8 text-base font-semibold">
-                Book a Consultation
+                {t('help.contactCta')}
               </Button>
             </Link>
           </motion.div>
