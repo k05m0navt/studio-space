@@ -11,7 +11,8 @@
     "db:migrate": "prisma migrate dev",
     "db:generate": "prisma generate",
     "db:studio": "prisma studio",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "i18n:audit": "node ./scripts/i18n-audit.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.0.1",

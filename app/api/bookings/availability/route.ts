@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
 
     if (!date || !type) {
       return NextResponse.json(
-        { error: 'Date and type parameters are required' },
+        { error: 'api.errors.missingDateOrType' },
         { status: 400 }
       );
     }
@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Availability check error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'api.errors.internalServerError' },
       { status: 500 }
     );
   }

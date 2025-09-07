@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { useTranslations } from 'next-intl';
 
 export function Spinner({
   size = 24,
@@ -7,12 +8,13 @@ export function Spinner({
   size?: number;
   className?: string;
 }) {
+  const t = useTranslations('common');
   return (
     <div
       className={cn("inline-block animate-spin", className)}
       style={{ width: size, height: size }}
       role="status"
-      aria-label="Loading..."
+      aria-label={t('loading')}
     >
       <svg
         className="w-full h-full text-muted-foreground"

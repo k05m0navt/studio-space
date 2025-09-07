@@ -85,7 +85,7 @@ function DarkModeToggle({ fullWidth = false }: { fullWidth?: boolean }) {
 
   return (
     <motion.button
-      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      aria-label={isDark ? t("aria.switchToLight") : t("aria.switchToDark") }
       onClick={toggle}
       className={cn(
         "relative overflow-hidden rounded-full transition-colors duration-300",
@@ -113,7 +113,7 @@ function DarkModeToggle({ fullWidth = false }: { fullWidth?: boolean }) {
           >
             <Moon className="h-4 w-4" />
             {fullWidth && (
-              <span className="font-medium text-sm">Dark</span>
+              <span className="font-medium text-sm">{t('theme.dark')}</span>
             )}
           </motion.div>
         ) : (
@@ -127,7 +127,7 @@ function DarkModeToggle({ fullWidth = false }: { fullWidth?: boolean }) {
           >
             <Sun className="h-4 w-4" />
             {fullWidth && (
-              <span className="font-medium text-sm">Light</span>
+              <span className="font-medium text-sm">{t('theme.light')}</span>
             )}
           </motion.div>
         )}
@@ -159,7 +159,7 @@ function LanguageSwitcher({ fullWidth = false }: { fullWidth?: boolean }) {
 
   return (
     <motion.button
-      aria-label={`Switch to ${locale === 'en' ? 'Russian' : 'English'}`}
+      aria-label={locale === 'en' ? t('aria.switchToRussian') : t('aria.switchToEnglish')}
       onClick={toggleLanguage}
       className={cn(
         "relative overflow-hidden rounded-full shadow-md transition-colors duration-300",
@@ -412,7 +412,7 @@ export function Navbar({ services: initialServices = null }: { services?: { stud
                 <Link href="/book">
                   <motion.button className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-2.5 px-5 rounded-full flex items-center gap-2 shadow-md" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
                     <Calendar className="h-4 w-4" />
-                    <span>Book Now</span>
+                    <span>{t('bookNow')}</span>
                   </motion.button>
                 </Link>
                 <LanguageSwitcher />

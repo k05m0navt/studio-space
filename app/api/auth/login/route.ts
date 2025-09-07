@@ -14,15 +14,15 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const parsed = loginSchema.safeParse(body);
     if (!parsed.success) {
-      return NextResponse.json({ error: 'Validation error', details: parsed.error.format() }, { status: 400 });
+      return NextResponse.json({ error: 'api.errors.validation', details: parsed.error.format() }, { status: 400 });
     }
 
     const { email, password } = parsed.data;
     const user = await prisma.user.findUnique({ where: { email } });
-    if (!user) return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+    if (!user) return NextResponse.json({ error: 'api.errors.invalidCredentials' }, { status: 401 });
 
     const isMatch = await bcrypt.compare(password, user.password || '');
-    if (!isMatch) return NextResponse.json({ error: 'Invalid credentials' }, { status: 401 });
+    if (!isMatch) return NextResponse.json({ error: 'api.errors.invalidCredentials' }, { status: 401 });
 
     const token = jwt.sign({ userId: user.id, role: user.role }, process.env.JWT_SECRET || 'secret', { expiresIn: '7d' });
 

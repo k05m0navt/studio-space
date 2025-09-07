@@ -606,5 +606,30 @@
       "metro": "Metro",
       "metroDetails": "2 blocks away"
     }
+  },
+  "api": {
+    "errors": {
+      "failedToFetchBookings": "Failed to fetch bookings",
+      "failedToCreateBooking": "Failed to create booking",
+      "failedToUpdateBooking": "Failed to update booking",
+      "failedToDeleteBooking": "Failed to delete booking",
+      "failedToFetchGalleryItems": "Failed to fetch gallery items",
+      "failedToFetchFAQs": "Failed to fetch FAQs",
+      "failedToFetchUsers": "Failed to fetch users",
+      "failedToFetchDashboardStats": "Failed to fetch dashboard stats",
+      "failedToCheckAvailability": "Failed to check availability",
+      "coworkingDisabled": "Coworking bookings are currently disabled",
+      "timeSlotBooked": "Time slot already booked",
+      "validation": "Validation error",
+      "missingDateOrType": "Date and type parameters are required",
+      "invalidCredentials": "Invalid credentials",
+      "internalServerError": "Internal server error"
+    },
+    "messages": {
+      "bookingCreated": "Booking created successfully",
+      "bookingStatusUpdated": "Booking status updated",
+      "bookingDeleted": "Booking deleted successfully",
+      "timeSlotUnavailable": "This time slot is not available. Please choose a different time."
+    }
   }
 } 

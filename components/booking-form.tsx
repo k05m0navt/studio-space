@@ -39,44 +39,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
-const formSchema = z.object({
-  name: z.string()
-    .min(2, "Name must be at least 2 characters.")
-    .max(50, "Name must be less than 50 characters.")
-    .regex(/^[a-zA-Z\s]+$/, "Name can only contain letters and spaces."),
-  email: z.string()
-    .email("Please enter a valid email address.")
-    .max(100, "Email must be less than 100 characters."),
-  phone: z.string()
-    .min(10, "Please enter a valid phone number.")
-    .max(20, "Phone number is too long.")
-    .regex(/^[\+]?[1-9][\d]{0,15}$/, "Please enter a valid phone number."),
-  bookingType: z.enum(["studio", "coworking"]),
-  date: z.date({
-    required_error: "A date is required.",
-  }).refine((date) => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return date >= today;
-  }, "Date cannot be in the past."),
-  startTime: z.string()
-    .min(1, "Please select a start time."),
-  endTime: z.string()
-    .min(1, "Please select an end time."),
-  message: z.string()
-    .max(500, "Message must be less than 500 characters.")
-    .optional(),
-}).refine((data) => {
-  const start = parseInt(data.startTime.replace(':', ''));
-  const end = parseInt(data.endTime.replace(':', ''));
-  return end > start;
-}, {
-  message: "End time must be after start time.",
-  path: ["endTime"],
-});
-
-type BookingFormValues = z.infer<typeof formSchema>;
-
 const TIME_SLOTS = [
   "09:00", "10:00", "11:00", "12:00", 
   "13:00", "14:00", "15:00", "16:00", "17:00"
@@ -91,6 +53,35 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
   const t = useTranslations('booking');
   const tCommon = useTranslations('common');
   const tSuccess = useTranslations('bookingSuccess');
+
+  const formSchema = z.object({
+    name: z.string()
+      .min(2, t('validation.name.min'))
+      .max(50, t('validation.name.max'))
+      .regex(/^[a-zA-Z\s]+$/, t('validation.name.pattern')),
+    email: z.string()
+      .email(t('validation.email.invalid'))
+      .max(100, t('validation.email.max')),
+    phone: z.string()
+      .min(10, t('validation.phone.min'))
+      .max(20, t('validation.phone.max'))
+      .regex(/^[\+]?[1-9][\d]{0,15}$/, t('validation.phone.pattern')),
+    bookingType: z.enum(['studio', 'coworking'] as const),
+    date: z.date({ required_error: t('validation.date.required') }).refine((date) => {
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      return date >= today;
+    }, t('validation.date.past')),
+    startTime: z.string().min(1, t('validation.startTime.required')),
+    endTime: z.string().min(1, t('validation.endTime.required')),
+    message: z.string().max(500, t('validation.message.max')).optional(),
+  }).refine((data) => {
+    const start = parseInt(data.startTime.replace(':', ''));
+    const end = parseInt(data.endTime.replace(':', ''));
+    return end > start;
+  }, { message: t('validation.endTime.after'), path: ['endTime'] });
+
+  type BookingFormValues = z.infer<typeof formSchema>;
 
   const form = useForm<BookingFormValues>({
     resolver: zodResolver(formSchema),
@@ -477,7 +468,7 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
                                   {t('fullName')}
                                 </FormLabel>
                                 <FormControl>
-                                  <Input placeholder="John Doe" {...field} className="h-12" />
+                                  <Input placeholder={t('placeholders.name')} {...field} className="h-12" />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -496,7 +487,7 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
                                 <FormControl>
                                   <Input
                                     type="email"
-                                    placeholder="john@example.com"
+                                    placeholder={t('placeholders.email')}
                                     {...field}
                                     className="h-12"
                                   />
@@ -518,7 +509,7 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
                                 <FormControl>
                                   <Input
                                     type="tel"
-                                    placeholder="+1 (555) 000-0000"
+                                    placeholder={t('placeholders.phone')}
                                     {...field}
                                     className="h-12"
                                   />

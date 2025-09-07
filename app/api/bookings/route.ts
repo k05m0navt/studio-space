@@ -134,7 +134,7 @@ export async function POST(request: NextRequest) {
       const setting = await prisma.settings.findUnique({ where: { key: 'services.coworking.enabled' } });
       const coworkingEnabled = setting?.value !== undefined ? setting.value === 'true' : true;
       if (!coworkingEnabled) {
-        return NextResponse.json({ error: 'Coworking bookings are currently disabled' }, { status: 400 });
+        return NextResponse.json({ error: 'api.errors.coworkingDisabled' }, { status: 400 });
       }
     }
 
@@ -163,8 +163,8 @@ export async function POST(request: NextRequest) {
     if (conflictingBookings.length > 0) {
       return NextResponse.json(
         { 
-          error: 'Time slot already booked',
-          message: 'This time slot is not available. Please choose a different time.',
+          error: 'api.errors.timeSlotBooked',
+          message: 'api.messages.timeSlotUnavailable',
         },
         { status: 409 }
       );
@@ -209,14 +209,14 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Validation error', details: error.errors },
-        { status: 400 }
-      );
+      { error: 'api.errors.validation', details: error.errors },
+      { status: 400 }
+    );
     }
 
     console.error('Create booking error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { error: 'api.errors.internalServerError' },
       { status: 500 }
     );
   }

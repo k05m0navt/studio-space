@@ -60,7 +60,7 @@
    - Protect `app/api/admin/*` with `requireRole([ADMIN])`; standardize JSON responses and error handling.
 2. Booking Flow (Phase 2)
    - Update `app/[locale]/book/page.tsx` to render `<BookingForm />` (remove duplicate logic) or extract shared pieces.
-   - Internationalize `components/booking-form.tsx` using `useTranslations(booking)` and use i18n `useRouter` for success redirect (e.g., `router.push(/booking-success)` locale-aware).
+   - Internationalize `components/booking-form.tsx` using `useTranslations` and i18n `useRouter` for success redirect (e.g., `router.push(/booking-success)` locale-aware).
    - Ensure booking UI uses `/api/bookings/availability` results to disable time slots (remove hard-coded examples).
 3. UX/Performance (Phase 3)
    - Replace plain `<img>`/`motion.img` usage in `app/[locale]/gallery/page.tsx` with `OptimizedImage`/`next/image` and confirm WebP assets/sizes.
@@ -627,4 +627,18 @@ Create a user-friendly system allowing admins to easily enable/disable studio an
 - **Archive Document**: `docs/archive/navbar-service-visibility-fix-20250907.md`
 - **Status**: COMPLETED & ARCHIVED
 - **Date Archived**: 2025-09-07
+
+
+## I18N IMPLEMENTATION TASKS
+
+- [ ] Run the i18n audit script and attach report: `node ./scripts/i18n-audit.js` (CI: `npm run i18n:audit`)
+- [ ] Add i18n audit to CI (recommended to fail on new hard-coded strings)
+- [x] Create `lib/i18n.ts` helper utilities
+- [ ] Migrate `components/ui/*` to use `useTranslations` / server `getTranslator`
+- [ ] Migrate `Navbar`, `Footer`, `booking-form` to localized messages
+- [ ] Localize page metadata and `manifest.json`
+- [ ] Update API error shapes or return i18n keys for client localization
+- [ ] Update tests and snapshots to use messages or `messages/en.json` baseline
+- [ ] QA pass in staging for `en` and `ru` (smoke test major flows)
+- [ ] Add documentation: `memory-bank/creative/i18n-migration.md`
 

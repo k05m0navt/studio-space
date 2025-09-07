@@ -606,5 +606,30 @@
       "metro": "Метро",
       "metroDetails": "2 квартала"
     }
+  },
+  "api": {
+    "errors": {
+      "failedToFetchBookings": "Не удалось получить бронирования",
+      "failedToCreateBooking": "Не удалось создать бронирование",
+      "failedToUpdateBooking": "Не удалось обновить бронирование",
+      "failedToDeleteBooking": "Не удалось удалить бронирование",
+      "failedToFetchGalleryItems": "Не удалось получить элементы галереи",
+      "failedToFetchFAQs": "Не удалось получить FAQ",
+      "failedToFetchUsers": "Не удалось получить пользователей",
+      "failedToFetchDashboardStats": "Не удалось получить статистику панели",
+      "failedToCheckAvailability": "Не удалось проверить доступность",
+      "coworkingDisabled": "Бронирование коворкинга отключено",
+      "timeSlotBooked": "Время уже забронировано",
+      "validation": "Ошибка валидации",
+      "missingDateOrType": "Требуются параметры даты и типа",
+      "invalidCredentials": "Неверные учетные данные",
+      "internalServerError": "Внутренняя ошибка сервера"
+    },
+    "messages": {
+      "bookingCreated": "Бронирование успешно создано",
+      "bookingStatusUpdated": "Статус бронирования обновлён",
+      "bookingDeleted": "Бронирование успешно удалено",
+      "timeSlotUnavailable": "Данный временной слот недоступен. Пожалуйста, выберите другое время."
+    }
   }
 } 

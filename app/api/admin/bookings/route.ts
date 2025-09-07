@@ -40,7 +40,7 @@ export const GET = requireRole(['ADMIN'])(async ({ user, request }) => {
   } catch (error) {
     console.error("Error fetching bookings:", error);
     return new Response(
-      JSON.stringify({ error: "Failed to fetch bookings" }),
+      JSON.stringify({ error: 'api.errors.failedToFetchBookings' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
@@ -59,7 +59,7 @@ export const POST = requireRole(['ADMIN'])(async ({ request }) => {
   } catch (error) {
     console.error("Error creating booking:", error);
     return new Response(
-      JSON.stringify({ error: "Failed to create booking" }),
+      JSON.stringify({ error: 'api.errors.failedToCreateBooking' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }

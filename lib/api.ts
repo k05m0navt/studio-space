@@ -127,7 +127,7 @@ export async function getBookings(params?: {
     console.error('Error fetching bookings:', error);
     return {
       success: false,
-      error: 'Failed to fetch bookings'
+      error: 'api.errors.failedToFetchBookings'
     };
   }
 }
@@ -153,13 +153,13 @@ export async function createBooking(data: {
     return {
       success: true,
       data: booking as Booking,
-      message: 'Booking created successfully'
+      message: 'api.messages.bookingCreated'
     };
   } catch (error) {
     console.error('Error creating booking:', error);
     return {
       success: false,
-      error: 'Failed to create booking'
+      error: 'api.errors.failedToCreateBooking'
     };
   }
 }
@@ -177,13 +177,13 @@ export async function updateBookingStatus(
     return {
       success: true,
       data: booking as Booking,
-      message: `Booking ${status} successfully`
+      message: 'api.messages.bookingStatusUpdated'
     };
   } catch (error) {
     console.error('Error updating booking:', error);
     return {
       success: false,
-      error: 'Failed to update booking'
+      error: 'api.errors.failedToUpdateBooking'
     };
   }
 }
@@ -196,13 +196,13 @@ export async function deleteBooking(id: string): Promise<ApiResponse<null>> {
     
     return {
       success: true,
-      message: 'Booking deleted successfully'
+      message: 'api.messages.bookingDeleted'
     };
   } catch (error) {
     console.error('Error deleting booking:', error);
     return {
       success: false,
-      error: 'Failed to delete booking'
+      error: 'api.errors.failedToDeleteBooking'
     };
   }
 }
@@ -239,7 +239,7 @@ export async function getGalleryItems(params?: {
     console.error('Error fetching gallery items:', error);
     return {
       success: false,
-      error: 'Failed to fetch gallery items',
+      error: 'api.errors.failedToFetchGalleryItems',
       data: []
     };
   }
@@ -276,7 +276,7 @@ export async function getFAQs(params?: {
     console.error('Error fetching FAQs:', error);
     return {
       success: false,
-      error: 'Failed to fetch FAQs',
+      error: 'api.errors.failedToFetchFAQs',
       data: []
     };
   }
@@ -340,7 +340,7 @@ export async function getUsers(params?: {
     console.error('Error fetching users:', error);
     return {
       success: false,
-      error: 'Failed to fetch users'
+      error: 'api.errors.failedToFetchUsers'
     };
   }
 }
@@ -412,7 +412,7 @@ export async function getDashboardStats(): Promise<ApiResponse<{
     console.error('Error fetching dashboard stats:', error);
     return {
       success: false,
-      error: 'Failed to fetch dashboard stats'
+      error: 'api.errors.failedToFetchDashboardStats'
     };
   }
 }
@@ -473,7 +473,7 @@ export async function checkAvailability(
     console.error('Error checking availability:', error);
     return {
       success: false,
-      error: 'Failed to check availability'
+      error: 'api.errors.failedToCheckAvailability'
     };
   }
 } 

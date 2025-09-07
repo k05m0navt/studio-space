@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { motion } from "framer-motion";
+import { useTranslations } from 'next-intl';
 
 interface GalleryImage {
   id: string;
@@ -37,12 +38,13 @@ export function Gallery() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null);
+  const t = useTranslations('gallery');
 
   const categories = [
-    { id: "all", label: "All" },
-    { id: "studio", label: "Studio" },
-    { id: "coworking", label: "Coworking" },
-    { id: "events", label: "Events" },
+    { id: "all", label: t('categories.all') },
+    { id: "studio", label: t('categories.studio') },
+    { id: "coworking", label: t('categories.coworking') },
+    { id: "events", label: t('categories.events') },
   ];
 
   const filteredImages = selectedCategory === "all" 
@@ -64,7 +66,7 @@ export function Gallery() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            Our Gallery
+            {t('title')}
           </motion.h2>
           <motion.p 
             className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400"
@@ -72,7 +74,7 @@ export function Gallery() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.3 }}
           >
-            Explore our space and see what we have to offer
+            {t('galleryParagraph')}
           </motion.p>
         </motion.div>
 
@@ -87,7 +89,7 @@ export function Gallery() {
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
               <Input
                 type="search"
-                placeholder="Search images..."
+                placeholder={t('searchPlaceholder')}
                 className="pl-10"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
@@ -110,7 +112,7 @@ export function Gallery() {
                 size="sm"
                 onClick={() => setSelectedCategory("all")}
               >
-                All
+                {t('categories.all')}
               </Button>
               {categories
                 .filter((cat) => cat.id !== "all")
@@ -173,7 +175,7 @@ export function Gallery() {
               transition={{ duration: 0.6, delay: 0.5 }}
             >
               <p className="text-gray-500 dark:text-gray-400">
-                No images found matching your search.
+                {t('noImages')}
               </p>
             </motion.div>
           )}
