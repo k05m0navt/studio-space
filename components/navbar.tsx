@@ -70,6 +70,7 @@ function StudioLogo({ className, compact = false }: { className?: string; compac
 function DarkModeToggle({ fullWidth = false }: { fullWidth?: boolean }) {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const t = useTranslations('navigation');
 
   useEffect(() => {
     setMounted(true);
@@ -143,12 +144,11 @@ function LanguageSwitcher({ fullWidth = false }: { fullWidth?: boolean }) {
   const pathname = usePathname();
   const { theme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const t = useTranslations('navigation');
 
   useEffect(() => {
     setMounted(true);
   }, []);
-
-  if (!mounted) return null;
   
   const isDark = theme === "dark";
 
