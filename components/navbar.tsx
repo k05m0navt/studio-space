@@ -489,7 +489,7 @@ export function Navbar({ services: initialServices = null }: { services?: { stud
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.2, duration: 0.2, ease: "linear" }}
                     >
-                      {NAV_ITEMS.map((item, index) => (
+                      {visibleNavItems.map((item, index) => (
                         <motion.li
                           key={item.href}
                           initial={{ opacity: 0, x: 20 }}

@@ -67,25 +67,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
-import { QueryProvider } from "@/components/providers/QueryProvider";
+// QueryProvider removed here to rely on the root provider from layout
 import { ServiceManagementSection } from "@/components/admin/ServiceManagementSection";
-
-// Helpers
-/** Returns Authorization header from localStorage token if available (client-only). */
-function getAuthHeaders(): HeadersInit {
-  if (typeof window === 'undefined') return {};
-  const token = localStorage.getItem('adminToken');
-  return token ? { Authorization: `Bearer ${token}` } : {};
-}
-
-/**
- * Wraps fetch to attach Authorization header and no-store. Does not throw on 401/403.
- * Caller should handle unauthorized responses to reset UI state.
- */
-async function authorizedFetch(input: RequestInfo | URL, init: RequestInit = {}): Promise<Response> {
-  const mergedHeaders: HeadersInit = { ...(init.headers || {}), ...getAuthHeaders() };
-  return fetch(input, { ...init, headers: mergedHeaders, cache: init.cache ?? 'no-store' });
-}
+import { authorizedFetch } from "@/lib/client-auth";
 
 // Types
 interface Booking {
@@ -449,7 +433,6 @@ export default function AdminDashboard() {
   }
 
   return (
-    <QueryProvider>
       <div className="min-h-screen bg-background">
         <motion.div
         initial={{ opacity: 0 }}
@@ -1106,7 +1089,6 @@ export default function AdminDashboard() {
         />
       </motion.div>
       </div>
-    </QueryProvider>
   );
 }
 

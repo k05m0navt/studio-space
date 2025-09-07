@@ -50,3 +50,20 @@
   - Notes: Login/register endpoints implemented using `@/lib/prisma`; build and local smoke test recommended.
 
 - ARCHIVE: Auth & Prisma Unification: 2025-09-06T19:52:30Z -> docs/archive/auth-prisma-unification-20250906.md
+
+- IMPLEMENT: Navbar service-visibility fix — 2025-09-07T12:00:00Z
+  - Files created/edited:
+    - lib/client-auth.ts (new) - centralized `authorizedFetch` + `getAuthHeaders`
+    - app/[locale]/admin/page.tsx - removed nested `QueryProvider`, now uses root QueryClient; imports `authorizedFetch`
+    - components/navbar.tsx - mobile menu now uses `visibleNavItems` so it respects service flags
+    - hooks/useServiceToggle.ts - already updates ['service-config'] cache and invalidates queries (no code change)
+    - app/api/settings/services/route.ts - broadcasts `service-config.updated` via Supabase on PUT (no code change)
+  - Notes: Nested QueryClients prevented the root `Navbar` from observing cache updates; removing the local `QueryProvider` ensures a single shared React Query client and immediate navbar updates when services are toggled. Mobile nav mapping fixed to use computed `visibleNavItems`.
+  - Verification: Dev smoke-tested locally (UI flow): toggling a service updates the admin UI, React Query cache, and `Navbar` hides/shows corresponding nav items. Supabase broadcast sends `service-config.updated` for real-time updates.
+
+- ARCHIVE: Navbar Service-Visibility Fix — 2025-09-07T12:00:00Z
+  - Archive document: `docs/archive/navbar-service-visibility-fix-20250907.md`
+  - Comprehensive Level 3 archive created following archive-intermediate.mdc structure
+  - All documentation consolidated: reflection, implementation details, technical insights, and future considerations
+  - Memory Bank updated and reset for next task
+  - Status: COMPLETED & ARCHIVED
