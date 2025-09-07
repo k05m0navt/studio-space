@@ -129,6 +129,15 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const validatedData = bookingSchema.parse(body);
 
+    // Disallow coworking bookings if the service is disabled in settings
+    if (validatedData.type === 'coworking') {
+      const setting = await prisma.settings.findUnique({ where: { key: 'services.coworking.enabled' } });
+      const coworkingEnabled = setting?.value !== undefined ? setting.value === 'true' : true;
+      if (!coworkingEnabled) {
+        return NextResponse.json({ error: 'Coworking bookings are currently disabled' }, { status: 400 });
+      }
+    }
+
     // Check for conflicting bookings (same type, date, and overlapping time)
     const bookingDate = new Date(validatedData.date);
     const startOfDay = new Date(bookingDate);

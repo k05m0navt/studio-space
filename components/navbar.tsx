@@ -12,6 +12,8 @@ import { Menu, X, Moon, Sun, Globe, Calendar } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "@/i18n/routing";
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { supabase as supabaseClient } from '@/lib/supabase';
 
 const NAV_ITEMS = [
   { href: "/", labelKey: "home" },
@@ -215,31 +217,39 @@ export function Navbar({ services: initialServices = null }: { services?: { stud
     setMounted(true);
   }, []);
 
-  // Initialize services from server-provided prop (layout) or default to enabled
-  const [svc, setSvc] = useState<{ studio: { enabled: boolean }; coworking: { enabled: boolean } }>(() => {
-    return (
-      (initialServices as any) ?? { studio: { enabled: true }, coworking: { enabled: true } }
-    );
+  const queryClient = useQueryClient();
+  const { data: svcData } = useQuery({
+    queryKey: ['service-config'],
+    queryFn: async () => {
+      const res = await fetch('/api/settings/services');
+      if (!res.ok) throw new Error('Failed to load service settings');
+      const json = await res.json();
+      return json?.data ?? null;
+    },
+    // Use server-provided initial data to avoid layout flash
+    initialData: initialServices as any ?? undefined,
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
-  // Keep client-side copy fresh
+  const svc = svcData ?? { studio: { enabled: true }, coworking: { enabled: true } };
+
+  // Subscribe to Supabase Realtime events for service config updates
   useEffect(() => {
-    let alive = true;
-    (async () => {
+    const channel = supabaseClient.channel('settings');
+    channel.on('broadcast', { event: 'service-config.updated' }, (payload) => {
       try {
-        const res = await fetch('/api/settings/services', { cache: 'no-store' });
-        if (!res.ok) return;
-        const json = await res.json();
-        if (!alive) return;
-        if (json?.data) {
-          setSvc((prev) => ({ ...prev, ...json.data }));
+        const data = payload.payload?.data;
+        if (data) {
+          queryClient.setQueryData(['service-config'], (old: any) => ({ ...(old ?? {}), ...(data ?? {}) }));
         }
       } catch (err) {
         // ignore
       }
-    })();
-    return () => { alive = false; };
-  }, []);
+    });
+    channel.subscribe();
+    return () => { channel.unsubscribe(); };
+  }, [queryClient]);
 
   // Determine visible nav items (show until we know the flags)
   const visibleNavItems = NAV_ITEMS.filter((item) => {

@@ -82,7 +82,7 @@ const TIME_SLOTS = [
   "13:00", "14:00", "15:00", "16:00", "17:00"
 ];
 
-export function BookingForm() {
+export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any } | null }) {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
@@ -136,25 +136,39 @@ export function BookingForm() {
     { id: 4, title: t('steps.confirm'), icon: Check }
   ]), [t]);
 
-  const selectedBookingType = bookingTypes.find(type => type.id === watchBookingType);
+  // Define a typed booking type for clarity
+  type BookingType = {
+    id: 'studio' | 'coworking';
+    title: string;
+    description: string;
+    price: string;
+    features: string[];
+  };
 
-  // Service rates fetched from settings (price, currency, unit)
-  const [serviceRates, setServiceRates] = useState<{ [k: string]: any } | null>(null);
+  // Ensure bookingTypes is typed
+  // (bookingTypes is defined above with useMemo)
 
+  // Compute available booking types according to server-provided settings
+  const availableBookingTypes = useMemo<BookingType[]>(() => {
+    return bookingTypes.filter((bt) => {
+      if (!serviceRates) return true;
+      return Boolean((serviceRates as any)[bt.id]?.enabled ?? true);
+    }) as BookingType[];
+  }, [bookingTypes, serviceRates]);
+
+  // Reset selection if current type becomes unavailable
   useEffect(() => {
-    let mounted = true;
-    (async () => {
-      try {
-        const res = await fetch('/api/settings/services');
-        if (!res.ok) return;
-        const json = await res.json();
-        if (json?.success && mounted) setServiceRates(json.data);
-      } catch (err) {
-        console.error('Failed to load service rates', err);
-      }
-    })();
-    return () => { mounted = false; };
-  }, []);
+    const current = form.getValues("bookingType") as 'studio' | 'coworking' | undefined;
+    const isAvailable = availableBookingTypes.some(bt => bt.id === current);
+    if (!isAvailable) {
+      const first = (availableBookingTypes[0]?.id as 'studio' | 'coworking') ?? 'studio';
+      form.setValue('bookingType', first);
+    }
+  }, [availableBookingTypes, form]);
+
+  const selectedBookingType = availableBookingTypes.find(type => type.id === watchBookingType) || availableBookingTypes[0] || bookingTypes[0];
+
+  // `serviceRates` is provided by the server page via props; no client fetch here.
 
   const computeHours = (start?: string, end?: string) => {
     if (!start || !end) return 0;
@@ -188,6 +202,15 @@ export function BookingForm() {
       checkAvailability(watchDate);
     }
   }, [watchDate, checkAvailability]);
+
+  useEffect(() => {
+    const current = form.getValues("bookingType") as 'studio' | 'coworking' | undefined;
+    const isAvailable = bookingTypes.some(bt => bt.id === current);
+    if (!isAvailable) {
+      const first = (bookingTypes[0]?.id as 'studio' | 'coworking') ?? 'studio';
+      form.setValue('bookingType', first);
+    }
+  }, [bookingTypes, form]);
 
   const nextStep = () => {
     if (currentStep < steps.length) {
@@ -374,43 +397,53 @@ export function BookingForm() {
                           name="bookingType"
                           render={({ field }) => (
                             <FormItem>
-                              <div className="grid md:grid-cols-2 gap-6">
-                                {bookingTypes.map((type) => (
-                                  <motion.div
-                                    key={type.id}
-                                    whileHover={{ scale: 1.005 }}
-                                    whileTap={{ scale: 0.995 }}
-                                    transition={{ duration: 0.1 }}
-                                  >
-                                    <Card 
-                                      className={cn(
-                                        "cursor-pointer transition-all duration-200 hover:shadow-lg h-full",
-                                        field.value === type.id 
-                                          ? "ring-2 ring-primary bg-primary/5" 
-                                          : "hover:shadow-md"
-                                      )}
-                                      onClick={() => field.onChange(type.id)}
+                              <div className={cn(
+                                "grid gap-6",
+                                availableBookingTypes.length > 1 ? "md:grid-cols-2" : "grid-cols-1"
+                              )}>
+                                {availableBookingTypes.length === 0 ? (
+                                  <div className="text-center py-12 md:py-20">
+                                    <h3 className="text-xl font-semibold mb-2">{t('serviceSelection.noneAvailable') || 'No services available'}</h3>
+                                    <p className="text-sm text-muted-foreground">{t('serviceSelection.contactAdmin') || 'This service is currently disabled by the administrator. Please contact us or try again later.'}</p>
+                                  </div>
+                                ) : (
+                                  availableBookingTypes.map((type) => (
+                                    <motion.div
+                                      key={type.id}
+                                      whileHover={{ scale: 1.005 }}
+                                      whileTap={{ scale: 0.995 }}
+                                      transition={{ duration: 0.1 }}
                                     >
-                                      <CardHeader className="pb-4">
-                                        <div className="flex items-center justify-between mb-2">
-                                          <CardTitle className="text-xl">{type.title}</CardTitle>
-                                          <span className="text-lg font-bold text-primary">{type.price}</span>
-                                        </div>
-                                        <p className="text-muted-foreground text-base">{type.description}</p>
-                                      </CardHeader>
-                                      <CardContent className="pt-0">
-                                        <ul className="space-y-3">
-                                          {type.features.map((feature, index) => (
-                                            <li key={index} className="flex items-center text-sm">
-                                              <Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
-                                              {feature}
-                                            </li>
-                                          ))}
-                                        </ul>
-                                      </CardContent>
-                                    </Card>
-                                  </motion.div>
-                                ))}
+                                      <Card 
+                                        className={cn(
+                                          "cursor-pointer transition-all duration-200 hover:shadow-lg h-full",
+                                          field.value === type.id 
+                                            ? "ring-2 ring-primary bg-primary/5" 
+                                            : "hover:shadow-md"
+                                        )}
+                                        onClick={() => field.onChange(type.id)}
+                                      >
+                                        <CardHeader className="pb-4">
+                                          <div className="flex items-center justify-between mb-2">
+                                            <CardTitle className="text-xl">{type.title}</CardTitle>
+                                            <span className="text-lg font-bold text-primary">{type.price}</span>
+                                          </div>
+                                          <p className="text-muted-foreground text-base">{type.description}</p>
+                                        </CardHeader>
+                                        <CardContent className="pt-0">
+                                          <ul className="space-y-3">
+                                            {type.features.map((feature, index) => (
+                                              <li key={index} className="flex items-center text-sm">
+                                                <Check className="w-4 h-4 text-green-500 mr-2 flex-shrink-0" />
+                                                {feature}
+                                              </li>
+                                            ))}
+                                          </ul>
+                                        </CardContent>
+                                      </Card>
+                                    </motion.div>
+                                  ))
+                                )}
                               </div>
                               <FormMessage />
                             </FormItem>

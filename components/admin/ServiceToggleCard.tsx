@@ -65,11 +65,11 @@ export const ServiceToggleCard = memo(function ServiceToggleCard({
   // Edit dialog state
   const [open, setOpen] = useState(false);
   const initial = config ? config[service] : { price: 0, currency: 'USD', unit: 'hour', address: '', images: [] as string[] };
-  const [price, setPrice] = useState<string>(String(initial.price ?? ''));
-  const [currency, setCurrency] = useState<string>(initial.currency ?? 'USD');
-  const [unit, setUnit] = useState<string>(initial.unit ?? 'hour');
-  const [address, setAddress] = useState<string>(initial.address ?? '');
-  const [images, setImages] = useState<string[]>(initial.images ?? []);
+  const [price, setPrice] = useState<string>(String(initial?.price ?? ''));
+  const [currency, setCurrency] = useState<string>(initial?.currency ?? 'USD');
+  const [unit, setUnit] = useState<string>(initial?.unit ?? 'hour');
+  const [address, setAddress] = useState<string>(initial?.address ?? '');
+  const [images, setImages] = useState<string[]>(initial?.images ?? []);
   const [uploading, setUploading] = useState(false);
 
   // Save price/address/currency/unit -> call PUT via settings API
@@ -138,15 +138,16 @@ export const ServiceToggleCard = memo(function ServiceToggleCard({
     }
   };
 
-  // keep local state in sync when config changes
-  if (config) {
-    const c = config[service];
-    if (String(c.price ?? '') !== price) setPrice(String(c.price ?? ''));
-    if ((c.currency ?? '') !== currency) setCurrency(c.currency ?? 'USD');
-    if ((c.unit ?? '') !== unit) setUnit(c.unit ?? 'hour');
-    if ((c.address ?? '') !== address) setAddress(c.address ?? '');
-    if (Array.isArray(c.images) && JSON.stringify(c.images) !== JSON.stringify(images)) setImages(c.images);
-  }
+  // initialize dialog-local state when opening to avoid render loops
+  const openEditDialog = () => {
+    const c = config?.[service] ?? { price: 0, currency: 'USD', unit: 'hour', address: '', images: [] as string[] };
+    setPrice(String(c.price ?? ''));
+    setCurrency(c.currency ?? 'USD');
+    setUnit(c.unit ?? 'hour');
+    setAddress(c.address ?? '');
+    setImages(c.images ?? []);
+    setOpen(true);
+  };
 
   return (
     <>
@@ -177,16 +178,16 @@ export const ServiceToggleCard = memo(function ServiceToggleCard({
                 <h3 className="text-xl font-semibold text-foreground mb-1">{serviceName}</h3>
                 <p className="text-sm text-muted-foreground">{serviceDescription}</p>
                 <p className="text-sm text-muted-foreground mt-2">
-                  <strong>Price:</strong> {config?.[service].price ? `${config?.[service].currency ?? 'USD'} ${config?.[service].price}` : 'Not set'}
+                  <strong>Price:</strong> {config?.[service]?.price ? `${config?.[service].currency ?? 'USD'} ${config?.[service].price}` : 'Not set'}
               </p>
                 <p className="text-sm text-muted-foreground">
-                  <strong>Address:</strong> {config?.[service].address ?? 'Not set'}
+                  <strong>Address:</strong> {config?.[service]?.address ?? 'Not set'}
                 </p>
               </div>
             </div>
 
             <div className="flex items-center gap-3">
-              <Button variant="ghost" size="sm" onClick={() => setOpen(true)}>
+              <Button variant="ghost" size="sm" onClick={openEditDialog}>
                 <Edit className="w-4 h-4 mr-2" /> Edit
               </Button>
 

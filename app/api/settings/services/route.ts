@@ -3,6 +3,7 @@ import { authenticateRequest } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
 import { createClient as createSupabaseClient } from '@/lib/supabase/server';
+import { createServerSupabaseClient } from '@/lib/supabase/server';
 
 const BUCKET = 'service-images';
 
@@ -154,6 +155,15 @@ export async function PUT(request: NextRequest) {
     }
 
     await Promise.all(upserts);
+
+    // Broadcast settings update to subscribed clients (Supabase Realtime)
+    try {
+      const supabase = createServerSupabaseClient();
+      // send partial validated payload; clients should merge
+      await supabase.channel('settings').send({ type: 'broadcast', event: 'service-config.updated', payload: { data: validated } });
+    } catch (err) {
+      console.error('Failed to broadcast service settings update:', err);
+    }
 
     return NextResponse.json({ success: true, message: 'Service settings updated', data: validated });
   } catch (error) {

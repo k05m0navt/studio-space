@@ -8,6 +8,11 @@ async function fetchServicePricing() {
   return json.data;
 }
 
-export function useServicePricing() {
-  return useQuery({ queryKey: ['service-pricing'], queryFn: fetchServicePricing, staleTime: 5 * 60 * 1000 });
+export function useServicePricing(initialData?: any) {
+  return useQuery({
+    queryKey: ['service-pricing'],
+    queryFn: fetchServicePricing,
+    staleTime: 5 * 60 * 1000,
+    initialData,
+  });
 }

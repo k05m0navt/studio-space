@@ -78,7 +78,13 @@ export function useServiceToggle() {
   const updateMutation = useMutation({
     mutationFn: updateServiceConfig,
     onSuccess: (data) => {
-      queryClient.setQueryData(['service-config'], data);
+      // Merge partial update into existing cached config so we don't overwrite the
+      // full config with a partial response (server returns only the validated
+      // partial payload). Also invalidate related queries so UI (navbar etc.)
+      // refetch and reflect changes instantly.
+      queryClient.setQueryData(['service-config'], (old: any) => ({ ...(old ?? {}), ...(data ?? {}) }));
+      queryClient.invalidateQueries({ queryKey: ['service-config'] });
+      queryClient.invalidateQueries({ queryKey: ['service-pricing'] });
       toast.success('Service settings updated successfully');
     },
     onError: (error: Error) => {

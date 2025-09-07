@@ -144,7 +144,7 @@ export function ServiceManagementSection({ className }: ServiceManagementSection
             <div className="grid gap-4 md:grid-cols-2">
               <ServiceToggleCard
                 service="studio"
-                enabled={serviceConfig.studio.enabled}
+                enabled={serviceConfig?.studio?.enabled ?? false}
                 isLoading={isUpdating}
                 onToggleRequest={handleToggleRequest}
                 config={serviceConfig}
@@ -152,7 +152,7 @@ export function ServiceManagementSection({ className }: ServiceManagementSection
               />
               <ServiceToggleCard
                 service="coworking"
-                enabled={serviceConfig.coworking.enabled}
+                enabled={serviceConfig?.coworking?.enabled ?? false}
                 isLoading={isUpdating}
                 onToggleRequest={handleToggleRequest}
                 config={serviceConfig}
