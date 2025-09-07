@@ -53,7 +53,17 @@
     "gallery": "Gallery",
     "faq": "FAQ",
     "admin": "Admin",
-    "bookNow": "Book Now"
+    "bookNow": "Book Now",
+    "aria": {
+      "switchToRussian": "Switch to Russian",
+      "switchToEnglish": "Switch to English",
+      "switchToDark": "Switch to dark mode",
+      "switchToLight": "Switch to light mode"
+    },
+    "theme": {
+      "dark": "Dark",
+      "light": "Light"
+    }
   },
   "home": {
     "badge": "Professional Photography Studio",
@@ -289,6 +299,41 @@
     "title": "Book Your Session",
     "badge": "Book Your Creative Session",
     "description": "Reserve your creative space in just a few simple steps. We'll confirm your booking within 24 hours.",
+    "placeholders": {
+      "name": "John Doe",
+      "email": "john@example.com",
+      "phone": "+1 (555) 000-0000"
+    },
+    "validation": {
+      "name": {
+        "min": "Name must be at least 2 characters.",
+        "max": "Name must be less than 50 characters.",
+        "pattern": "Name can only contain letters and spaces."
+      },
+      "email": {
+        "invalid": "Please enter a valid email address.",
+        "max": "Email must be less than 100 characters."
+      },
+      "phone": {
+        "min": "Please enter a valid phone number.",
+        "max": "Phone number is too long.",
+        "pattern": "Please enter a valid phone number."
+      },
+      "date": {
+        "required": "A date is required.",
+        "past": "Date cannot be in the past."
+      },
+      "startTime": {
+        "required": "Please select a start time."
+      },
+      "endTime": {
+        "required": "Please select an end time.",
+        "after": "End time must be after start time."
+      },
+      "message": {
+        "max": "Message must be less than 500 characters."
+      }
+    },
     "selectDate": "Select Date",
     "selectTime": "Select Time",
     "studioType": "Studio Type",

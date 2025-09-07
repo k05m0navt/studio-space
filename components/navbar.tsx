@@ -15,6 +15,14 @@ import { useRouter } from "@/i18n/routing";
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase as supabaseClient } from '@/lib/supabase';
 
+function safeTranslate(translator: (k: string) => string, key: string, fallback: string) {
+  try {
+    return translator(key);
+  } catch (err) {
+    return fallback;
+  }
+}
+
 const NAV_ITEMS = [
   { href: "/", labelKey: "home" },
   { href: "/studio", labelKey: "studio" },
@@ -86,7 +94,7 @@ function DarkModeToggle({ fullWidth = false }: { fullWidth?: boolean }) {
 
   return (
     <motion.button
-      aria-label={isDark ? t("aria.switchToLight") : t("aria.switchToDark") }
+      aria-label={isDark ? safeTranslate(t, "aria.switchToLight", "Switch to light mode") : safeTranslate(t, "aria.switchToDark", "Switch to dark mode") }
       onClick={toggle}
       className={cn(
         "relative overflow-hidden rounded-full transition-colors duration-300",
@@ -159,7 +167,7 @@ function LanguageSwitcher({ fullWidth = false }: { fullWidth?: boolean }) {
 
   return (
     <motion.button
-      aria-label={locale === 'en' ? t('aria.switchToRussian') : t('aria.switchToEnglish')}
+      aria-label={locale === 'en' ? safeTranslate(t, 'aria.switchToRussian', 'Switch to Russian') : safeTranslate(t, 'aria.switchToEnglish', 'Switch to English')}
       onClick={toggleLanguage}
       className={cn(
         "relative overflow-hidden rounded-full shadow-md transition-colors duration-300",
