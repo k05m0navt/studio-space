@@ -642,3 +642,5 @@ Create a user-friendly system allowing admins to easily enable/disable studio an
 - [ ] QA pass in staging for `en` and `ru` (smoke test major flows)
 - [ ] Add documentation: `memory-bank/creative/i18n-migration.md`
 
+
+- ARCHIVE: i18n migration — docs/archive/i18n-migration-20250907.md (completed 2025-09-07)

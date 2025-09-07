@@ -67,3 +67,5 @@
   - All documentation consolidated: reflection, implementation details, technical insights, and future considerations
   - Memory Bank updated and reset for next task
   - Status: COMPLETED & ARCHIVED
+
+- ARCHIVE: i18n migration — docs/archive/i18n-migration-20250907.md — 2025-09-07
