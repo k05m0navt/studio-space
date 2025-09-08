@@ -1,8 +1,9 @@
 import { BookingForm } from '@/components/booking-form'
+import { getMessages } from 'next-intl/server'
 
-export default async function BookPage(props: any) {
+export default async function BookPage(props: Promise<{ params: { locale: string } }>) {
   const { params } = await props
-  const { locale } = params as { locale: string }
+  const { locale } = params
   const messages = await getMessages({ locale })
 
   let serviceRates = null
@@ -15,7 +16,6 @@ export default async function BookPage(props: any) {
       if (json?.success) serviceRates = json.data
     }
   } catch (err) {
-    // Log a localized message server-side; fall back to original English if missing
     console.error(messages?.['book.loadError'] ?? 'Failed to load service settings on server:', err)
   }
 
