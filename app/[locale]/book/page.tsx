@@ -1,9 +1,9 @@
 import { BookingForm } from '@/components/booking-form'
 import { getMessages } from 'next-intl/server'
 
-export default async function BookPage(props: Promise<{ params: { locale: string } }>) {
+export default async function BookPage(props: any) {
   const { params } = await props
-  const { locale } = params
+  const locale = params?.locale ?? 'en'
   const messages = await getMessages({ locale })
 
   let serviceRates = null
