@@ -371,6 +371,11 @@
       "next": "Next",
       "submitting": "Submitting...",
       "submitBooking": "Submit Booking"
+    },
+    "validation": {
+      "name": {
+        "min": "Name must be at least 2 characters"
+      }
     }
   },
   "bookingSuccess": {
@@ -409,19 +414,6 @@
       "studio": "Studio",
       "coworking": "Coworking",
       "events": "Events"
-    },
-    "heroBadge": "Our Work & Community",
-    "noItems": "No items found in this category.",
-    "items": {
-      "portraitSession": { "title": "Portrait Session", "description": "Professional portrait photography session" },
-      "teamCollaboration": { "title": "Team Collaboration", "description": "Creative team working together" },
-      "productPhotography": { "title": "Product Photography", "description": "Professional product shots" },
-      "workshopEvent": { "title": "Workshop Event", "description": "Photography workshop in progress" },
-      "fashionShoot": { "title": "Fashion Shoot", "description": "Fashion photography session" },
-      "networkingEvent": { "title": "Networking Event", "description": "Community networking evening" },
-      "workspaceLifestyle": { "title": "Workspace Lifestyle", "description": "Modern coworking environment" },
-      "brandPhotography": { "title": "Brand Photography", "description": "Corporate brand photography" },
-      "creativeMeeting": { "title": "Creative Meeting", "description": "Brainstorming session" }
     }
   },
   "faq": {
