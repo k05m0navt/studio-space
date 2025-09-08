@@ -469,7 +469,7 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
                                   {t('fullName')}
                                 </FormLabel>
                                 <FormControl>
-                                  <Input placeholder={t('placeholders.name')} {...field} className="h-12" />
+                                  <Input placeholderKey="placeholders.name" placeholderNs="booking" {...field} className="h-12" />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -488,7 +488,8 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
                                 <FormControl>
                                   <Input
                                     type="email"
-                                    placeholder={t('placeholders.email')}
+                                    placeholderKey="placeholders.email"
+                                    placeholderNs="booking"
                                     {...field}
                                     className="h-12"
                                   />
@@ -510,7 +511,8 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
                                 <FormControl>
                                   <Input
                                     type="tel"
-                                    placeholder={t('placeholders.phone')}
+                                    placeholderKey="placeholders.phone"
+                                    placeholderNs="booking"
                                     {...field}
                                     className="h-12"
                                   />
@@ -743,9 +745,10 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
                       onClick={prevStep}
                       disabled={currentStep === 1}
                       className="flex items-center gap-2"
+                      tKey="navigation.previous"
+                      tNs="booking"
                     >
                       <ArrowLeft className="w-4 h-4" />
-                      {t('navigation.previous')}
                     </Button>
 
                     {currentStep < steps.length ? (
@@ -758,8 +761,9 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
                           type="button"
                           onClick={handleNext}
                           className="flex items-center gap-2"
+                          tKey="navigation.next"
+                          tNs="booking"
                         >
-                          {t('navigation.next')}
                           <ArrowRight className="w-4 h-4" />
                         </Button>
                       </motion.div>
@@ -814,8 +818,9 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
                           )}
                           {submitStatus === 'idle' && (
                             <>
-                              {t('navigation.submitBooking')}
-                              <Check className="w-4 h-4" />
+                              <Button tKey="navigation.submitBooking" tNs="booking" asChild>
+                                <span className="flex items-center gap-2"><Check className="w-4 h-4" /></span>
+                              </Button>
                             </>
                           )}
                         </Button>
