@@ -316,41 +316,6 @@
     "confirmation": "Booking Confirmation",
     "success": "Your booking has been confirmed!",
     "thankYou": "Thank you for choosing our studio.",
-    "placeholders": {
-      "name": "Jane Doe",
-      "email": "you@example.com",
-      "phone": "+1 (555) 123-4567"
-    },
-    "validation": {
-      "name": {
-        "min": "Name must be at least 2 characters",
-        "max": "Name must be at most 50 characters",
-        "pattern": "Name may only contain letters and spaces"
-      },
-      "email": {
-        "invalid": "Please enter a valid email address",
-        "max": "Email must be at most 100 characters"
-      },
-      "phone": {
-        "min": "Phone must be at least 10 characters",
-        "max": "Phone must be at most 20 characters",
-        "pattern": "Please enter a valid phone number"
-      },
-      "date": {
-        "required": "Please select a date",
-        "past": "Date cannot be in the past"
-      },
-      "startTime": {
-        "required": "Please select a start time"
-      },
-      "endTime": {
-        "required": "Please select an end time",
-        "after": "End time must be after start time"
-      },
-      "message": {
-        "max": "Message must be at most 500 characters"
-      }
-    },
     "steps": {
       "service": "Service",
       "details": "Details",
@@ -391,7 +356,8 @@
       "pickDate": "Pick a date",
       "additionalMessage": "Additional Message (Optional)",
       "messagePlaceholder": "Tell us about your project or any special requirements...",
-      "messageDescription": "Let us know about your specific needs or any questions you have."
+      "messageDescription": "Let us know about your specific needs or any questions you have.",
+      "mustBeAfterStart": "End time must be after start time"
     },
     "review": {
       "title": "Review Your Booking",
