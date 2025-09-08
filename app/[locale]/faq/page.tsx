@@ -10,62 +10,23 @@ import { ChevronDown, HelpCircle, Phone, Mail, MapPin, Clock } from "lucide-reac
 import { Link } from '@/i18n/routing';
 
 const faqData = [
-  {
-    id: 1,
-    category: "Studio",
-    question: "What equipment is included with studio rental?",
-    answer: "Our studio comes fully equipped with professional lighting setups, backdrops, reflectors, and basic photography equipment. We also have high-end cameras and lenses available for rent at an additional cost."
-  },
-  {
-    id: 2,
-    category: "Studio",
-    question: "Can I bring my own equipment?",
-    answer: "Absolutely! You're welcome to bring your own cameras, lenses, and any specialized equipment. Our studio is designed to accommodate various setups and equipment configurations."
-  },
-  {
-    id: 3,
-    category: "Coworking",
-    question: "What are the coworking space hours?",
-    answer: "Our coworking space is open 24/7 for monthly members. Day pass users have access from 8 AM to 8 PM on weekdays and 9 AM to 6 PM on weekends."
-  },
-  {
-    id: 4,
-    category: "Coworking",
-    question: "Is there parking available?",
-    answer: "Yes, we provide free parking for all members and visitors. We have both covered and open parking spaces available on a first-come, first-served basis."
-  },
-  {
-    id: 5,
-    category: "Booking",
-    question: "How far in advance can I book?",
-    answer: "You can book studio time up to 3 months in advance. For coworking spaces, monthly memberships can be purchased at any time, and day passes can be booked up to 1 month ahead."
-  },
-  {
-    id: 6,
-    category: "Booking",
-    question: "What is your cancellation policy?",
-    answer: "Studio bookings can be cancelled up to 24 hours before your session for a full refund. Coworking day passes can be cancelled up to 2 hours before your scheduled time."
-  },
-  {
-    id: 7,
-    category: "General",
-    question: "Do you offer photography services?",
-    answer: "While we primarily rent studio space, we can connect you with professional photographers from our network. We also host workshops and training sessions regularly."
-  },
-  {
-    id: 8,
-    category: "General",
-    question: "Is food and drink allowed in the space?",
-    answer: "Light snacks and beverages are allowed in the coworking areas. In the studio, we ask that you keep food and drinks in designated areas to protect the equipment."
-  }
+  { id: 1, category: 'studio', questionKey: 'q1.question', answerKey: 'q1.answer' },
+  { id: 2, category: 'studio', questionKey: 'q2.question', answerKey: 'q2.answer' },
+  { id: 3, category: 'coworking', questionKey: 'q3.question', answerKey: 'q3.answer' },
+  { id: 4, category: 'coworking', questionKey: 'q4.question', answerKey: 'q4.answer' },
+  { id: 5, category: 'booking', questionKey: 'q5.question', answerKey: 'q5.answer' },
+  { id: 6, category: 'booking', questionKey: 'q6.question', answerKey: 'q6.answer' },
+  { id: 7, category: 'general', questionKey: 'q7.question', answerKey: 'q7.answer' },
+  { id: 8, category: 'general', questionKey: 'q8.question', answerKey: 'q8.answer' }
 ];
 
 export default function FAQPage() {
   const t = useTranslations('faq');
-  const [activeCategory, setActiveCategory] = useState("All");
+  const [activeCategory, setActiveCategory] = useState('all');
   const [openItems, setOpenItems] = useState<number[]>([]);
 
-  const categories = [t('categories.all'), t('categories.studio'), t('categories.coworking'), t('categories.booking'), t('categories.general')];
+  const categoryKeys = ['all', 'studio', 'coworking', 'booking', 'general'];
+  const categories = categoryKeys.map((k) => ({ key: k, label: t(`categories.${k}`) }));
 
   const contactInfo = [
     { icon: Phone, title: t('contact.phone'), details: "+1 (555) 123-4567", action: t('contact.call') },
@@ -74,7 +35,7 @@ export default function FAQPage() {
     { icon: Clock, title: t('contact.hours'), details: t('contact.hoursShort'), action: t('contact.viewSchedule') },
   ];
 
-  const filteredFAQs = activeCategory === "All"
+  const filteredFAQs = activeCategory === 'all'
     ? faqData
     : faqData.filter(item => item.category === activeCategory);
 
@@ -140,18 +101,18 @@ export default function FAQPage() {
           >
             {categories.map((category, index) => (
               <motion.div
-                key={category}
+                key={category.key}
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
                 viewport={{ once: true }}
               >
                 <Button
-                  variant={activeCategory === category ? "default" : "outline"}
-                  onClick={() => setActiveCategory(category)}
+                  variant={activeCategory === category.key ? "default" : "outline"}
+                  onClick={() => setActiveCategory(category.key)}
                   className="rounded-full px-6 py-2"
                 >
-                  {category}
+                  {category.label}
                 </Button>
               </motion.div>
             ))}
@@ -185,9 +146,9 @@ export default function FAQPage() {
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <Badge variant="secondary" className="text-xs">
-                            {faq.category}
+                            {t(`categories.${faq.category}`)}
                           </Badge>
-                          <h3 className="text-lg font-semibold">{t(faq.question)}</h3>
+                          <h3 className="text-lg font-semibold">{t(faq.questionKey)}</h3>
                         </div>
                         <motion.div
                           animate={{ rotate: openItems.includes(faq.id) ? 180 : 0 }}
@@ -208,7 +169,7 @@ export default function FAQPage() {
                         >
                           <CardContent className="px-6 pb-6 pt-0">
                             <p className="text-muted-foreground leading-relaxed">
-                              {t(faq.answer)}
+                              {t(faq.answerKey)}
                             </p>
                           </CardContent>
                         </motion.div>

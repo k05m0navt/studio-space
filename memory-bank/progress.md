@@ -69,3 +69,4 @@
   - Status: COMPLETED & ARCHIVED
 
 - ARCHIVE: i18n migration — docs/archive/i18n-migration-20250907.md — 2025-09-07
+- ARCHIVE: I18N migration — docs/archive/i18n-migration-20250907.md — 2025-09-08T13:40:59Z

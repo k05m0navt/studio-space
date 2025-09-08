@@ -644,3 +644,5 @@ Create a user-friendly system allowing admins to easily enable/disable studio an
 
 
 - ARCHIVE: i18n migration — docs/archive/i18n-migration-20250907.md (completed 2025-09-07)
+- [x] I18N reflection: Added missing keys to messages/en.json and messages/ru.json (faq & navigation.aria) — 2025-09-07
+- [x] I18N archived: docs/archive/i18n-migration-20250907.md — 2025-09-08T13:40:58Z

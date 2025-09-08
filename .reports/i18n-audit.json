@@ -1742,252 +1742,280 @@
         "text": "@/i18n/routing"
       },
       {
+        "line": 13,
+        "text": "q1.question"
+      },
+      {
+        "line": 13,
+        "text": "q1.answer"
+      },
+      {
+        "line": 14,
+        "text": "q2.question"
+      },
+      {
+        "line": 14,
+        "text": "q2.answer"
+      },
+      {
+        "line": 15,
+        "text": "q3.question"
+      },
+      {
+        "line": 15,
+        "text": "q3.answer"
+      },
+      {
         "line": 16,
-        "text": "What equipment is included with studio rental?"
+        "text": "q4.question"
+      },
+      {
+        "line": 16,
+        "text": "q4.answer"
       },
       {
         "line": 17,
-        "text": "Our studio comes fully equipped with professional lighting setups, backdrops, reflectors, and basic photography equipment. We also have high-end cameras and lenses available for rent at an additional cost."
+        "text": "q5.question"
       },
       {
-        "line": 22,
-        "text": "Can I bring my own equipment?"
+        "line": 17,
+        "text": "q5.answer"
       },
       {
-        "line": 23,
-        "text": "Absolutely! You're welcome to bring your own cameras, lenses, and any specialized equipment. Our studio is designed to accommodate various setups and equipment configurations."
+        "line": 18,
+        "text": "q6.question"
       },
       {
-        "line": 28,
-        "text": "What are the coworking space hours?"
+        "line": 18,
+        "text": "q6.answer"
       },
       {
-        "line": 29,
-        "text": "Our coworking space is open 24/7 for monthly members. Day pass users have access from 8 AM to 8 PM on weekdays and 9 AM to 6 PM on weekends."
+        "line": 19,
+        "text": "q7.question"
       },
       {
-        "line": 34,
-        "text": "Is there parking available?"
+        "line": 19,
+        "text": "q7.answer"
       },
       {
-        "line": 35,
-        "text": "Yes, we provide free parking for all members and visitors. We have both covered and open parking spaces available on a first-come, first-served basis."
+        "line": 20,
+        "text": "q8.question"
       },
       {
-        "line": 40,
-        "text": "How far in advance can I book?"
+        "line": 20,
+        "text": "q8.answer"
       },
       {
-        "line": 41,
-        "text": "You can book studio time up to 3 months in advance. For coworking spaces, monthly memberships can be purchased at any time, and day passes can be booked up to 1 month ahead."
+        "line": 32,
+        "text": "contact.phone"
       },
       {
-        "line": 46,
-        "text": "What is your cancellation policy?"
-      },
-      {
-        "line": 47,
-        "text": "Studio bookings can be cancelled up to 24 hours before your session for a full refund. Coworking day passes can be cancelled up to 2 hours before your scheduled time."
-      },
-      {
-        "line": 52,
-        "text": "Do you offer photography services?"
-      },
-      {
-        "line": 53,
-        "text": "While we primarily rent studio space, we can connect you with professional photographers from our network. We also host workshops and training sessions regularly."
-      },
-      {
-        "line": 58,
-        "text": "Is food and drink allowed in the space?"
-      },
-      {
-        "line": 59,
-        "text": "Light snacks and beverages are allowed in the coworking areas. In the studio, we ask that you keep food and drinks in designated areas to protect the equipment."
-      },
-      {
-        "line": 69,
+        "line": 32,
         "text": "+1 (555) 123-4567"
       },
       {
-        "line": 70,
-        "text": "Call us"
+        "line": 32,
+        "text": "contact.call"
       },
       {
-        "line": 75,
+        "line": 33,
+        "text": "contact.email"
+      },
+      {
+        "line": 33,
         "text": "hello@vashastudio.com"
       },
       {
-        "line": 76,
-        "text": "Send email"
+        "line": 33,
+        "text": "contact.emailAction"
       },
       {
-        "line": 81,
-        "text": "123 Creative Street, Art District"
+        "line": 34,
+        "text": "contact.address"
       },
       {
-        "line": 82,
-        "text": "Get directions"
+        "line": 34,
+        "text": "contact.addressShort"
       },
       {
-        "line": 87,
-        "text": "Mon-Fri: 8AM-8PM, Sat-Sun: 9AM-6PM"
+        "line": 34,
+        "text": "contact.getDirections"
       },
       {
-        "line": 88,
-        "text": "View schedule"
+        "line": 35,
+        "text": "contact.hours"
       },
       {
-        "line": 112,
+        "line": 35,
+        "text": "contact.hoursShort"
+      },
+      {
+        "line": 35,
+        "text": "contact.viewSchedule"
+      },
+      {
+        "line": 53,
         "text": "relative py-20 md:py-32 bg-gradient-to-br from-primary/20 via-primary/10 to-background overflow-hidden"
       },
       {
-        "line": 113,
+        "line": 54,
         "text": "container mx-auto relative z-10 px-4 md:px-6 max-w-7xl"
       },
       {
-        "line": 115,
+        "line": 56,
         "text": "mx-auto max-w-4xl text-center"
       },
       {
-        "line": 121,
+        "line": 62,
         "text": "inline-flex items-center rounded-full bg-accent text-accent-foreground px-4 py-2 text-sm border mb-6"
       },
       {
-        "line": 126,
+        "line": 67,
         "text": "w-4 h-4 mr-2"
       },
       {
-        "line": 131,
+        "line": 72,
         "text": "text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6"
       },
       {
-        "line": 140,
+        "line": 81,
         "text": "mt-6 text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto mb-8"
       },
       {
-        "line": 152,
+        "line": 93,
         "text": "py-12 bg-muted/30"
       },
       {
-        "line": 153,
+        "line": 94,
         "text": "container mx-auto px-4 md:px-6 max-w-7xl"
       },
       {
-        "line": 155,
+        "line": 96,
         "text": "flex flex-wrap justify-center gap-2 md:gap-4"
       },
       {
-        "line": 172,
+        "line": 113,
         "text": "rounded-full px-6 py-2"
       },
       {
-        "line": 183,
+        "line": 124,
         "text": "py-20 md:py-24"
       },
       {
-        "line": 184,
+        "line": 125,
         "text": "container mx-auto px-4 md:px-6 max-w-4xl"
       },
       {
-        "line": 201,
+        "line": 142,
         "text": "w-full p-6 text-left hover:bg-muted/50 transition-colors"
       },
       {
-        "line": 203,
+        "line": 144,
         "text": "rgba(0,0,0,0.02)"
       },
       {
-        "line": 205,
+        "line": 146,
         "text": "flex items-center justify-between"
       },
       {
-        "line": 206,
+        "line": 147,
         "text": "flex items-center gap-3"
       },
       {
-        "line": 210,
+        "line": 151,
         "text": "text-lg font-semibold"
       },
       {
-        "line": 216,
+        "line": 157,
         "text": "h-5 w-5 text-muted-foreground"
       },
       {
-        "line": 229,
+        "line": 170,
         "text": "px-6 pb-6 pt-0"
       },
       {
-        "line": 230,
+        "line": 171,
         "text": "text-muted-foreground leading-relaxed"
       },
       {
-        "line": 245,
+        "line": 186,
         "text": "text-center py-16"
       },
       {
-        "line": 250,
+        "line": 191,
         "text": "text-lg text-muted-foreground"
       },
       {
-        "line": 259,
+        "line": 200,
         "text": "py-20 md:py-24 bg-muted/30"
       },
       {
-        "line": 260,
+        "line": 201,
         "text": "container mx-auto px-4 md:px-6 max-w-7xl"
       },
       {
-        "line": 262,
+        "line": 203,
         "text": "mx-auto max-w-3xl text-center mb-16"
       },
       {
-        "line": 268,
+        "line": 209,
         "text": "text-3xl sm:text-4xl md:text-5xl font-bold mb-4"
       },
       {
-        "line": 271,
+        "line": 210,
+        "text": "help.stillHaveQuestions.title"
+      },
+      {
+        "line": 212,
         "text": "text-lg text-muted-foreground"
       },
       {
-        "line": 276,
+        "line": 213,
+        "text": "help.stillHaveQuestions.subtitle"
+      },
+      {
+        "line": 217,
         "text": "grid gap-8 md:grid-cols-2 lg:grid-cols-4 max-w-6xl mx-auto"
       },
       {
-        "line": 286,
+        "line": 227,
         "text": "group hover:shadow-lg transition-shadow h-full text-center"
       },
       {
-        "line": 289,
+        "line": 230,
         "text": "w-16 h-16 rounded-xl bg-accent flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform duration-300"
       },
       {
-        "line": 292,
+        "line": 233,
         "text": "h-8 w-8 text-primary"
       },
       {
-        "line": 294,
+        "line": 235,
         "text": "text-xl font-semibold mb-3"
       },
       {
-        "line": 295,
+        "line": 236,
         "text": "text-muted-foreground mb-4 leading-relaxed"
       },
       {
-        "line": 296,
+        "line": 237,
         "text": "sm\" className="
       },
       {
-        "line": 306,
+        "line": 247,
         "text": "text-center mt-16"
       },
       {
-        "line": 312,
+        "line": 253,
         "text": "/book"
       },
       {
-        "line": 313,
+        "line": 254,
         "text": "lg\" className="
+      },
+      {
+        "line": 255,
+        "text": "help.contactCta"
       }
     ]
   },
@@ -3361,35 +3389,39 @@
         "text": "@/lib/prisma"
       },
       {
-        "line": 7,
+        "line": 3,
+        "text": "next-intl/server"
+      },
+      {
+        "line": 8,
         "text": "services.studio.enabled"
       },
       {
-        "line": 11,
+        "line": 13,
         "text": "min-h-screen flex items-center justify-center p-8"
       },
       {
-        "line": 12,
+        "line": 14,
         "text": "max-w-xl text-center"
       },
       {
-        "line": 13,
+        "line": 15,
         "text": "text-3xl font-bold mb-4"
       },
       {
-        "line": 13,
-        "text": "Service unavailable"
+        "line": 15,
+        "text": "studio.serviceUnavailable.title"
       },
       {
-        "line": 14,
-        "text": "This section is currently disabled by the administrator."
+        "line": 16,
+        "text": "studio.serviceUnavailable.description"
       },
       {
-        "line": 20,
+        "line": 22,
         "text": "Error checking studio setting:"
       },
       {
-        "line": 23,
+        "line": 25,
         "text": "./StudioClient"
       }
     ]
@@ -32774,180 +32806,196 @@
         "text": "@/lib/utils"
       },
       {
-        "line": 34,
+        "line": 37,
         "text": "Unauthorized access"
       },
       {
-        "line": 37,
+        "line": 40,
         "text": "border-error/20"
       },
       {
-        "line": 39,
+        "line": 42,
         "text": "flex items-center justify-between"
       },
       {
-        "line": 40,
+        "line": 43,
         "text": "flex items-center gap-2 text-error"
       },
       {
-        "line": 41,
+        "line": 44,
         "text": "h-5 w-5"
       },
       {
-        "line": 49,
+        "line": 45,
+        "text": "serviceManagement.title"
+      },
+      {
+        "line": 52,
         "text": "text-error border-error/20 hover:bg-error/5"
       },
       {
-        "line": 51,
+        "line": 54,
         "text": "h-4 w-4 mr-2"
       },
       {
-        "line": 58,
+        "line": 61,
         "text": "text-center py-8"
       },
       {
-        "line": 61,
+        "line": 64,
         "text": "text-error mb-2"
       },
       {
-        "line": 61,
-        "text": "Session Expired"
-      },
-      {
-        "line": 62,
+        "line": 65,
         "text": "text-sm text-muted-foreground mb-4"
       },
       {
-        "line": 68,
+        "line": 66,
+        "text": "serviceManagement.sessionExpiredHelp"
+      },
+      {
+        "line": 71,
         "text": "text-error border-error/20 hover:bg-error/5"
       },
       {
-        "line": 75,
+        "line": 73,
+        "text": "serviceManagement.refreshPage"
+      },
+      {
+        "line": 78,
         "text": "text-error mb-2"
       },
       {
-        "line": 75,
-        "text": "Failed to load service settings"
+        "line": 78,
+        "text": "serviceManagement.failedToLoad"
       },
       {
-        "line": 76,
+        "line": 79,
         "text": "text-sm text-muted-foreground"
       },
       {
-        "line": 77,
-        "text": "An unexpected error occurred"
+        "line": 80,
+        "text": "serviceManagement.unexpectedError"
       },
       {
-        "line": 91,
+        "line": 94,
         "text": "flex items-center justify-between"
       },
       {
-        "line": 92,
+        "line": 95,
         "text": "flex items-center gap-2"
       },
       {
-        "line": 93,
+        "line": 96,
         "text": "h-5 w-5"
       },
       {
-        "line": 105,
+        "line": 97,
+        "text": "serviceManagement.title"
+      },
+      {
+        "line": 108,
         "text": "h-4 w-4 mr-2"
       },
       {
-        "line": 112,
+        "line": 115,
         "text": "text-sm text-muted-foreground"
       },
       {
-        "line": 122,
-        "text": "border-l-4 border-l-muted"
-      },
-      {
-        "line": 124,
-        "text": "flex items-center justify-between mb-4"
+        "line": 116,
+        "text": "serviceManagement.description"
       },
       {
         "line": 125,
-        "text": "flex items-center gap-4"
+        "text": "border-l-4 border-l-muted"
       },
       {
-        "line": 126,
-        "text": "w-12 h-12 rounded-lg"
+        "line": 127,
+        "text": "flex items-center justify-between mb-4"
       },
       {
         "line": 128,
-        "text": "h-6 w-24 mb-2"
+        "text": "flex items-center gap-4"
       },
       {
         "line": 129,
-        "text": "h-4 w-48"
+        "text": "w-12 h-12 rounded-lg"
+      },
+      {
+        "line": 131,
+        "text": "h-6 w-24 mb-2"
       },
       {
         "line": 132,
-        "text": "w-12 h-6 rounded-full"
-      },
-      {
-        "line": 134,
-        "text": "flex items-center justify-between pt-4 border-t border-border/50"
+        "text": "h-4 w-48"
       },
       {
         "line": 135,
+        "text": "w-12 h-6 rounded-full"
+      },
+      {
+        "line": 137,
+        "text": "flex items-center justify-between pt-4 border-t border-border/50"
+      },
+      {
+        "line": 138,
         "text": "h-6 w-20 rounded-full"
       },
       {
-        "line": 136,
+        "line": 139,
         "text": "h-4 w-32"
       },
       {
-        "line": 144,
+        "line": 147,
         "text": "grid gap-4 md:grid-cols-2"
       },
       {
-        "line": 165,
+        "line": 168,
         "text": "mt-6 p-4 bg-muted/30 rounded-lg"
       },
       {
-        "line": 166,
+        "line": 169,
         "text": "flex items-start gap-3"
       },
       {
-        "line": 167,
+        "line": 170,
         "text": "w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"
       },
       {
-        "line": 168,
+        "line": 171,
         "text": "text-sm text-muted-foreground"
       },
       {
-        "line": 169,
+        "line": 172,
         "text": "font-medium text-foreground mb-1"
       },
       {
-        "line": 169,
+        "line": 172,
         "text": "About Service Management"
       },
       {
-        "line": 182,
+        "line": 185,
         "text": "absolute inset-0 bg-background/50 backdrop-blur-sm rounded-lg flex items-center justify-center"
       },
       {
-        "line": 183,
+        "line": 186,
         "text": "bg-background border rounded-lg p-4 shadow-lg"
       },
       {
-        "line": 184,
+        "line": 187,
         "text": "flex items-center gap-3"
       },
       {
-        "line": 185,
+        "line": 188,
         "text": "w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"
       },
       {
-        "line": 186,
+        "line": 189,
         "text": "text-sm font-medium"
       },
       {
-        "line": 186,
-        "text": "Updating services..."
+        "line": 189,
+        "text": "serviceManagement.updating"
       }
     ]
   },
@@ -33032,223 +33080,239 @@
         "text": "@/components/ui/select"
       },
       {
-        "line": 53,
-        "text": "Professional photography and video production space"
+        "line": 52,
+        "text": "services.studio.name"
+      },
+      {
+        "line": 52,
+        "text": "services.coworking.name"
       },
       {
         "line": 54,
+        "text": "services.studio.description"
+      },
+      {
+        "line": 54,
+        "text": "Professional photography and video production space"
+      },
+      {
+        "line": 55,
+        "text": "services.coworking.description"
+      },
+      {
+        "line": 55,
         "text": "Shared workspace for freelancers and teams"
       },
       {
-        "line": 57,
+        "line": 58,
         "text": "Studio Page"
       },
       {
-        "line": 58,
+        "line": 59,
         "text": "Coworking Page"
       },
       {
-        "line": 80,
+        "line": 81,
         "text": "/api/settings/services"
       },
       {
-        "line": 82,
+        "line": 83,
         "text": "application/json"
       },
       {
-        "line": 85,
+        "line": 86,
         "text": "Save failed"
       },
       {
-        "line": 90,
+        "line": 91,
         "text": "Failed to save"
       },
       {
-        "line": 104,
+        "line": 105,
         "text": "/api/settings/services"
       },
       {
-        "line": 110,
+        "line": 111,
         "text": "Upload failed"
       },
       {
-        "line": 115,
+        "line": 116,
         "text": "Upload failed"
       },
       {
-        "line": 123,
+        "line": 124,
         "text": "Delete this image?"
       },
       {
-        "line": 126,
+        "line": 127,
         "text": "/api/settings/services"
       },
       {
-        "line": 128,
+        "line": 129,
         "text": "application/json"
       },
       {
-        "line": 132,
+        "line": 133,
         "text": "Delete failed"
       },
       {
-        "line": 137,
+        "line": 138,
         "text": "Delete failed"
       },
       {
-        "line": 156,
+        "line": 157,
         "text": "group hover:shadow-lg transition-all duration-200"
       },
       {
-        "line": 158,
+        "line": 159,
         "text": "border-l-primary/60"
       },
       {
-        "line": 163,
+        "line": 164,
         "text": "flex items-center justify-between mb-4"
       },
       {
-        "line": 164,
+        "line": 165,
         "text": "flex items-center gap-4"
       },
       {
-        "line": 166,
+        "line": 167,
         "text": "w-12 h-12 rounded-lg flex items-center justify-center transition-colors"
       },
       {
-        "line": 167,
+        "line": 168,
         "text": "bg-primary/10"
       },
       {
-        "line": 167,
+        "line": 168,
         "text": "bg-muted/50"
       },
       {
-        "line": 172,
+        "line": 173,
         "text": "h-6 w-6 transition-colors"
       },
       {
-        "line": 178,
+        "line": 179,
         "text": "text-xl font-semibold text-foreground mb-1"
       },
       {
-        "line": 179,
+        "line": 180,
         "text": "text-sm text-muted-foreground"
       },
       {
-        "line": 180,
+        "line": 181,
         "text": "text-sm text-muted-foreground mt-2"
       },
       {
-        "line": 181,
+        "line": 182,
         "text": "Not set"
       },
       {
-        "line": 181,
+        "line": 182,
         "text": "Price:"
       },
       {
-        "line": 183,
+        "line": 184,
         "text": "text-sm text-muted-foreground"
       },
       {
-        "line": 184,
+        "line": 185,
         "text": "Not set"
       },
       {
-        "line": 184,
+        "line": 185,
         "text": "Address:"
       },
       {
-        "line": 189,
+        "line": 190,
         "text": "flex items-center gap-3"
       },
       {
-        "line": 191,
+        "line": 192,
         "text": "w-4 h-4 mr-2"
       },
       {
-        "line": 195,
+        "line": 196,
         "text": "w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin"
       },
       {
-        "line": 202,
+        "line": 203,
         "text": "data-[state=checked]:bg-primary"
       },
       {
-        "line": 207,
+        "line": 208,
         "text": "flex items-center justify-between pt-4 border-t border-border/50"
       },
       {
-        "line": 209,
+        "line": 210,
         "text": "text-xs text-muted-foreground"
       },
       {
-        "line": 222,
+        "line": 223,
         "text": "space-y-4 mt-2"
       },
       {
-        "line": 224,
+        "line": 225,
         "text": "Price"
       },
       {
-        "line": 225,
+        "line": 226,
         "text": "flex gap-2"
       },
       {
-        "line": 226,
+        "line": 227,
         "text": "e.g. 50"
       },
       {
-        "line": 242,
+        "line": 243,
         "text": "Address"
       },
       {
-        "line": 243,
+        "line": 244,
         "text": "Service address"
       },
       {
-        "line": 247,
+        "line": 248,
         "text": "Images"
       },
       {
-        "line": 248,
+        "line": 249,
         "text": "flex gap-2 flex-wrap"
       },
       {
-        "line": 250,
+        "line": 251,
         "text": "w-24 h-24 rounded overflow-hidden relative border"
       },
       {
-        "line": 251,
+        "line": 252,
         "text": "object-cover w-full h-full"
       },
       {
-        "line": 254,
+        "line": 255,
         "text": "absolute top-1 right-1 bg-white/80 p-1 rounded-full"
       },
       {
-        "line": 257,
+        "line": 258,
         "text": "w-3 h-3"
       },
       {
-        "line": 263,
+        "line": 264,
         "text": "image/*"
       },
       {
-        "line": 264,
+        "line": 265,
         "text": "text-sm ml-2"
       },
       {
-        "line": 264,
+        "line": 265,
         "text": "Uploading..."
       },
       {
-        "line": 270,
+        "line": 271,
         "text": "Cancel"
       },
       {
-        "line": 271,
+        "line": 272,
         "text": "Save"
       }
     ]

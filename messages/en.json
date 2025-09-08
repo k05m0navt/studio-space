@@ -53,7 +53,13 @@
     "gallery": "Gallery",
     "faq": "FAQ",
     "admin": "Admin",
-    "bookNow": "Book Now"
+    "bookNow": "Book Now",
+    "aria": {
+      "switchToRussian": "Switch to Russian",
+      "switchToEnglish": "Switch to English",
+      "switchToDark": "Switch to dark mode",
+      "switchToLight": "Switch to light mode"
+    }
   },
   "home": {
     "badge": "Professional Photography Studio",
@@ -420,6 +426,19 @@
     "help": {
       "stillHaveQuestions": {"title":"Still Have Questions?","subtitle":"Can't find what you're looking for? Get in touch with our team"},
       "contactCta": "Book a Consultation"
+    },
+    "contact": {
+      "phone": "Phone",
+      "call": "Call us",
+      "email": "Email",
+      "emailAction": "Send email",
+      "address": "Address",
+      "addressShort": "123 Creative Street, Art District",
+      "getDirections": "Get directions",
+      "hours": "Hours",
+      "hoursShort": "Mon-Fri: 8AM-8PM, Sat-Sun: 9AM-6PM",
+      "viewSchedule": "View schedule",
+      "cta": "Book a Consultation"
     }
   },
   "contact": {
