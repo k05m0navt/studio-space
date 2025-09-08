@@ -228,6 +228,10 @@
     "pricingTitle": "Flexible Plans",
     "pricingDescription": "Choose the plan that works best for your schedule and needs",
     "testimonialsTitle": "What Our Members Say",
+    "serviceUnavailable": {
+      "title": "Service unavailable",
+      "description": "This section is currently disabled by the administrator."
+    },
     "amenities": {
       "internet": {
         "title": "High-Speed Internet",
@@ -409,9 +413,6 @@
       "studio": "Studio",
       "coworking": "Coworking",
       "events": "Events"
-    },
-    "images": {
-      "studio1": "Studio Space 1"
     }
   },
   "faq": {
