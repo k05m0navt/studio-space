@@ -53,6 +53,7 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
   const t = useTranslations('booking');
   const tCommon = useTranslations('common');
   const tSuccess = useTranslations('bookingSuccess');
+  const tApi = useTranslations('api');
 
   const formSchema = z.object({
     name: z.string()
@@ -260,7 +261,7 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to submit booking');
+        throw new Error(errorData?.message ?? tApi('errors.failedToCreateBooking'));
       }
 
       setSubmitStatus('success');
@@ -394,8 +395,8 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
                               )}>
                                 {availableBookingTypes.length === 0 ? (
                                   <div className="text-center py-12 md:py-20">
-                                    <h3 className="text-xl font-semibold mb-2">{t('serviceSelection.noneAvailable') || 'No services available'}</h3>
-                                    <p className="text-sm text-muted-foreground">{t('serviceSelection.contactAdmin') || 'This service is currently disabled by the administrator. Please contact us or try again later.'}</p>
+                                    <h3 className="text-xl font-semibold mb-2">{t('serviceSelection.noneAvailable')}</h3>
+                                    <p className="text-sm text-muted-foreground">{t('serviceSelection.contactAdmin')}</p>
                                   </div>
                                 ) : (
                                   availableBookingTypes.map((type) => (
