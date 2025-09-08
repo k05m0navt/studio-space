@@ -356,8 +356,7 @@
       "pickDate": "Pick a date",
       "additionalMessage": "Additional Message (Optional)",
       "messagePlaceholder": "Tell us about your project or any special requirements...",
-      "messageDescription": "Let us know about your specific needs or any questions you have.",
-      "mustBeAfterStart": "End time must be after start time"
+      "messageDescription": "Let us know about your specific needs or any questions you have."
     },
     "review": {
       "title": "Review Your Booking",
@@ -410,7 +409,8 @@
       "studio": "Studio",
       "coworking": "Coworking",
       "events": "Events"
-    }
+    },
+    "heroBadge": "Our Work & Community"
   },
   "faq": {
     "helpBadge": "Help & Support",
