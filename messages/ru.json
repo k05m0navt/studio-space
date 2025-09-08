@@ -399,8 +399,7 @@
       "pickDate": "Выберите дату",
       "additionalMessage": "Дополнительное сообщение (По желанию)",
       "messagePlaceholder": "Расскажите нам о вашем проекте или особых требованиях...",
-      "messageDescription": "Сообщите нам о ваших конкретных потребностях или вопросах.",
-      "mustBeAfterStart": "Время окончания должно быть позже времени начала"
+      "messageDescription": "Сообщите нам о ваших конкретных потребностях или вопросах."
     },
     "review": {
       "title": "Проверьте ваше бронирование",
@@ -453,6 +452,27 @@
       "studio": "Студия",
       "coworking": "Коворкинг",
       "events": "События"
+    },
+    "heroBadge": "Наши работы и сообщество",
+    "noItems": "Элементы в этой категории не найдены.",
+    "items": {
+      "portraitSession": { "title": "Портретная сессия", "description": "Профессиональная портретная фотосессия" },
+      "teamCollaboration": { "title": "Командная работа", "description": "Творческая команда, работающая вместе" },
+      "productPhotography": { "title": "Фотография продукта", "description": "Профессиональные снимки товара" },
+      "workshopEvent": { "title": "Мастер-класс", "description": "Фотографический мастер-класс" },
+      "fashionShoot": { "title": "Модная съемка", "description": "Сессия модной фотографии" },
+      "networkingEvent": { "title": "Встреча сообщества", "description": "Вечер для сообщества" },
+      "workspaceLifestyle": { "title": "Жизнь рабочего пространства", "description": "Современная рабочая среда" },
+      "brandPhotography": { "title": "Фотография бренда", "description": "Корпоративная фото" },
+      "creativeMeeting": { "title": "Творческая встреча", "description": "Сессия мозгового штурма" }
+    },
+    "stats": {
+      "projectsCount": "500+",
+      "projectsLabel": "Завершённых проектов",
+      "clientsCount": "50+",
+      "clientsLabel": "Довольных клиентов",
+      "eventsCount": "100+",
+      "eventsLabel": "Мероприятий сообщества"
     }
   },
   "faq": {
