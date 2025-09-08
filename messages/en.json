@@ -44,7 +44,8 @@
     "unauthorized": "Unauthorized",
     "accessDenied": "Access Denied",
     "sessionExpired": "Session Expired",
-    "loginRequired": "Login Required"
+    "loginRequired": "Login Required",
+    "skipToContent": "Skip to main content"
   },
   "navigation": {
     "home": "Home",
@@ -58,8 +59,14 @@
       "switchToRussian": "Switch to Russian",
       "switchToEnglish": "Switch to English",
       "switchToDark": "Switch to dark mode",
-      "switchToLight": "Switch to light mode"
-    }
+      "switchToLight": "Switch to light mode",
+      "toggleMenu": "Toggle menu",
+      "closeMenu": "Close menu"
+    },
+    "menuTitle": "Navigation",
+    "menuSubtitle": "Menu",
+    "langShort": { "en": "EN", "ru": "RU" },
+    "langFull": { "en": "English", "ru": "Русский" }
   },
   "home": {
     "badge": "Professional Photography Studio",

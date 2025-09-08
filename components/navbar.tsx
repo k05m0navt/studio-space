@@ -34,6 +34,7 @@ const NAV_ITEMS = [
 
 // Studio Logo Component - Material UI 3 Design
 function StudioLogo({ className, compact = false }: { className?: string; compact?: boolean }) {
+  const tStudio = useTranslations('studio');
   return (
     <div className={cn("flex items-center gap-3", className)}>
       <div className="relative">
@@ -63,10 +64,10 @@ function StudioLogo({ className, compact = false }: { className?: string; compac
       {!compact && (
         <div className="hidden sm:block">
           <h1 className="text-xl lg:text-2xl font-bold text-foreground">
-            Vasha Studio
+            {tStudio('title')}
           </h1>
           <p className="text-sm text-surface-variant-foreground -mt-1">
-            Creative Space
+            {tStudio('subtitle')}
           </p>
         </div>
       )}
@@ -198,13 +199,13 @@ function LanguageSwitcher({ fullWidth = false }: { fullWidth?: boolean }) {
         >
           {!fullWidth ? (
             <span className="text-xs font-bold">
-              {locale === 'en' ? 'RU' : 'EN'}
+              {locale === 'en' ? t('langShort.ru') : t('langShort.en')}
             </span>
           ) : (
             <>
               <Globe className="h-4 w-4 mr-1" />
               <span className="font-medium text-sm">
-                {locale === 'en' ? 'Русский' : 'English'}
+                {locale === 'en' ? t('langFull.ru') : t('langFull.en')}
               </span>
             </>
           )}
@@ -220,6 +221,7 @@ export function Navbar({ services: initialServices = null }: { services?: { stud
   const [menuOpen, setMenuOpen] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
   const t = useTranslations('navigation');
+  const tCommon = useTranslations('common');
 
   useEffect(() => {
     setMounted(true);
@@ -386,7 +388,7 @@ export function Navbar({ services: initialServices = null }: { services?: { stud
 
   return (
     <>
-      <a href="#main-content" className="skip-to-content">Skip to main content</a>
+      <a href="#main-content" className="skip-to-content">{tCommon('skipToContent')}</a>
 
       <header className="sticky top-0 z-[60] w-full border-b border-outline-variant bg-surface-container/95 backdrop-blur-md shadow-sm">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -429,14 +431,14 @@ export function Navbar({ services: initialServices = null }: { services?: { stud
 
               <div className="flex md:hidden items-center space-x-3">
                 <Link href="/book" className="mr-1">
-                  <motion.button className="bg-primary hover:bg-primary/90 text-primary-foreground w-10 h-10 rounded-full flex items-center justify-center shadow-md" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} aria-label="Book Now">
+                  <motion.button className="bg-primary hover:bg-primary/90 text-primary-foreground w-10 h-10 rounded-full flex items-center justify-center shadow-md" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} aria-label={t('bookNow')}>
                     <Calendar className="h-4 w-4" />
                   </motion.button>
                 </Link>
                 <LanguageSwitcher />
                 <DarkModeToggle />
 
-                <button className="h-12 w-12 rounded-full border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 shadow-sm flex items-center justify-center transition-colors" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu" aria-expanded={menuOpen}>
+                <button className="h-12 w-12 rounded-full border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 shadow-sm flex items-center justify-center transition-colors" onClick={() => setMenuOpen(!menuOpen)} aria-label={t('aria.toggleMenu')} aria-expanded={menuOpen}>
                   <AnimatePresence mode="wait">
                     {menuOpen ? (
                       <motion.div key="close" initial={{ rotate: 0 }} animate={{ rotate: 90 }} exit={{ rotate: 0 }} transition={{ duration: 0.15, ease: "linear" }}>
@@ -467,8 +469,8 @@ export function Navbar({ services: initialServices = null }: { services?: { stud
                   <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1, duration: 0.2, ease: "linear" }} className="flex items-center gap-3">
                     <StudioLogo compact />
                     <div>
-                      <h2 id="mobile-menu-title" className="font-semibold text-lg text-gray-900 dark:text-white">Navigation</h2>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Menu</p>
+                      <h2 id="mobile-menu-title" className="font-semibold text-lg text-gray-900 dark:text-white">{t('menuTitle')}</h2>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{t('menuSubtitle')}</p>
                     </div>
                   </motion.div>
 
@@ -480,7 +482,7 @@ export function Navbar({ services: initialServices = null }: { services?: { stud
                     <button
                       className="h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center transition-colors"
                       onClick={() => setMenuOpen(false)}
-                      aria-label="Close menu"
+                      aria-label={t('aria.closeMenu')}
                     >
                       <X className="h-5 w-5 text-gray-700 dark:text-gray-300" />
                     </button>

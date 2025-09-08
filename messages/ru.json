@@ -44,7 +44,8 @@
     "unauthorized": "Не авторизован",
     "accessDenied": "Доступ запрещен",
     "sessionExpired": "Сессия истекла",
-    "loginRequired": "Требуется вход"
+    "loginRequired": "Требуется вход",
+    "skipToContent": "Перейти к основному содержимому"
   },
   "navigation": {
     "home": "Главная",
@@ -58,8 +59,14 @@
       "switchToRussian": "Переключиться на русский",
       "switchToEnglish": "Переключиться на английский",
       "switchToDark": "Переключиться в тёмный режим",
-      "switchToLight": "Переключиться в светлый режим"
+      "switchToLight": "Переключиться в светлый режим",
+      "toggleMenu": "Переключить меню",
+      "closeMenu": "Закрыть меню"
     },
+    "menuTitle": "Навигация",
+    "menuSubtitle": "Меню",
+    "langShort": { "en": "EN", "ru": "RU" },
+    "langFull": { "en": "English", "ru": "Русский" },
     "theme": {
       "dark": "Тёмный",
       "light": "Светлый"
