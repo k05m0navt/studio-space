@@ -409,6 +409,9 @@
       "studio": "Studio",
       "coworking": "Coworking",
       "events": "Events"
+    },
+    "images": {
+      "studio1": "Studio Space 1"
     }
   },
   "faq": {
