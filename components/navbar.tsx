@@ -13,7 +13,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { supabase as supabaseClient } from '@/lib/supabase';
+import { createBrowserSupabaseClient } from '@/lib/supabase';
 
 function safeTranslate(translator: (k: string) => string, key: string, fallback: string) {
   try {
@@ -246,6 +246,8 @@ export function Navbar({ services: initialServices = null }: { services?: { stud
 
   // Subscribe to Supabase Realtime events for service config updates
   useEffect(() => {
+    // Create a browser-only Supabase client to avoid server-side WebSocket usage
+    const supabaseClient = createBrowserSupabaseClient();
     const channel = supabaseClient.channel('settings');
     channel.on('broadcast', { event: 'service-config.updated' }, (payload) => {
       try {
