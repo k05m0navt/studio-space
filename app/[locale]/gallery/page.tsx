@@ -16,71 +16,17 @@ const categories = [
   { id: 'events', labelKey: 'events' }
 ];
 
-// Gallery data using local images
+// Gallery data using message keys for i18n
 const galleryItems = [
-  {
-    id: 1,
-    title: "Portrait Session",
-    category: "studio",
-    image: "/images/gallery/portrait-session.webp",
-    description: "Professional portrait photography session"
-  },
-  {
-    id: 2,
-    title: "Team Collaboration",
-    category: "coworking",
-    image: "/images/gallery/team-collaboration.webp",
-    description: "Creative team working together"
-  },
-  {
-    id: 3,
-    title: "Product Photography",
-    category: "studio",
-    image: "/images/gallery/product-photography.webp",
-    description: "Professional product shots"
-  },
-  {
-    id: 4,
-    title: "Workshop Event",
-    category: "events",
-    image: "/images/gallery/workshop-event.webp",
-    description: "Photography workshop in progress"
-  },
-  {
-    id: 5,
-    title: "Fashion Shoot",
-    category: "studio",
-    image: "/images/gallery/fashion-shoot.webp",
-    description: "Fashion photography session"
-  },
-  {
-    id: 6,
-    title: "Networking Event",
-    category: "events",
-    image: "/images/gallery/networking-event.webp",
-    description: "Community networking evening"
-  },
-  {
-    id: 7,
-    title: "Workspace Lifestyle",
-    category: "coworking",
-    image: "/images/gallery/workspace-lifestyle.webp",
-    description: "Modern coworking environment"
-  },
-  {
-    id: 8,
-    title: "Brand Photography",
-    category: "studio",
-    image: "/images/gallery/brand-photography.webp",
-    description: "Corporate brand photography"
-  },
-  {
-    id: 9,
-    title: "Creative Meeting",
-    category: "coworking",
-    image: "/images/gallery/creative-meeting.webp",
-    description: "Brainstorming session"
-  }
+  { id: 1, titleKey: 'items.portraitSession.title', category: 'studio', image: '/images/gallery/portrait-session.webp', descriptionKey: 'items.portraitSession.description' },
+  { id: 2, titleKey: 'items.teamCollaboration.title', category: 'coworking', image: '/images/gallery/team-collaboration.webp', descriptionKey: 'items.teamCollaboration.description' },
+  { id: 3, titleKey: 'items.productPhotography.title', category: 'studio', image: '/images/gallery/product-photography.webp', descriptionKey: 'items.productPhotography.description' },
+  { id: 4, titleKey: 'items.workshopEvent.title', category: 'events', image: '/images/gallery/workshop-event.webp', descriptionKey: 'items.workshopEvent.description' },
+  { id: 5, titleKey: 'items.fashionShoot.title', category: 'studio', image: '/images/gallery/fashion-shoot.webp', descriptionKey: 'items.fashionShoot.description' },
+  { id: 6, titleKey: 'items.networkingEvent.title', category: 'events', image: '/images/gallery/networking-event.webp', descriptionKey: 'items.networkingEvent.description' },
+  { id: 7, titleKey: 'items.workspaceLifestyle.title', category: 'coworking', image: '/images/gallery/workspace-lifestyle.webp', descriptionKey: 'items.workspaceLifestyle.description' },
+  { id: 8, titleKey: 'items.brandPhotography.title', category: 'studio', image: '/images/gallery/brand-photography.webp', descriptionKey: 'items.brandPhotography.description' },
+  { id: 9, titleKey: 'items.creativeMeeting.title', category: 'coworking', image: '/images/gallery/creative-meeting.webp', descriptionKey: 'items.creativeMeeting.description' }
 ];
 
 export default function GalleryPage() {
@@ -188,7 +134,7 @@ export default function GalleryPage() {
                     <div className="relative">
                       <OptimizedImage
                         src={item.image}
-                        alt={item.title}
+                        alt={t(String(item.titleKey))}
                         className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>
@@ -208,8 +154,8 @@ export default function GalleryPage() {
                     </motion.div>
                   </div>
                   <CardContent className="p-6">
-                    <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
-                    <p className="text-muted-foreground leading-relaxed">{item.description}</p>
+                    <h3 className="text-xl font-semibold mb-2">{t(String(item.titleKey))}</h3>
+                    <p className="text-muted-foreground leading-relaxed">{t(String(item.descriptionKey))}</p>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -224,7 +170,7 @@ export default function GalleryPage() {
               transition={{ duration: 0.6 }}
             >
               <p className="text-lg text-muted-foreground">
-                No items found in this category.
+                {t('noItems')}
               </p>
             </motion.div>
           )}
@@ -246,24 +192,24 @@ export default function GalleryPage() {
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="text-4xl md:text-5xl font-bold text-primary">{t('stats.projectsCount')}</div>
-              <div className="text-lg text-muted-foreground">{t('stats.projectsLabel')}</div>
+              <div className="text-4xl md:text-5xl font-bold text-primary">500+</div>
+              <div className="text-lg text-muted-foreground">Projects Completed</div>
             </motion.div>
             <motion.div 
               className="space-y-2"
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="text-4xl md:text-5xl font-bold text-primary">{t('stats.clientsCount')}</div>
-              <div className="text-lg text-muted-foreground">{t('stats.clientsLabel')}</div>
+              <div className="text-4xl md:text-5xl font-bold text-primary">50+</div>
+              <div className="text-lg text-muted-foreground">Happy Clients</div>
             </motion.div>
             <motion.div 
               className="space-y-2"
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="text-4xl md:text-5xl font-bold text-primary">{t('stats.eventsCount')}</div>
-              <div className="text-lg text-muted-foreground">{t('stats.eventsLabel')}</div>
+              <div className="text-4xl md:text-5xl font-bold text-primary">100+</div>
+              <div className="text-lg text-muted-foreground">Community Events</div>
             </motion.div>
           </motion.div>
         </div>
