@@ -185,7 +185,7 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
         setUnavailableSlots(data.unavailableSlots || []);
       }
     } catch (error) {
-      console.error('Failed to check availability:', error);
+      console.error(tApi('errors.failedToCheckAvailability') ?? 'Failed to check availability', error);
     }
   }, [watchBookingType]);
 
@@ -280,14 +280,14 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
       }, 2000);
 
     } catch (error) {
-      console.error('Booking submission error:', error);
+      console.error(tApi('errors.failedToCreateBooking') ?? 'Booking submission error', error);
       setSubmitStatus('error');
-      
+
       toast.error(tCommon('error'), {
         description: error instanceof Error ? error.message : tCommon('somethingWentWrong'),
         duration: 5000,
       });
-      
+
       // Reset status after showing error
       setTimeout(() => setSubmitStatus('idle'), 3000);
     } finally {
@@ -469,7 +469,7 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
                                   {t('fullName')}
                                 </FormLabel>
                                 <FormControl>
-                                  <Input placeholderKey="placeholders.name" placeholderNs="booking" {...field} className="h-12" />
+                                  <Input placeholder={t('placeholders.name')} {...field} className="h-12" />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -488,8 +488,7 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
                                 <FormControl>
                                   <Input
                                     type="email"
-                                    placeholderKey="placeholders.email"
-                                    placeholderNs="booking"
+                                    placeholder={t('placeholders.email')}
                                     {...field}
                                     className="h-12"
                                   />
@@ -511,8 +510,7 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
                                 <FormControl>
                                   <Input
                                     type="tel"
-                                    placeholderKey="placeholders.phone"
-                                    placeholderNs="booking"
+                                    placeholder={t('placeholders.phone')}
                                     {...field}
                                     className="h-12"
                                   />
@@ -745,10 +743,9 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
                       onClick={prevStep}
                       disabled={currentStep === 1}
                       className="flex items-center gap-2"
-                      tKey="navigation.previous"
-                      tNs="booking"
                     >
                       <ArrowLeft className="w-4 h-4" />
+                      {t('navigation.previous')}
                     </Button>
 
                     {currentStep < steps.length ? (
@@ -761,9 +758,8 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
                           type="button"
                           onClick={handleNext}
                           className="flex items-center gap-2"
-                          tKey="navigation.next"
-                          tNs="booking"
                         >
+                          {t('navigation.next')}
                           <ArrowRight className="w-4 h-4" />
                         </Button>
                       </motion.div>
@@ -818,9 +814,8 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
                           )}
                           {submitStatus === 'idle' && (
                             <>
-                              <Button tKey="navigation.submitBooking" tNs="booking" asChild>
-                                <span className="flex items-center gap-2"><Check className="w-4 h-4" /></span>
-                              </Button>
+                              {t('navigation.submitBooking')}
+                              <Check className="w-4 h-4" />
                             </>
                           )}
                         </Button>
