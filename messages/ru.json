@@ -236,10 +236,6 @@
     "pricingTitle": "Гибкие планы",
     "pricingDescription": "Выберите план, который лучше всего подходит для вашего расписания и потребностей",
     "testimonialsTitle": "Что говорят наши участники",
-    "serviceUnavailable": {
-      "title": "Сервис недоступен",
-      "description": "Этот раздел в настоящее время отключен администратором."
-    },
     "amenities": {
       "internet": {
         "title": "Высокоскоростной интернет",
@@ -456,6 +452,19 @@
       "studio": "Студия",
       "coworking": "Коворкинг",
       "events": "События"
+    },
+    "heroBadge": "Наши работы и сообщество",
+    "noItems": "Элементы в этой категории не найдены.",
+    "items": {
+      "portraitSession": { "title": "Портретная сессия", "description": "Профессиональная портретная фотосессия" },
+      "teamCollaboration": { "title": "Командная работа", "description": "Творческая команда, работающая вместе" },
+      "productPhotography": { "title": "Фотография продукта", "description": "Профессиональные снимки товара" },
+      "workshopEvent": { "title": "Мастер-класс", "description": "Фотографический мастер-класс" },
+      "fashionShoot": { "title": "Модная съемка", "description": "Сессия модной фотографии" },
+      "networkingEvent": { "title": "Встреча нетворкинга", "description": "Вечер для сообщества" },
+      "workspaceLifestyle": { "title": "Жизнь рабочего пространства", "description": "Современная рабочая среда" },
+      "brandPhotography": { "title": "Брендовая фотография", "description": "Корпоративная брендовая фотография" },
+      "creativeMeeting": { "title": "Творческая встреча", "description": "Сессия мозгового штурма" }
     }
   },
   "faq": {
