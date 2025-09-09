@@ -56,26 +56,27 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
   const tApi = useTranslations('api');
 
   const formSchema = z.object({
-    name: z.string()
-      .min(2, t('validation.name.min'))
-      .max(50, t('validation.name.max'))
+    name: z.string({ required_error: t('validation.name.required') })
+      .min(2, t('validation.name.min', { min: 2 }))
+      .max(50, t('validation.name.max', { max: 50 }))
       .regex(/^[a-zA-Z\s]+$/, t('validation.name.pattern')),
-    email: z.string()
+    email: z.string({ required_error: t('validation.email.required') })
+      .min(1, t('validation.email.required'))
       .email(t('validation.email.invalid'))
-      .max(100, t('validation.email.max')),
-    phone: z.string()
-      .min(10, t('validation.phone.min'))
-      .max(20, t('validation.phone.max'))
+      .max(100, t('validation.email.max', { max: 100 })),
+    phone: z.string({ required_error: t('validation.phone.required') })
+      .min(10, t('validation.phone.min', { min: 10 }))
+      .max(20, t('validation.phone.max', { max: 20 }))
       .regex(/^[\+]?[1-9][\d]{0,15}$/, t('validation.phone.pattern')),
-    bookingType: z.enum(['studio', 'coworking'] as const),
+    bookingType: z.enum(['studio', 'coworking'] as const, { required_error: t('validation.bookingType.required') }),
     date: z.date({ required_error: t('validation.date.required') }).refine((date) => {
       const today = new Date();
       today.setHours(0,0,0,0);
       return date >= today;
     }, t('validation.date.past')),
-    startTime: z.string().min(1, t('validation.startTime.required')),
-    endTime: z.string().min(1, t('validation.endTime.required')),
-    message: z.string().max(500, t('validation.message.max')).optional(),
+    startTime: z.string({ required_error: t('validation.startTime.required') }).min(1, t('validation.startTime.required')),
+    endTime: z.string({ required_error: t('validation.endTime.required') }).min(1, t('validation.endTime.required')),
+    message: z.string().max(500, t('validation.message.max', { max: 500 })).optional(),
   }).refine((data) => {
     const start = parseInt(data.startTime.replace(':', ''));
     const end = parseInt(data.endTime.replace(':', ''));
@@ -88,6 +89,13 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
     resolver: zodResolver(formSchema),
     defaultValues: {
       bookingType: "studio",
+      name: "",
+      email: "",
+      phone: "",
+      message: "",
+      startTime: "",
+      endTime: "",
+      date: undefined,
     },
   });
 

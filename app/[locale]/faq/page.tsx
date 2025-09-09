@@ -225,7 +225,7 @@ export default function FAQPage() {
                 whileHover={{ y: -5 }}
               >
                 <Card className="group hover:shadow-lg transition-shadow h-full text-center">
-                  <CardContent className="p-8">
+                  <CardContent className="p-8 flex flex-col h-full">
                     <motion.div 
                       className="w-16 h-16 rounded-xl bg-accent flex items-center justify-center mb-6 mx-auto group-hover:scale-110 transition-transform duration-300"
                       whileHover={{ rotate: 5 }}
@@ -234,7 +234,11 @@ export default function FAQPage() {
                     </motion.div>
                     <h3 className="text-xl font-semibold mb-3">{contact.title}</h3>
                     <p className="text-muted-foreground mb-4 leading-relaxed">{contact.details}</p>
-                    <Button variant="outline" size="sm" className="w-full">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="mt-auto w-full border dark:border-primary/70 bg-background dark:bg-transparent text-primary dark:text-primary hover:bg-accent/5 dark:hover:bg-primary/10"
+                    >
                       {contact.action}
                     </Button>
                   </CardContent>

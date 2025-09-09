@@ -15,6 +15,7 @@ import {
 
 import { cn } from "@/lib/utils"
 import { Label } from "@/components/ui/label"
+import { useTranslations } from "next-intl"
 
 const Form = FormProvider
 
@@ -136,12 +137,40 @@ function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
 }
 
 function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
-  const { error, formMessageId } = useFormField()
-  const body = error ? String(error?.message ?? "") : props.children
+  const { error, formMessageId, name } = useFormField()
+  const t = useTranslations('booking')
+  let body = error ? String(error?.message ?? "") : props.children
 
-  if (!body) {
-    return null
+  if (error) {
+    const errType = (error as any).type || 'required'
+    // prepare formatting variables for common fields
+    const vars: Record<string, any> = {}
+    if (name === 'name') { vars.min = 2; vars.max = 50 }
+    if (name === 'email') { vars.min = 1; vars.max = 100 }
+    if (name === 'phone') { vars.min = 10; vars.max = 20 }
+    if (name === 'message') { vars.max = 500 }
+
+    try {
+      const localizedByType = t(`validation.${name}.${errType}`, vars)
+      if (localizedByType) {
+        body = localizedByType
+      } else {
+        const isGenericRequired = typeof body !== 'string' || /^\s*(required|this field is required|required[\.!]?|is required)\s*$/i.test(body)
+        if (isGenericRequired) {
+          try {
+            const localized = t(`validation.${name}.required`, vars)
+            if (localized) body = localized
+          } catch (e) {
+            // fall back
+          }
+        }
+      }
+    } catch (e) {
+      // fall back to original body
+    }
   }
+
+  if (!body) return null
 
   return (
     <p

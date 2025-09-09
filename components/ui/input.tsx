@@ -17,6 +17,7 @@ function Input({ className, type, placeholderKey, placeholderNs, ...props }: Rea
         className
       )}
       placeholder={placeholder}
+      value={(props as any).value ?? ''}
       {...props}
     />
   )
