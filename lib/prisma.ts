@@ -5,29 +5,43 @@ declare global {
   var prisma: PrismaClient | undefined
 }
 
-export const prisma =
+// Prefer DIRECT_URL (direct DB connection) if available, otherwise fall back to DATABASE_URL
+const connectionUrl = process.env.DIRECT_URL || process.env.DATABASE_URL;
+
+if (!connectionUrl) {
+  throw new Error('No Prisma connection string found in DIRECT_URL or DATABASE_URL');
+}
+
+export const prisma: PrismaClient =
   globalThis.prisma ??
   new PrismaClient({
     log: ['query', 'error', 'warn'],
     datasources: {
       db: {
-        // Use pooled connection for runtime; DIRECT_URL is for migrations
-        url: process.env.DATABASE_URL
+        url: connectionUrl,
       }
     }
-  })
+  });
 
 if (process.env.NODE_ENV !== 'production') {
-  globalThis.prisma = prisma
+  globalThis.prisma = prisma;
 }
 
 // Graceful shutdown
 process.on('SIGTERM', async () => {
-  await prisma.$disconnect()
-})
+  try {
+    await prisma.$disconnect();
+  } catch (err) {
+    console.error('Error disconnecting prisma on SIGTERM', err);
+  }
+});
 
 process.on('SIGINT', async () => {
-  await prisma.$disconnect()
-})
+  try {
+    await prisma.$disconnect();
+  } catch (err) {
+    console.error('Error disconnecting prisma on SIGINT', err);
+  }
+});
 
 export default prisma 

@@ -15,14 +15,44 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   };
 }
 
-export default async function BookingSuccessPage({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = await params;
+export default async function BookingSuccessPage(props: any) {
+  // props may contain promises for params and searchParams in Next.js app router
+  const { params, searchParams } = await props;
+
+  const resolvedParams = params ? await params : undefined;
+  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+
+  const locale = resolvedParams?.locale ?? 'en';
   const t = await getTranslations({ locale, namespace: 'bookingSuccess' });
+
+  const sp = resolvedSearchParams as Record<string, string | string[]> | undefined;
+
+  const rawPaymentUrl = Array.isArray(sp?.paymentUrl)
+    ? sp?.paymentUrl[0]
+    : (sp?.paymentUrl as string | undefined);
+
+  const paymentUrl = rawPaymentUrl ? decodeURIComponent(rawPaymentUrl) : undefined;
+  const amount = Array.isArray(sp?.amount)
+    ? (sp?.amount[0] as string | undefined)
+    : (sp?.amount as string | undefined);
+
+  let qrDataUrl: string | null = null;
+  if (paymentUrl && /^https?:\/\//i.test(paymentUrl)) {
+    try {
+      const qrcode = await import('qrcode');
+      qrDataUrl = await qrcode.toDataURL(paymentUrl);
+    } catch (err) {
+      // ignore QR generation errors
+      // eslint-disable-next-line no-console
+      console.error('QR generation failed', err);
+      qrDataUrl = null;
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center p-4">
       <div
-        className="w-full max-w-2xl opacity-0 animate-fade-in-up"
+        className="w-full max-w-2xl animate-fade-in-up"
         style={{ 
           animation: 'fadeInUp 0.5s ease-out forwards',
           animationDelay: '0.1s'
@@ -32,7 +62,7 @@ export default async function BookingSuccessPage({ params }: { params: Promise<{
           <CardContent className="p-8 text-center">
             {/* Success Icon */}
             <div
-              className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 opacity-0 animate-scale-in"
+              className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6 animate-scale-in"
               style={{ 
                 animation: 'scaleIn 0.5s ease-out forwards',
                 animationDelay: '0.3s'
@@ -43,7 +73,7 @@ export default async function BookingSuccessPage({ params }: { params: Promise<{
 
             {/* Success Message */}
             <div
-              className="opacity-0 animate-fade-in-up"
+              className="animate-fade-in-up"
               style={{ 
                 animation: 'fadeInUp 0.5s ease-out forwards',
                 animationDelay: '0.4s'
@@ -57,9 +87,50 @@ export default async function BookingSuccessPage({ params }: { params: Promise<{
               </p>
             </div>
 
+            {/* Payment (QR + Link) */}
+            <div
+              className="bg-card/5 dark:bg-card/80 rounded-lg p-6 mb-8 animate-fade-in-up"
+              style={{
+                animation: 'fadeInUp 0.5s ease-out forwards',
+                animationDelay: '0.45s'
+              }}
+            >
+              <h2 className="text-xl font-semibold mb-4">{t('payment.title')}</h2>
+
+              {paymentUrl ? (
+                <div className="flex flex-col sm:flex-row items-center gap-4">
+                  {qrDataUrl ? (
+                    <img src={qrDataUrl} alt={t('payment.qrAlt')} className="w-48 h-48 mx-auto sm:mx-0 rounded-md shadow" />
+                  ) : (
+                    <p className="text-sm text-muted-foreground">{t('payment.instruction')}</p>
+                  )}
+
+                  <div className="flex-1 text-left">
+                    {amount && <p className="mb-2 font-medium">{amount}</p>}
+                    <div className="flex gap-4 items-center mt-2">
+                      <Button asChild className="flex items-center gap-2">
+                        <a href={paymentUrl} target="_blank" rel="noopener noreferrer">{t('payment.payNow')}</a>
+                      </Button>
+
+                      <a
+                        href={paymentUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-primary hover:underline"
+                      >
+                        {t('payment.paymentLinkText')}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <p className="text-sm text-muted-foreground">{t('payment.unavailable')}</p>
+              )}
+            </div>
+
             {/* What Happens Next */}
             <div
-              className="bg-muted/50 rounded-lg p-6 mb-8 opacity-0 animate-fade-in-up"
+              className="bg-card/5 dark:bg-card/80 rounded-lg p-6 mb-8 animate-fade-in-up"
               style={{ 
                 animation: 'fadeInUp 0.5s ease-out forwards',
                 animationDelay: '0.5s'
@@ -86,7 +157,7 @@ export default async function BookingSuccessPage({ params }: { params: Promise<{
                 ].map((step, index) => (
                   <div
                     key={step.title}
-                    className="flex items-start gap-4 opacity-0 animate-fade-in-left"
+                    className="flex items-start gap-4 animate-fade-in-left"
                     style={{ 
                       animation: 'fadeInLeft 0.3s ease-out forwards',
                       animationDelay: `${0.6 + index * 0.1}s`
@@ -106,7 +177,7 @@ export default async function BookingSuccessPage({ params }: { params: Promise<{
 
             {/* Action Buttons */}
             <div
-              className="flex flex-col sm:flex-row gap-4 justify-center opacity-0 animate-fade-in-up"
+              className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up"
               style={{ 
                 animation: 'fadeInUp 0.5s ease-out forwards',
                 animationDelay: '0.7s'
@@ -128,7 +199,7 @@ export default async function BookingSuccessPage({ params }: { params: Promise<{
 
             {/* Contact Info */}
             <div
-              className="mt-8 pt-6 border-t border-muted opacity-0 animate-fade-in"
+              className="mt-8 pt-6 border-t border-muted animate-fade-in"
               style={{ 
                 animation: 'fadeIn 0.5s ease-out forwards',
                 animationDelay: '0.8s'

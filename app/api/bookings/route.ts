@@ -214,7 +214,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    return NextResponse.json(booking, { status: 201 });
+    // Optionally include payment link information in the response (not persisted to DB)
+    const paymentBase = process.env.NEXT_PUBLIC_PAYMENT_BASE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://payments.example.com';
+    let paymentUrl: string | undefined = undefined;
+    if (paymentBase) {
+      const params = new URLSearchParams({ bookingId: String(booking.id) });
+      if (amount) params.set('amount', String(amount));
+      if (currency) params.set('currency', currency);
+      paymentUrl = `${paymentBase.replace(/\/$/, '')}/pay?${params.toString()}`;
+    }
+
+    const responseBody = {
+      ...booking,
+      paymentUrl,
+      amount: amount ?? null,
+      currency: currency ?? null,
+    };
+
+    return NextResponse.json(responseBody, { status: 201 });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(

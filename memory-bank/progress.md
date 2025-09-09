@@ -71,3 +71,6 @@
 - ARCHIVE: i18n migration — docs/archive/i18n-migration-20250907.md — 2025-09-07
 - ARCHIVE: I18N migration — docs/archive/i18n-migration-20250907.md — 2025-09-08T13:40:59Z
 - ARCHIVE: Booking form fix & migration completed:  -> docs/archive/booking-form-fix-20250909.md
+- ARCHIVE: Booking Success — docs/archive/booking-success-20250909.md — 2025-09-09
+
+- ARCHIVE: Admin stats optimization - docs/archive/admin-stats-optimization-20250909.md — 2025-09-09

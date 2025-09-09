@@ -58,6 +58,8 @@ model Booking {
 
   // Relations
   user User? @relation(fields: [userId], references: [id])
+
+  @@index([createdAt, type, status])
 }
 
 model Faq {
