@@ -53,28 +53,30 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
   const t = useTranslations('booking');
   const tCommon = useTranslations('common');
   const tSuccess = useTranslations('bookingSuccess');
+  const tApi = useTranslations('api');
 
   const formSchema = z.object({
-    name: z.string()
-      .min(2, t('validation.name.min'))
-      .max(50, t('validation.name.max'))
+    name: z.string({ required_error: t('validation.name.required') })
+      .min(2, t('validation.name.min', { min: 2 }))
+      .max(50, t('validation.name.max', { max: 50 }))
       .regex(/^[a-zA-Z\s]+$/, t('validation.name.pattern')),
-    email: z.string()
+    email: z.string({ required_error: t('validation.email.required') })
+      .min(1, t('validation.email.required'))
       .email(t('validation.email.invalid'))
-      .max(100, t('validation.email.max')),
-    phone: z.string()
-      .min(10, t('validation.phone.min'))
-      .max(20, t('validation.phone.max'))
+      .max(100, t('validation.email.max', { max: 100 })),
+    phone: z.string({ required_error: t('validation.phone.required') })
+      .min(10, t('validation.phone.min', { min: 10 }))
+      .max(20, t('validation.phone.max', { max: 20 }))
       .regex(/^[\+]?[1-9][\d]{0,15}$/, t('validation.phone.pattern')),
-    bookingType: z.enum(['studio', 'coworking'] as const),
+    bookingType: z.enum(['studio', 'coworking'] as const, { required_error: t('validation.bookingType.required') }),
     date: z.date({ required_error: t('validation.date.required') }).refine((date) => {
       const today = new Date();
       today.setHours(0,0,0,0);
       return date >= today;
     }, t('validation.date.past')),
-    startTime: z.string().min(1, t('validation.startTime.required')),
-    endTime: z.string().min(1, t('validation.endTime.required')),
-    message: z.string().max(500, t('validation.message.max')).optional(),
+    startTime: z.string({ required_error: t('validation.startTime.required') }).min(1, t('validation.startTime.required')),
+    endTime: z.string({ required_error: t('validation.endTime.required') }).min(1, t('validation.endTime.required')),
+    message: z.string().max(500, t('validation.message.max', { max: 500 })).optional(),
   }).refine((data) => {
     const start = parseInt(data.startTime.replace(':', ''));
     const end = parseInt(data.endTime.replace(':', ''));
@@ -87,6 +89,13 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
     resolver: zodResolver(formSchema),
     defaultValues: {
       bookingType: "studio",
+      name: "",
+      email: "",
+      phone: "",
+      message: "",
+      startTime: "",
+      endTime: "",
+      date: undefined,
     },
   });
 
@@ -184,7 +193,7 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
         setUnavailableSlots(data.unavailableSlots || []);
       }
     } catch (error) {
-      console.error('Failed to check availability:', error);
+      console.error(tApi('errors.failedToCheckAvailability') ?? 'Failed to check availability', error);
     }
   }, [watchBookingType]);
 
@@ -260,7 +269,7 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to submit booking');
+        throw new Error(errorData?.message ?? tApi('errors.failedToCreateBooking'));
       }
 
       setSubmitStatus('success');
@@ -279,14 +288,14 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
       }, 2000);
 
     } catch (error) {
-      console.error('Booking submission error:', error);
+      console.error(tApi('errors.failedToCreateBooking') ?? 'Booking submission error', error);
       setSubmitStatus('error');
-      
+
       toast.error(tCommon('error'), {
         description: error instanceof Error ? error.message : tCommon('somethingWentWrong'),
         duration: 5000,
       });
-      
+
       // Reset status after showing error
       setTimeout(() => setSubmitStatus('idle'), 3000);
     } finally {
@@ -394,8 +403,8 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
                               )}>
                                 {availableBookingTypes.length === 0 ? (
                                   <div className="text-center py-12 md:py-20">
-                                    <h3 className="text-xl font-semibold mb-2">{t('serviceSelection.noneAvailable') || 'No services available'}</h3>
-                                    <p className="text-sm text-muted-foreground">{t('serviceSelection.contactAdmin') || 'This service is currently disabled by the administrator. Please contact us or try again later.'}</p>
+                                    <h3 className="text-xl font-semibold mb-2">{t('serviceSelection.noneAvailable')}</h3>
+                                    <p className="text-sm text-muted-foreground">{t('serviceSelection.contactAdmin')}</p>
                                   </div>
                                 ) : (
                                   availableBookingTypes.map((type) => (

@@ -90,6 +90,19 @@ export default async function LocaleLayout({
   // side is the easiest way to get started
   const messages = await getMessages({ locale });
 
+  // Localized site strings
+  const siteTitle = `${messages['home.heroTitle'] ?? messages['studio.title'] ?? 'Vasha Studio'}${messages['home.heroTitleAccent'] ? ' ' + messages['home.heroTitleAccent'] : ''}`;
+  const siteDescription = messages['home.heroDescription'] ?? metadata.description;
+  const localizedOrganizationJsonLd = {
+    ...organizationJsonLd,
+    name: messages['studio.title'] ?? organizationJsonLd.name,
+    contactPoint: {
+      ...organizationJsonLd.contactPoint,
+      telephone: messages['footer.phone'] ?? organizationJsonLd.contactPoint.telephone,
+      email: messages['footer.email'] ?? organizationJsonLd.contactPoint.email,
+    }
+  };
+
   // Server-side: load service settings to pass to client Navbar (defaults to enabled)
   let services: { studio: { enabled: boolean }; coworking: { enabled: boolean } } = {
     studio: { enabled: true },
@@ -118,21 +131,21 @@ export default async function LocaleLayout({
           name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
         />
-        <title>{metadata.title as string}</title>
-        <meta name="description" content={metadata.description as string} />
+        <title>{siteTitle}</title>
+        <meta name="description" content={siteDescription} />
         
         {/* PWA Meta Tags */}
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#1e40af" />
-        <meta name="application-name" content="Vasha Studio" />
+        <meta name="application-name" content={siteTitle} />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="mobile-web-app-status-bar-style" content="default" />
-        <meta name="mobile-web-app-title" content="Vasha Studio" />
+        <meta name="mobile-web-app-title" content={siteTitle} />
         
         {/* Apple Meta Tags */}
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-        <meta name="apple-mobile-web-app-title" content="Vasha Studio" />
+        <meta name="apple-mobile-web-app-title" content={siteTitle} />
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
         
         {/* Icon Links */}
@@ -154,7 +167,7 @@ export default async function LocaleLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(organizationJsonLd)
+            __html: JSON.stringify(localizedOrganizationJsonLd)
           }}
         />
       </head>

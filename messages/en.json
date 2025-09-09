@@ -1,4 +1,7 @@
 {
+  "book": {
+    "loadError": "Failed to load service settings on server"
+  },
   "common": {
     "loading": "Loading...",
     "error": "Error",
@@ -44,7 +47,8 @@
     "unauthorized": "Unauthorized",
     "accessDenied": "Access Denied",
     "sessionExpired": "Session Expired",
-    "loginRequired": "Login Required"
+    "loginRequired": "Login Required",
+    "skipToContent": "Skip to main content"
   },
   "navigation": {
     "home": "Home",
@@ -58,7 +62,19 @@
       "switchToRussian": "Switch to Russian",
       "switchToEnglish": "Switch to English",
       "switchToDark": "Switch to dark mode",
-      "switchToLight": "Switch to light mode"
+      "switchToLight": "Switch to light mode",
+      "toggleMenu": "Toggle menu",
+      "closeMenu": "Close menu"
+    },
+    "menuTitle": "Navigation",
+    "menuSubtitle": "Menu",
+    "langShort": {
+      "en": "EN",
+      "ru": "RU"
+    },
+    "langFull": {
+      "en": "English",
+      "ru": "Русский"
     }
   },
   "home": {
@@ -140,7 +156,7 @@
   },
   "studio": {
     "title": "Vasha Studio",
-    "subtitle": "Professional Photo Studio & Creative Coworking Space",
+    "subtitle": "Creative Space",
     "description": "Premium photography studio and coworking space for creatives in the heart of the city",
     "features": {
       "professional": "Professional Equipment",
@@ -335,7 +351,9 @@
         "feature2": "High-speed internet",
         "feature3": "Meeting rooms",
         "feature4": "Coffee & snacks"
-      }
+      },
+      "noneAvailable": "No services are currently available",
+      "contactAdmin": "Contact us for assistance"
     },
     "details": {
       "title": "Your Details",
@@ -349,8 +367,11 @@
       "pickDate": "Pick a date",
       "additionalMessage": "Additional Message (Optional)",
       "messagePlaceholder": "Tell us about your project or any special requirements...",
-      "messageDescription": "Let us know about your specific needs or any questions you have."
+      "messageDescription": "Let us know about your specific needs or any questions you have.",
+      "unavailable": "Unavailable",
+      "mustBeAfterStart": "Must be after selected start time"
     },
+
     "review": {
       "title": "Review Your Booking",
       "description": "Please confirm your details below",
@@ -364,6 +385,54 @@
       "next": "Next",
       "submitting": "Submitting...",
       "submitBooking": "Submit Booking"
+    },
+    "placeholders": {
+      "name": "Your full name",
+      "email": "your@email.com",
+      "phone": "+1234567890"
+    },
+    "validation": {
+      "name": {
+        "required": "Please enter your name",
+        "min": "Name must be at least {min} characters",
+        "max": "Name must be at most {max} characters",
+        "pattern": "Name contains invalid characters",
+        "too_small": "Name must be at least {min} characters",
+        "too_big": "Name must be at most {max} characters"
+      },
+      "email": {
+        "required": "Please enter your email",
+        "invalid": "Please enter a valid email address",
+        "max": "Email must be at most {max} characters",
+        "too_small": "Please enter your email",
+        "too_big": "Email must be at most {max} characters"
+      },
+      "phone": {
+        "required": "Please enter your phone number",
+        "min": "Phone number must be at least {min} digits",
+        "max": "Phone number must be at most {max} digits",
+        "pattern": "Phone number format is invalid",
+        "too_small": "Phone number must be at least {min} digits",
+        "too_big": "Phone number must be at most {max} digits"
+      },
+      "bookingType": {
+        "required": "Please choose a service"
+      },
+      "date": {
+        "required": "Please select a date",
+        "past": "Date cannot be in the past"
+      },
+      "startTime": {
+        "required": "Please select a start time"
+      },
+      "endTime": {
+        "required": "Please select an end time",
+        "after": "End time must be after start time"
+      },
+      "message": {
+        "max": "Message must be at most {max} characters",
+        "too_big": "Message must be at most {max} characters"
+      }
     }
   },
   "bookingSuccess": {
@@ -402,6 +471,54 @@
       "studio": "Studio",
       "coworking": "Coworking",
       "events": "Events"
+    },
+    "heroBadge": "Our Work & Community",
+    "noItems": "No items found in this category.",
+    "items": {
+      "portraitSession": {
+        "title": "Portrait Session",
+        "description": "Professional portrait photography session"
+      },
+      "teamCollaboration": {
+        "title": "Team Collaboration",
+        "description": "Creative team working together"
+      },
+      "productPhotography": {
+        "title": "Product Photography",
+        "description": "Professional product shots"
+      },
+      "workshopEvent": {
+        "title": "Workshop Event",
+        "description": "Photography workshop in progress"
+      },
+      "fashionShoot": {
+        "title": "Fashion Shoot",
+        "description": "Fashion photography session"
+      },
+      "networkingEvent": {
+        "title": "Networking Event",
+        "description": "Community networking evening"
+      },
+      "workspaceLifestyle": {
+        "title": "Workspace Lifestyle",
+        "description": "Modern coworking environment"
+      },
+      "brandPhotography": {
+        "title": "Brand Photography",
+        "description": "Corporate brand photography"
+      },
+      "creativeMeeting": {
+        "title": "Creative Meeting",
+        "description": "Brainstorming session"
+      }
+    },
+    "stats": {
+      "projectsCount": "500+",
+      "projectsLabel": "Projects Completed",
+      "clientsCount": "50+",
+      "clientsLabel": "Happy Clients",
+      "eventsCount": "100+",
+      "eventsLabel": "Community Events"
     }
   },
   "faq": {
@@ -415,16 +532,43 @@
       "booking": "Booking",
       "general": "General"
     },
-    "q1": {"question": "What equipment is included with studio rental?","answer": "Our studio comes fully equipped with professional lighting setups, backdrops, reflectors, and basic photography equipment. We also have high-end cameras and lenses available for rent at an additional cost."},
-    "q2": {"question": "Can I bring my own equipment?","answer": "You're welcome to bring your own cameras, lenses, and specialized equipment. Our studio accommodates various setups."},
-    "q3": {"question": "What are the coworking space hours?","answer": "Coworking is open 24/7 for monthly members. Day pass users have access from 8 AM to 8 PM on weekdays and 9 AM to 6 PM on weekends."},
-    "q4": {"question": "Is there parking available?","answer": "Yes — free parking available for members and visitors; first-come, first-served."},
-    "q5": {"question": "How far in advance can I book?","answer": "Studio time can be booked up to 3 months in advance; day passes up to 1 month."},
-    "q6": {"question": "What is your cancellation policy?","answer": "Studio bookings can be cancelled up to 24 hours before session for a full refund. Day passes can be cancelled up to 2 hours before."},
-    "q7": {"question": "Do you offer photography services?","answer": "We primarily rent space but can connect you with photographers and host workshops."},
-    "q8": {"question": "Is food and drink allowed in the space?","answer": "Light snacks allowed in coworking; in studio please keep food in designated areas to protect equipment."},
+    "q1": {
+      "question": "What equipment is included with studio rental?",
+      "answer": "Our studio comes fully equipped with professional lighting setups, backdrops, reflectors, and basic photography equipment. We also have high-end cameras and lenses available for rent at an additional cost."
+    },
+    "q2": {
+      "question": "Can I bring my own equipment?",
+      "answer": "You're welcome to bring your own cameras, lenses, and specialized equipment. Our studio accommodates various setups."
+    },
+    "q3": {
+      "question": "What are the coworking space hours?",
+      "answer": "Coworking is open 24/7 for monthly members. Day pass users have access from 8 AM to 8 PM on weekdays and 9 AM to 6 PM on weekends."
+    },
+    "q4": {
+      "question": "Is there parking available?",
+      "answer": "Yes — free parking available for members and visitors; first-come, first-served."
+    },
+    "q5": {
+      "question": "How far in advance can I book?",
+      "answer": "Studio time can be booked up to 3 months in advance; day passes up to 1 month."
+    },
+    "q6": {
+      "question": "What is your cancellation policy?",
+      "answer": "Studio bookings can be cancelled up to 24 hours before session for a full refund. Day passes can be cancelled up to 2 hours before."
+    },
+    "q7": {
+      "question": "Do you offer photography services?",
+      "answer": "We primarily rent space but can connect you with photographers and host workshops."
+    },
+    "q8": {
+      "question": "Is food and drink allowed in the space?",
+      "answer": "Light snacks allowed in coworking; in studio please keep food in designated areas to protect equipment."
+    },
     "help": {
-      "stillHaveQuestions": {"title":"Still Have Questions?","subtitle":"Can't find what you're looking for? Get in touch with our team"},
+      "stillHaveQuestions": {
+        "title": "Still Have Questions?",
+        "subtitle": "Can't find what you're looking for? Get in touch with our team"
+      },
       "contactCta": "Book a Consultation"
     },
     "contact": {
@@ -491,7 +635,7 @@
     "quickActions": {
       "title": "Quick Actions",
       "addBooking": "Add New Booking",
-      "manageUsers": "Manage Users", 
+      "manageUsers": "Manage Users",
       "createAdmin": "Create Admin",
       "exportData": "Export Data",
       "exportSoon": "Export feature coming soon!"
@@ -600,7 +744,7 @@
     "phone": "+1 (555) 123-4567",
     "email": "hello@vashastudio.com",
     "followUs": "Follow Us",
-    "copyright": "© 2024 Vasha Studio. All rights reserved.",
+    "copyright": "© 2025 Vasha Studio. All rights reserved.",
     "terms": "Terms",
     "privacy": "Privacy"
   },
@@ -671,4 +815,4 @@
       "timeSlotUnavailable": "This time slot is not available. Please choose a different time."
     }
   }
-} 
+}

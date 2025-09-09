@@ -32,47 +32,7 @@ const NAV_ITEMS = [
   { href: "/admin", labelKey: "admin" },
 ] as const;
 
-// Studio Logo Component - Material UI 3 Design
-function StudioLogo({ className, compact = false }: { className?: string; compact?: boolean }) {
-  return (
-    <div className={cn("flex items-center gap-3", className)}>
-      <div className="relative">
-        <svg
-          className={cn(
-            compact ? "w-8 h-8" : "w-10 h-10 md:w-12 md:h-12"
-          )}
-          viewBox="0 0 3508 2480"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <g transform="translate(0,2480) scale(0.1,-0.1)">
-            <path
-              d="M17450 16309 c-137 -28 -243 -174 -226 -313 8 -70 49 -148 102 -195 43 -38 71 -53 257 -141 117 -55 204 -138 236 -225 30 -78 26 -188 -8 -253 -34 -66 -96 -128 -160 -159 -78 -39 -190 -39 -271 -2 -92 43 -170 137 -185 222 -6 28 -11 37 -22 33 -8 -4 -26 -9 -39 -12 -22 -6 -24 -10 -18 -38 20 -96 115 -221 202 -265 110 -56 232 -63 348 -20 45 17 75 38 130 93 94 94 118 152 118 286 0 136 -24 191 -123 290 -76 75 -90 83 -291 179 -155 73 -222 173 -191 285 43 159 232 215 344 103 23 -23 47 -50 52 -60 9 -15 14 -16 43 -6 36 12 38 19 18 57 -53 101 -197 166 -316 141z"
-              fill="currentColor"
-              className="text-primary"
-            />
-            <path
-              d="M12225 16280 c4 -11 114 -319 245 -683 235 -656 238 -662 265 -662 27 0 29 6 266 665 132 366 242 673 245 683 5 16 0 18 -37 15 l-43 -3 -215 -609 c-118 -335 -217 -605 -219 -600 -1 5 -99 279 -216 609 l-212 600 -43 3 c-39 3 -42 2 -36 -18z"
-              fill="currentColor"
-              className="text-primary"
-            />
-          </g>
-        </svg>
-        <div className="absolute inset-0 bg-primary/10 rounded-full blur-lg opacity-50 animate-pulse-glow"></div>
-      </div>
-      {!compact && (
-        <div className="hidden sm:block">
-          <h1 className="text-xl lg:text-2xl font-bold text-foreground">
-            Vasha Studio
-          </h1>
-          <p className="text-sm text-surface-variant-foreground -mt-1">
-            Creative Space
-          </p>
-        </div>
-      )}
-    </div>
-  );
-}
+// Studio logo removed — using plain site title in navbar instead
 
 // Refined Dark Mode Toggle
 function DarkModeToggle({ fullWidth = false }: { fullWidth?: boolean }) {
@@ -198,13 +158,13 @@ function LanguageSwitcher({ fullWidth = false }: { fullWidth?: boolean }) {
         >
           {!fullWidth ? (
             <span className="text-xs font-bold">
-              {locale === 'en' ? 'RU' : 'EN'}
+              {locale === 'en' ? t('langShort.ru') : t('langShort.en')}
             </span>
           ) : (
             <>
               <Globe className="h-4 w-4 mr-1" />
               <span className="font-medium text-sm">
-                {locale === 'en' ? 'Русский' : 'English'}
+                {locale === 'en' ? t('langFull.ru') : t('langFull.en')}
               </span>
             </>
           )}
@@ -220,6 +180,7 @@ export function Navbar({ services: initialServices = null }: { services?: { stud
   const [menuOpen, setMenuOpen] = useState(false);
   const drawerRef = useRef<HTMLDivElement>(null);
   const t = useTranslations('navigation');
+  const tCommon = useTranslations('common');
 
   useEffect(() => {
     setMounted(true);
@@ -386,13 +347,13 @@ export function Navbar({ services: initialServices = null }: { services?: { stud
 
   return (
     <>
-      <a href="#main-content" className="skip-to-content">Skip to main content</a>
+      <a href="#main-content" className="skip-to-content">{tCommon('skipToContent')}</a>
 
       <header className="sticky top-0 z-[60] w-full border-b border-outline-variant bg-surface-container/95 backdrop-blur-md shadow-sm">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 sm:h-20 lg:h-24 items-center justify-between">
             <Link href="/" className="flex items-center rounded-2xl p-2 -ml-2 transition-all duration-200 hover:bg-surface-container-high focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
-              <StudioLogo />
+              <span className="text-lg font-semibold">Vasha Studio</span>
             </Link>
 
             <nav className="hidden md:flex items-center space-x-2 lg:space-x-4" role="navigation">
@@ -429,14 +390,14 @@ export function Navbar({ services: initialServices = null }: { services?: { stud
 
               <div className="flex md:hidden items-center space-x-3">
                 <Link href="/book" className="mr-1">
-                  <motion.button className="bg-primary hover:bg-primary/90 text-primary-foreground w-10 h-10 rounded-full flex items-center justify-center shadow-md" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} aria-label="Book Now">
+                  <motion.button className="bg-primary hover:bg-primary/90 text-primary-foreground w-10 h-10 rounded-full flex items-center justify-center shadow-md" whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} aria-label={t('bookNow')}>
                     <Calendar className="h-4 w-4" />
                   </motion.button>
                 </Link>
                 <LanguageSwitcher />
                 <DarkModeToggle />
 
-                <button className="h-12 w-12 rounded-full border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 shadow-sm flex items-center justify-center transition-colors" onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu" aria-expanded={menuOpen}>
+                <button className="h-12 w-12 rounded-full border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 shadow-sm flex items-center justify-center transition-colors" onClick={() => setMenuOpen(!menuOpen)} aria-label={t('aria.toggleMenu')} aria-expanded={menuOpen}>
                   <AnimatePresence mode="wait">
                     {menuOpen ? (
                       <motion.div key="close" initial={{ rotate: 0 }} animate={{ rotate: 90 }} exit={{ rotate: 0 }} transition={{ duration: 0.15, ease: "linear" }}>
@@ -465,10 +426,10 @@ export function Navbar({ services: initialServices = null }: { services?: { stud
 
                 <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
                   <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1, duration: 0.2, ease: "linear" }} className="flex items-center gap-3">
-                    <StudioLogo compact />
+                    <span className="text-sm font-semibold">Vasha Studio</span>
                     <div>
-                      <h2 id="mobile-menu-title" className="font-semibold text-lg text-gray-900 dark:text-white">Navigation</h2>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">Menu</p>
+                      <h2 id="mobile-menu-title" className="font-semibold text-lg text-gray-900 dark:text-white">{t('menuTitle')}</h2>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{t('menuSubtitle')}</p>
                     </div>
                   </motion.div>
 
@@ -480,7 +441,7 @@ export function Navbar({ services: initialServices = null }: { services?: { stud
                     <button
                       className="h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center transition-colors"
                       onClick={() => setMenuOpen(false)}
-                      aria-label="Close menu"
+                      aria-label={t('aria.closeMenu')}
                     >
                       <X className="h-5 w-5 text-gray-700 dark:text-gray-300" />
                     </button>

@@ -68,8 +68,7 @@ export default function Home() {
                     transition={{ duration: 0.1, ease: "easeInOut" }}
                     className="w-full"
                   >
-                    <Button size="lg" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-xl shadow-lg">
-                      {t('bookStudio')}
+                    <Button size="lg" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-xl shadow-lg" tKey="bookStudio" tNs="home">
                       <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                     </Button>
                   </motion.div>
@@ -81,9 +80,7 @@ export default function Home() {
                     transition={{ duration: 0.1, ease: "easeInOut" }}
                     className="w-full"
                   >
-                    <Button size="lg" variant="outline" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-xl">
-                      {t('viewGallery')}
-                    </Button>
+                    <Button size="lg" variant="outline" className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold rounded-xl" tKey="viewGallery" tNs="home" />
                   </motion.div>
                 </Link>
               </motion.div>

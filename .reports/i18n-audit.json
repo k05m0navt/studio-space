@@ -981,11 +981,19 @@
         "text": "@/components/booking-form"
       },
       {
-        "line": 7,
+        "line": 2,
+        "text": "next-intl/server"
+      },
+      {
+        "line": 12,
         "text": "/api/settings/services"
       },
       {
-        "line": 14,
+        "line": 19,
+        "text": "book.loadError"
+      },
+      {
+        "line": 19,
         "text": "Failed to load service settings on server:"
       }
     ]
@@ -1612,35 +1620,39 @@
         "text": "@/lib/prisma"
       },
       {
-        "line": 6,
+        "line": 2,
+        "text": "next-intl/server"
+      },
+      {
+        "line": 8,
         "text": "services.coworking.enabled"
       },
       {
-        "line": 10,
+        "line": 13,
         "text": "min-h-screen flex items-center justify-center p-8"
       },
       {
-        "line": 11,
+        "line": 14,
         "text": "max-w-xl text-center"
       },
       {
-        "line": 12,
+        "line": 15,
         "text": "text-3xl font-bold mb-4"
       },
       {
-        "line": 12,
-        "text": "Service unavailable"
+        "line": 15,
+        "text": "coworking.serviceUnavailable.title"
       },
       {
-        "line": 13,
-        "text": "This section is currently disabled by the administrator."
-      },
-      {
-        "line": 19,
-        "text": "Error checking coworking setting:"
+        "line": 16,
+        "text": "coworking.serviceUnavailable.description"
       },
       {
         "line": 22,
+        "text": "Error checking coworking setting:"
+      },
+      {
+        "line": 25,
         "text": "./CoworkingClient"
       }
     ]
@@ -2043,279 +2055,279 @@
         "text": "@/components/optimized-image"
       },
       {
-        "line": 23,
-        "text": "Portrait Session"
+        "line": 21,
+        "text": "items.portraitSession.title"
       },
       {
-        "line": 25,
+        "line": 21,
         "text": "/images/gallery/portrait-session.webp"
       },
       {
-        "line": 26,
-        "text": "Professional portrait photography session"
+        "line": 21,
+        "text": "items.portraitSession.description"
       },
       {
-        "line": 30,
-        "text": "Team Collaboration"
+        "line": 22,
+        "text": "items.teamCollaboration.title"
       },
       {
-        "line": 32,
+        "line": 22,
         "text": "/images/gallery/team-collaboration.webp"
       },
       {
-        "line": 33,
-        "text": "Creative team working together"
+        "line": 22,
+        "text": "items.teamCollaboration.description"
       },
       {
-        "line": 37,
-        "text": "Product Photography"
+        "line": 23,
+        "text": "items.productPhotography.title"
       },
       {
-        "line": 39,
+        "line": 23,
         "text": "/images/gallery/product-photography.webp"
       },
       {
-        "line": 40,
-        "text": "Professional product shots"
+        "line": 23,
+        "text": "items.productPhotography.description"
       },
       {
-        "line": 44,
-        "text": "Workshop Event"
+        "line": 24,
+        "text": "items.workshopEvent.title"
       },
       {
-        "line": 46,
+        "line": 24,
         "text": "/images/gallery/workshop-event.webp"
       },
       {
-        "line": 47,
-        "text": "Photography workshop in progress"
+        "line": 24,
+        "text": "items.workshopEvent.description"
       },
       {
-        "line": 51,
-        "text": "Fashion Shoot"
+        "line": 25,
+        "text": "items.fashionShoot.title"
       },
       {
-        "line": 53,
+        "line": 25,
         "text": "/images/gallery/fashion-shoot.webp"
       },
       {
-        "line": 54,
-        "text": "Fashion photography session"
+        "line": 25,
+        "text": "items.fashionShoot.description"
       },
       {
-        "line": 58,
-        "text": "Networking Event"
+        "line": 26,
+        "text": "items.networkingEvent.title"
       },
       {
-        "line": 60,
+        "line": 26,
         "text": "/images/gallery/networking-event.webp"
       },
       {
-        "line": 61,
-        "text": "Community networking evening"
+        "line": 26,
+        "text": "items.networkingEvent.description"
       },
       {
-        "line": 65,
-        "text": "Workspace Lifestyle"
+        "line": 27,
+        "text": "items.workspaceLifestyle.title"
       },
       {
-        "line": 67,
+        "line": 27,
         "text": "/images/gallery/workspace-lifestyle.webp"
       },
       {
-        "line": 68,
-        "text": "Modern coworking environment"
+        "line": 27,
+        "text": "items.workspaceLifestyle.description"
       },
       {
-        "line": 72,
-        "text": "Brand Photography"
+        "line": 28,
+        "text": "items.brandPhotography.title"
       },
       {
-        "line": 74,
+        "line": 28,
         "text": "/images/gallery/brand-photography.webp"
       },
       {
-        "line": 75,
-        "text": "Corporate brand photography"
+        "line": 28,
+        "text": "items.brandPhotography.description"
       },
       {
-        "line": 79,
-        "text": "Creative Meeting"
+        "line": 29,
+        "text": "items.creativeMeeting.title"
       },
       {
-        "line": 81,
+        "line": 29,
         "text": "/images/gallery/creative-meeting.webp"
       },
       {
-        "line": 82,
-        "text": "Brainstorming session"
+        "line": 29,
+        "text": "items.creativeMeeting.description"
       },
       {
-        "line": 97,
+        "line": 43,
         "text": "relative py-20 md:py-32 bg-gradient-to-br from-primary/20 via-primary/10 to-background overflow-hidden"
       },
       {
-        "line": 98,
+        "line": 44,
         "text": "container mx-auto relative z-10 px-4 md:px-6 max-w-7xl"
       },
       {
-        "line": 100,
+        "line": 46,
         "text": "mx-auto max-w-4xl text-center"
       },
       {
-        "line": 106,
+        "line": 52,
         "text": "inline-flex items-center rounded-full bg-accent text-accent-foreground px-4 py-2 text-sm border mb-6"
       },
       {
-        "line": 111,
+        "line": 57,
         "text": "w-4 h-4 mr-2"
       },
       {
-        "line": 116,
+        "line": 62,
         "text": "text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6"
       },
       {
-        "line": 125,
+        "line": 71,
         "text": "mt-6 text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto mb-8"
       },
       {
-        "line": 137,
+        "line": 83,
         "text": "py-12 bg-muted/30"
       },
       {
-        "line": 138,
+        "line": 84,
         "text": "container mx-auto px-4 md:px-6 max-w-7xl"
       },
       {
-        "line": 140,
+        "line": 86,
         "text": "flex flex-wrap justify-center gap-2 md:gap-4"
       },
       {
-        "line": 157,
+        "line": 103,
         "text": "rounded-full px-6 py-2"
       },
       {
-        "line": 159,
+        "line": 105,
         "text": "w-4 h-4 mr-2"
       },
       {
-        "line": 169,
+        "line": 115,
         "text": "py-20 md:py-24"
       },
       {
-        "line": 170,
+        "line": 116,
         "text": "container mx-auto px-4 md:px-6 max-w-7xl"
       },
       {
-        "line": 172,
+        "line": 118,
         "text": "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
       },
       {
-        "line": 186,
+        "line": 132,
         "text": "overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300"
       },
       {
-        "line": 187,
+        "line": 133,
         "text": "relative overflow-hidden"
       },
       {
-        "line": 192,
+        "line": 138,
         "text": "w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
       },
       {
-        "line": 195,
+        "line": 141,
         "text": "absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
       },
       {
-        "line": 197,
+        "line": 143,
         "text": "absolute top-4 right-4"
       },
       {
-        "line": 203,
+        "line": 149,
         "text": "w-3 h-3 mr-1"
       },
       {
-        "line": 204,
+        "line": 150,
         "text": "w-3 h-3 mr-1"
       },
       {
-        "line": 205,
+        "line": 151,
         "text": "w-3 h-3 mr-1"
       },
       {
-        "line": 211,
+        "line": 157,
         "text": "text-xl font-semibold mb-2"
       },
       {
-        "line": 212,
+        "line": 158,
         "text": "text-muted-foreground leading-relaxed"
       },
       {
-        "line": 221,
+        "line": 167,
         "text": "text-center py-16"
       },
       {
-        "line": 226,
+        "line": 172,
         "text": "text-lg text-muted-foreground"
       },
       {
-        "line": 235,
+        "line": 181,
         "text": "py-20 bg-muted/30"
       },
       {
-        "line": 236,
+        "line": 182,
         "text": "container mx-auto px-4 md:px-6 max-w-7xl"
       },
       {
-        "line": 238,
+        "line": 184,
         "text": "grid grid-cols-1 md:grid-cols-3 gap-8 text-center"
       },
       {
-        "line": 249,
+        "line": 195,
         "text": "text-4xl md:text-5xl font-bold text-primary"
       },
       {
-        "line": 249,
+        "line": 195,
         "text": "500+"
       },
       {
-        "line": 250,
+        "line": 196,
         "text": "text-lg text-muted-foreground"
       },
       {
-        "line": 250,
+        "line": 196,
         "text": "Projects Completed"
       },
       {
-        "line": 257,
+        "line": 203,
         "text": "text-4xl md:text-5xl font-bold text-primary"
       },
       {
-        "line": 257,
+        "line": 203,
         "text": "50+"
       },
       {
-        "line": 258,
+        "line": 204,
         "text": "text-lg text-muted-foreground"
       },
       {
-        "line": 258,
+        "line": 204,
         "text": "Happy Clients"
       },
       {
-        "line": 265,
+        "line": 211,
         "text": "text-4xl md:text-5xl font-bold text-primary"
       },
       {
-        "line": 265,
+        "line": 211,
         "text": "100+"
       },
       {
-        "line": 266,
+        "line": 212,
         "text": "text-lg text-muted-foreground"
       },
       {
-        "line": 266,
+        "line": 212,
         "text": "Community Events"
       }
     ]
@@ -2456,99 +2468,127 @@
         "text": "en' |"
       },
       {
-        "line": 100,
-        "text": "services.studio.enabled"
+        "line": 94,
+        "text": "home.heroTitle"
+      },
+      {
+        "line": 94,
+        "text": "studio.title"
+      },
+      {
+        "line": 94,
+        "text": "Vasha Studio"
+      },
+      {
+        "line": 94,
+        "text": "home.heroTitleAccent"
+      },
+      {
+        "line": 94,
+        "text": "' + messages["
+      },
+      {
+        "line": 94,
+        "text": "] :"
+      },
+      {
+        "line": 95,
+        "text": "home.heroDescription"
+      },
+      {
+        "line": 98,
+        "text": "studio.title"
       },
       {
         "line": 101,
+        "text": "footer.phone"
+      },
+      {
+        "line": 102,
+        "text": "footer.email"
+      },
+      {
+        "line": 113,
+        "text": "services.studio.enabled"
+      },
+      {
+        "line": 114,
         "text": "services.coworking.enabled"
       },
       {
-        "line": 109,
+        "line": 122,
         "text": "Error loading service settings in layout:"
       },
       {
-        "line": 116,
+        "line": 129,
         "text": "IE=edge"
       },
       {
-        "line": 119,
+        "line": 132,
         "text": "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
       },
       {
-        "line": 125,
+        "line": 138,
         "text": "/manifest.json"
       },
       {
-        "line": 126,
-        "text": "#1e40af"
-      },
-      {
-        "line": 127,
-        "text": "Vasha Studio"
-      },
-      {
-        "line": 130,
-        "text": "Vasha Studio"
-      },
-      {
-        "line": 135,
-        "text": "Vasha Studio"
-      },
-      {
-        "line": 136,
-        "text": "/icons/icon-192x192.png"
-      },
-      {
         "line": 139,
-        "text": "/favicon.ico"
-      },
-      {
-        "line": 140,
-        "text": "image/png"
-      },
-      {
-        "line": 140,
-        "text": "/icons/icon-192x192.png"
-      },
-      {
-        "line": 141,
-        "text": "image/png"
-      },
-      {
-        "line": 141,
-        "text": "/icons/icon-192x192.png"
-      },
-      {
-        "line": 144,
         "text": "#1e40af"
-      },
-      {
-        "line": 145,
-        "text": "/icons/icon-144x144.png"
-      },
-      {
-        "line": 146,
-        "text": "/browserconfig.xml"
       },
       {
         "line": 149,
+        "text": "/icons/icon-192x192.png"
+      },
+      {
+        "line": 152,
+        "text": "/favicon.ico"
+      },
+      {
+        "line": 153,
+        "text": "image/png"
+      },
+      {
+        "line": 153,
+        "text": "/icons/icon-192x192.png"
+      },
+      {
+        "line": 154,
+        "text": "image/png"
+      },
+      {
+        "line": 154,
+        "text": "/icons/icon-192x192.png"
+      },
+      {
+        "line": 157,
+        "text": "#1e40af"
+      },
+      {
+        "line": 158,
+        "text": "/icons/icon-144x144.png"
+      },
+      {
+        "line": 159,
+        "text": "/browserconfig.xml"
+      },
+      {
+        "line": 162,
         "text": "telephone=no"
       },
       {
-        "line": 155,
+        "line": 168,
         "text": "application/ld+json"
       },
       {
-        "line": 164,
+        "line": 177,
         "text": "min-h-screen bg-background text-foreground antialiased"
       },
       {
-        "line": 175,
+        "line": 188,
         "text": "min-h-screen flex flex-col"
       },
       {
-        "line": 191,
+        "line": 204,
         "text": "/scripts/web-vitals.js"
       }
     ]
@@ -2855,184 +2895,204 @@
         "text": "lg\" className="
       },
       {
-        "line": 73,
+        "line": 71,
+        "text": "tKey="
+      },
+      {
+        "line": 71,
+        "text": "tNs="
+      },
+      {
+        "line": 72,
         "text": "ml-2 h-4 w-4 sm:h-5 sm:w-5"
       },
       {
-        "line": 77,
+        "line": 76,
         "text": "/gallery"
       },
       {
-        "line": 77,
+        "line": 76,
         "text": "w-full sm:w-auto"
       },
       {
-        "line": 84,
+        "line": 83,
         "text": "lg\" variant="
       },
       {
-        "line": 84,
+        "line": 83,
         "text": "className="
       },
       {
-        "line": 93,
+        "line": 83,
+        "text": "tKey="
+      },
+      {
+        "line": 83,
+        "text": "tNs="
+      },
+      {
+        "line": 90,
         "text": "flex items-center justify-center lg:justify-start gap-6 sm:gap-8 pt-6 lg:pt-8"
       },
       {
-        "line": 103,
+        "line": 100,
         "text": "text-2xl sm:text-3xl font-bold"
       },
       {
-        "line": 103,
+        "line": 100,
         "text": "500+"
       },
       {
-        "line": 104,
+        "line": 101,
         "text": "text-xs sm:text-sm text-muted-foreground"
       },
       {
-        "line": 104,
+        "line": 101,
         "text": "stats.projects"
       },
       {
-        "line": 111,
+        "line": 108,
         "text": "text-2xl sm:text-3xl font-bold"
       },
       {
-        "line": 111,
+        "line": 108,
         "text": "50+"
       },
       {
-        "line": 112,
+        "line": 109,
         "text": "text-xs sm:text-sm text-muted-foreground"
       },
       {
-        "line": 112,
+        "line": 109,
         "text": "stats.members"
       },
       {
-        "line": 115,
+        "line": 112,
         "text": "flex items-center gap-1"
       },
       {
-        "line": 119,
+        "line": 116,
         "text": "w-4 h-4 sm:w-5 sm:h-5 fill-yellow-400 text-yellow-400"
       },
       {
-        "line": 120,
+        "line": 117,
         "text": "text-base sm:text-lg font-semibold"
       },
       {
-        "line": 120,
+        "line": 117,
         "text": "4.9"
       },
       {
-        "line": 121,
+        "line": 118,
         "text": "text-xs sm:text-sm text-muted-foreground"
       },
       {
-        "line": 121,
+        "line": 118,
         "text": "stats.reviews"
       },
       {
-        "line": 128,
+        "line": 125,
         "text": "relative order-first lg:order-last"
       },
       {
-        "line": 133,
+        "line": 130,
         "text": "grid grid-cols-12 gap-3 sm:gap-4 h-[400px] sm:h-[450px] lg:h-[500px]"
       },
       {
-        "line": 136,
+        "line": 133,
         "text": "col-span-8 row-span-8"
       },
       {
-        "line": 142,
+        "line": 139,
         "text": "h-full border-0 shadow-xl bg-card"
       },
       {
-        "line": 143,
+        "line": 140,
         "text": "h-full flex flex-col justify-center items-center p-4 sm:p-6 lg:p-8 text-center"
       },
       {
-        "line": 145,
+        "line": 142,
         "text": "w-16 h-16 sm:w-20 sm:h-20 bg-primary/10 rounded-2xl flex items-center justify-center mb-4 sm:mb-6"
       },
       {
-        "line": 149,
+        "line": 146,
         "text": "w-8 h-8 sm:w-10 sm:h-10 text-primary"
       },
       {
-        "line": 151,
+        "line": 148,
         "text": "text-lg sm:text-xl lg:text-2xl font-bold mb-2 sm:mb-3"
       },
       {
-        "line": 151,
+        "line": 148,
         "text": "studio.title"
       },
       {
-        "line": 152,
+        "line": 149,
         "text": "text-sm sm:text-base text-muted-foreground leading-relaxed"
       },
       {
-        "line": 153,
+        "line": 150,
         "text": "studio.description"
       },
       {
-        "line": 156,
+        "line": 153,
         "text": "mt-4 sm:mt-6 px-3 py-2 sm:px-4 sm:py-2 bg-primary/10 rounded-full text-xs sm:text-sm font-medium text-primary"
       },
       {
-        "line": 160,
+        "line": 157,
         "text": "studio.price"
       },
       {
-        "line": 168,
+        "line": 165,
         "text": "col-span-4 row-span-4"
       },
       {
-        "line": 174,
+        "line": 171,
         "text": "h-full border-0 shadow-lg bg-card"
       },
       {
-        "line": 175,
+        "line": 172,
         "text": "h-full flex flex-col justify-center items-center p-3 sm:p-4 lg:p-6 text-center"
       },
       {
-        "line": 180,
+        "line": 177,
         "text": "w-6 h-6 sm:w-8 sm:h-8 text-primary mb-2 sm:mb-3"
       },
       {
-        "line": 182,
+        "line": 179,
         "text": "font-semibold text-xs sm:text-sm mb-1"
       },
       {
-        "line": 182,
+        "line": 179,
         "text": "community.title"
       },
       {
-        "line": 183,
+        "line": 180,
         "text": "text-xs text-muted-foreground"
       },
       {
-        "line": 183,
+        "line": 180,
         "text": "community.members"
       },
       {
-        "line": 190,
+        "line": 187,
         "text": "col-span-4 row-span-4"
       },
       {
-        "line": 196,
+        "line": 193,
         "text": "h-full border-0 shadow-lg bg-card"
       },
       {
-        "line": 197,
+        "line": 194,
         "text": "h-full flex flex-col justify-center items-center p-3 sm:p-4 lg:p-6 text-center"
       },
       {
-        "line": 198,
+        "line": 195,
         "text": "flex gap-1 sm:gap-2 mb-2 sm:mb-3"
+      },
+      {
+        "line": 197,
+        "text": "w-3 h-3 sm:w-4 sm:h-4 text-primary"
       },
       {
         "line": 200,
@@ -3040,30 +3100,26 @@
       },
       {
         "line": 203,
-        "text": "w-3 h-3 sm:w-4 sm:h-4 text-primary"
-      },
-      {
-        "line": 206,
         "text": "font-semibold text-xs sm:text-sm mb-1"
       },
       {
-        "line": 206,
+        "line": 203,
         "text": "amenities.title"
       },
       {
-        "line": 207,
+        "line": 204,
         "text": "text-xs text-muted-foreground"
       },
       {
-        "line": 207,
+        "line": 204,
         "text": "amenities.description"
       },
       {
-        "line": 215,
+        "line": 212,
         "text": "absolute -top-4 -right-4 w-8 h-8 bg-primary/20 rounded-full"
       },
       {
-        "line": 227,
+        "line": 224,
         "text": "absolute -bottom-4 -left-4 w-6 h-6 bg-accent/30 rounded-full"
       }
     ]
@@ -33405,639 +33461,639 @@
         "text": "17:00"
       },
       {
-        "line": 59,
+        "line": 60,
         "text": "validation.name.min"
       },
       {
-        "line": 60,
+        "line": 61,
         "text": "validation.name.max"
       },
       {
-        "line": 61,
+        "line": 62,
         "text": "validation.name.pattern"
       },
       {
-        "line": 63,
+        "line": 64,
         "text": "validation.email.invalid"
       },
       {
-        "line": 64,
+        "line": 65,
         "text": "validation.email.max"
       },
       {
-        "line": 66,
+        "line": 67,
         "text": "validation.phone.min"
       },
       {
-        "line": 67,
+        "line": 68,
         "text": "validation.phone.max"
       },
       {
-        "line": 68,
+        "line": 69,
         "text": "validation.phone.pattern"
       },
       {
-        "line": 70,
+        "line": 71,
         "text": "validation.date.required"
       },
       {
-        "line": 74,
+        "line": 75,
         "text": "validation.date.past"
       },
       {
-        "line": 75,
+        "line": 76,
         "text": "validation.startTime.required"
       },
       {
-        "line": 76,
+        "line": 77,
         "text": "validation.endTime.required"
       },
       {
-        "line": 77,
+        "line": 78,
         "text": "validation.message.max"
-      },
-      {
-        "line": 79,
-        "text": ":',"
       },
       {
         "line": 80,
         "text": ":',"
       },
       {
-        "line": 82,
-        "text": "validation.endTime.after"
-      },
-      {
-        "line": 99,
-        "text": "serviceSelection.studio.title"
-      },
-      {
-        "line": 100,
-        "text": "serviceSelection.studio.description"
-      },
-      {
-        "line": 101,
-        "text": "serviceSelection.studio.price"
-      },
-      {
-        "line": 103,
-        "text": "serviceSelection.studio.feature1"
-      },
-      {
-        "line": 104,
-        "text": "serviceSelection.studio.feature2"
-      },
-      {
-        "line": 105,
-        "text": "serviceSelection.studio.feature3"
-      },
-      {
-        "line": 106,
-        "text": "serviceSelection.studio.feature4"
-      },
-      {
-        "line": 111,
-        "text": "serviceSelection.coworking.title"
-      },
-      {
-        "line": 112,
-        "text": "serviceSelection.coworking.description"
-      },
-      {
-        "line": 113,
-        "text": "serviceSelection.coworking.price"
-      },
-      {
-        "line": 115,
-        "text": "serviceSelection.coworking.feature1"
-      },
-      {
-        "line": 116,
-        "text": "serviceSelection.coworking.feature2"
-      },
-      {
-        "line": 117,
-        "text": "serviceSelection.coworking.feature3"
-      },
-      {
-        "line": 118,
-        "text": "serviceSelection.coworking.feature4"
-      },
-      {
-        "line": 124,
-        "text": "steps.service"
-      },
-      {
-        "line": 125,
-        "text": "steps.details"
-      },
-      {
-        "line": 126,
-        "text": "steps.schedule"
-      },
-      {
-        "line": 127,
-        "text": "steps.confirm"
-      },
-      {
-        "line": 187,
-        "text": "Failed to check availability:"
-      },
-      {
-        "line": 244,
-        "text": "/api/bookings"
-      },
-      {
-        "line": 247,
-        "text": "application/json"
-      },
-      {
-        "line": 263,
-        "text": "Failed to submit booking"
-      },
-      {
-        "line": 278,
-        "text": "/booking-success"
-      },
-      {
-        "line": 282,
-        "text": "Booking submission error:"
-      },
-      {
-        "line": 298,
-        "text": "py-12 md:py-20"
-      },
-      {
-        "line": 299,
-        "text": "container mx-auto px-4 md:px-6 max-w-7xl"
-      },
-      {
-        "line": 301,
-        "text": "mx-auto max-w-4xl"
-      },
-      {
-        "line": 308,
-        "text": "text-center mb-12"
-      },
-      {
-        "line": 313,
-        "text": "text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl mb-4"
-      },
-      {
-        "line": 316,
-        "text": "text-lg text-muted-foreground max-w-2xl mx-auto"
-      },
-      {
-        "line": 323,
-        "text": "flex justify-center mb-12"
-      },
-      {
-        "line": 328,
-        "text": "flex items-center space-x-4"
-      },
-      {
-        "line": 330,
-        "text": "flex items-center"
-      },
-      {
-        "line": 333,
-        "text": "flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-200"
-      },
-      {
-        "line": 335,
-        "text": "bg-primary border-primary text-primary-foreground"
-      },
-      {
-        "line": 336,
-        "text": "border-muted-foreground/30 text-muted-foreground"
-      },
-      {
-        "line": 342,
-        "text": "w-5 h-5"
-      },
-      {
-        "line": 344,
-        "text": "text-sm font-medium"
-      },
-      {
-        "line": 347,
-        "text": "ml-3 hidden sm:block"
-      },
-      {
-        "line": 349,
-        "text": "text-sm font-medium transition-colors"
-      },
-      {
-        "line": 357,
-        "text": "w-8 h-0.5 mx-4 transition-colors"
-      },
-      {
-        "line": 358,
-        "text": "bg-muted-foreground/30"
-      },
-      {
-        "line": 367,
-        "text": "border-0 shadow-xl"
-      },
-      {
-        "line": 381,
-        "text": "text-center mb-8"
-      },
-      {
-        "line": 382,
-        "text": "text-2xl font-bold mb-2"
-      },
-      {
-        "line": 382,
-        "text": "serviceSelection.title"
-      },
-      {
-        "line": 383,
-        "text": "serviceSelection.description"
-      },
-      {
-        "line": 392,
-        "text": "grid gap-6"
-      },
-      {
-        "line": 393,
-        "text": "md:grid-cols-2"
-      },
-      {
-        "line": 396,
-        "text": "text-center py-12 md:py-20"
-      },
-      {
-        "line": 397,
-        "text": "text-xl font-semibold mb-2"
-      },
-      {
-        "line": 397,
-        "text": "serviceSelection.noneAvailable"
-      },
-      {
-        "line": 397,
-        "text": "No services available"
-      },
-      {
-        "line": 398,
-        "text": "text-sm text-muted-foreground"
-      },
-      {
-        "line": 398,
-        "text": "serviceSelection.contactAdmin"
-      },
-      {
-        "line": 398,
-        "text": "This service is currently disabled by the administrator. Please contact us or try again later."
-      },
-      {
-        "line": 410,
-        "text": "cursor-pointer transition-all duration-200 hover:shadow-lg h-full"
-      },
-      {
-        "line": 412,
-        "text": "ring-2 ring-primary bg-primary/5"
-      },
-      {
-        "line": 413,
-        "text": "hover:shadow-md"
-      },
-      {
-        "line": 418,
-        "text": "flex items-center justify-between mb-2"
-      },
-      {
-        "line": 420,
-        "text": "text-lg font-bold text-primary"
-      },
-      {
-        "line": 422,
-        "text": "text-muted-foreground text-base"
-      },
-      {
-        "line": 427,
-        "text": "flex items-center text-sm"
-      },
-      {
-        "line": 428,
-        "text": "w-4 h-4 text-green-500 mr-2 flex-shrink-0"
-      },
-      {
-        "line": 455,
-        "text": "text-center mb-8"
-      },
-      {
-        "line": 456,
-        "text": "text-2xl font-bold mb-2"
-      },
-      {
-        "line": 456,
-        "text": "details.title"
-      },
-      {
-        "line": 457,
-        "text": "details.description"
-      },
-      {
-        "line": 460,
-        "text": "grid md:grid-cols-2 gap-6"
-      },
-      {
-        "line": 466,
-        "text": "flex items-center gap-2"
-      },
-      {
-        "line": 467,
-        "text": "w-4 h-4"
-      },
-      {
-        "line": 471,
-        "text": "placeholders.name"
-      },
-      {
-        "line": 483,
-        "text": "flex items-center gap-2"
-      },
-      {
-        "line": 484,
-        "text": "w-4 h-4"
-      },
-      {
-        "line": 490,
-        "text": "placeholders.email"
-      },
-      {
-        "line": 504,
-        "text": "md:col-span-2"
-      },
-      {
-        "line": 505,
-        "text": "flex items-center gap-2"
-      },
-      {
-        "line": 506,
-        "text": "w-4 h-4"
-      },
-      {
-        "line": 512,
-        "text": "placeholders.phone"
-      },
-      {
-        "line": 534,
-        "text": "text-center mb-8"
-      },
-      {
-        "line": 535,
-        "text": "text-2xl font-bold mb-2"
-      },
-      {
-        "line": 535,
-        "text": "schedule.title"
-      },
-      {
-        "line": 536,
-        "text": "schedule.description"
-      },
-      {
-        "line": 539,
-        "text": "grid md:grid-cols-3 gap-6"
-      },
-      {
-        "line": 544,
-        "text": "flex flex-col"
-      },
-      {
-        "line": 552,
-        "text": "pl-3 text-left font-normal h-12"
-      },
-      {
-        "line": 559,
-        "text": "schedule.pickDate"
-      },
-      {
-        "line": 561,
-        "text": "ml-auto h-4 w-4 opacity-50"
-      },
-      {
-        "line": 565,
-        "text": "w-auto p-0"
-      },
-      {
-        "line": 570,
-        "text": "date"
-      },
-      {
-        "line": 585,
-        "text": "schedule.startTime"
-      },
-      {
-        "line": 589,
-        "text": "schedule.startTime"
-      },
-      {
-        "line": 600,
-        "text": "opacity-50 cursor-not-allowed"
-      },
-      {
-        "line": 602,
-        "text": "flex items-center justify-between w-full"
-      },
-      {
-        "line": 605,
-        "text": "text-xs text-red-500 ml-2"
-      },
-      {
-        "line": 605,
-        "text": "schedule.unavailable"
-      },
-      {
-        "line": 623,
-        "text": "schedule.endTime"
-      },
-      {
-        "line": 627,
-        "text": "schedule.endTime"
-      },
-      {
-        "line": 633,
+        "line": 81,
         "text": ":',"
       },
       {
-        "line": 633,
-        "text": ")) <= parseInt(startTime.replace("
+        "line": 83,
+        "text": "validation.endTime.after"
       },
       {
-        "line": 633,
-        "text": ", '"
+        "line": 100,
+        "text": "serviceSelection.studio.title"
       },
       {
-        "line": 642,
-        "text": "opacity-50 cursor-not-allowed"
+        "line": 101,
+        "text": "serviceSelection.studio.description"
       },
       {
-        "line": 644,
-        "text": "flex items-center justify-between w-full"
+        "line": 102,
+        "text": "serviceSelection.studio.price"
       },
       {
-        "line": 647,
-        "text": "text-xs text-red-500 ml-2"
+        "line": 104,
+        "text": "serviceSelection.studio.feature1"
       },
       {
-        "line": 647,
-        "text": "schedule.unavailable"
+        "line": 105,
+        "text": "serviceSelection.studio.feature2"
       },
       {
-        "line": 650,
-        "text": "text-xs text-gray-500 ml-2"
+        "line": 106,
+        "text": "serviceSelection.studio.feature3"
       },
       {
-        "line": 650,
-        "text": "schedule.mustBeAfterStart"
+        "line": 107,
+        "text": "serviceSelection.studio.feature4"
       },
       {
-        "line": 669,
-        "text": "flex items-center gap-2"
+        "line": 112,
+        "text": "serviceSelection.coworking.title"
       },
       {
-        "line": 670,
-        "text": "w-4 h-4"
+        "line": 113,
+        "text": "serviceSelection.coworking.description"
       },
       {
-        "line": 671,
-        "text": "schedule.additionalMessage"
+        "line": 114,
+        "text": "serviceSelection.coworking.price"
       },
       {
-        "line": 675,
-        "text": "schedule.messagePlaceholder"
+        "line": 116,
+        "text": "serviceSelection.coworking.feature1"
       },
       {
-        "line": 676,
-        "text": "resize-none min-h-[120px]"
+        "line": 117,
+        "text": "serviceSelection.coworking.feature2"
       },
       {
-        "line": 681,
-        "text": "schedule.messageDescription"
+        "line": 118,
+        "text": "serviceSelection.coworking.feature3"
       },
       {
-        "line": 699,
+        "line": 119,
+        "text": "serviceSelection.coworking.feature4"
+      },
+      {
+        "line": 125,
+        "text": "steps.service"
+      },
+      {
+        "line": 126,
+        "text": "steps.details"
+      },
+      {
+        "line": 127,
+        "text": "steps.schedule"
+      },
+      {
+        "line": 128,
+        "text": "steps.confirm"
+      },
+      {
+        "line": 188,
+        "text": "errors.failedToCheckAvailability"
+      },
+      {
+        "line": 188,
+        "text": "Failed to check availability"
+      },
+      {
+        "line": 245,
+        "text": "/api/bookings"
+      },
+      {
+        "line": 248,
+        "text": "application/json"
+      },
+      {
+        "line": 264,
+        "text": "errors.failedToCreateBooking"
+      },
+      {
+        "line": 279,
+        "text": "/booking-success"
+      },
+      {
+        "line": 283,
+        "text": "errors.failedToCreateBooking"
+      },
+      {
+        "line": 283,
+        "text": "Booking submission error"
+      },
+      {
+        "line": 299,
+        "text": "py-12 md:py-20"
+      },
+      {
+        "line": 300,
+        "text": "container mx-auto px-4 md:px-6 max-w-7xl"
+      },
+      {
+        "line": 302,
+        "text": "mx-auto max-w-4xl"
+      },
+      {
+        "line": 309,
+        "text": "text-center mb-12"
+      },
+      {
+        "line": 314,
+        "text": "text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl mb-4"
+      },
+      {
+        "line": 317,
+        "text": "text-lg text-muted-foreground max-w-2xl mx-auto"
+      },
+      {
+        "line": 324,
+        "text": "flex justify-center mb-12"
+      },
+      {
+        "line": 329,
+        "text": "flex items-center space-x-4"
+      },
+      {
+        "line": 331,
+        "text": "flex items-center"
+      },
+      {
+        "line": 334,
+        "text": "flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-200"
+      },
+      {
+        "line": 336,
+        "text": "bg-primary border-primary text-primary-foreground"
+      },
+      {
+        "line": 337,
+        "text": "border-muted-foreground/30 text-muted-foreground"
+      },
+      {
+        "line": 343,
+        "text": "w-5 h-5"
+      },
+      {
+        "line": 345,
+        "text": "text-sm font-medium"
+      },
+      {
+        "line": 348,
+        "text": "ml-3 hidden sm:block"
+      },
+      {
+        "line": 350,
+        "text": "text-sm font-medium transition-colors"
+      },
+      {
+        "line": 358,
+        "text": "w-8 h-0.5 mx-4 transition-colors"
+      },
+      {
+        "line": 359,
+        "text": "bg-muted-foreground/30"
+      },
+      {
+        "line": 368,
+        "text": "border-0 shadow-xl"
+      },
+      {
+        "line": 382,
         "text": "text-center mb-8"
       },
       {
-        "line": 700,
+        "line": 383,
         "text": "text-2xl font-bold mb-2"
       },
       {
+        "line": 383,
+        "text": "serviceSelection.title"
+      },
+      {
+        "line": 384,
+        "text": "serviceSelection.description"
+      },
+      {
+        "line": 393,
+        "text": "grid gap-6"
+      },
+      {
+        "line": 394,
+        "text": "md:grid-cols-2"
+      },
+      {
+        "line": 397,
+        "text": "text-center py-12 md:py-20"
+      },
+      {
+        "line": 398,
+        "text": "text-xl font-semibold mb-2"
+      },
+      {
+        "line": 398,
+        "text": "serviceSelection.noneAvailable"
+      },
+      {
+        "line": 399,
+        "text": "text-sm text-muted-foreground"
+      },
+      {
+        "line": 399,
+        "text": "serviceSelection.contactAdmin"
+      },
+      {
+        "line": 411,
+        "text": "cursor-pointer transition-all duration-200 hover:shadow-lg h-full"
+      },
+      {
+        "line": 413,
+        "text": "ring-2 ring-primary bg-primary/5"
+      },
+      {
+        "line": 414,
+        "text": "hover:shadow-md"
+      },
+      {
+        "line": 419,
+        "text": "flex items-center justify-between mb-2"
+      },
+      {
+        "line": 421,
+        "text": "text-lg font-bold text-primary"
+      },
+      {
+        "line": 423,
+        "text": "text-muted-foreground text-base"
+      },
+      {
+        "line": 428,
+        "text": "flex items-center text-sm"
+      },
+      {
+        "line": 429,
+        "text": "w-4 h-4 text-green-500 mr-2 flex-shrink-0"
+      },
+      {
+        "line": 456,
+        "text": "text-center mb-8"
+      },
+      {
+        "line": 457,
+        "text": "text-2xl font-bold mb-2"
+      },
+      {
+        "line": 457,
+        "text": "details.title"
+      },
+      {
+        "line": 458,
+        "text": "details.description"
+      },
+      {
+        "line": 461,
+        "text": "grid md:grid-cols-2 gap-6"
+      },
+      {
+        "line": 467,
+        "text": "flex items-center gap-2"
+      },
+      {
+        "line": 468,
+        "text": "w-4 h-4"
+      },
+      {
+        "line": 472,
+        "text": "placeholders.name"
+      },
+      {
+        "line": 484,
+        "text": "flex items-center gap-2"
+      },
+      {
+        "line": 485,
+        "text": "w-4 h-4"
+      },
+      {
+        "line": 491,
+        "text": "placeholders.email"
+      },
+      {
+        "line": 505,
+        "text": "md:col-span-2"
+      },
+      {
+        "line": 506,
+        "text": "flex items-center gap-2"
+      },
+      {
+        "line": 507,
+        "text": "w-4 h-4"
+      },
+      {
+        "line": 513,
+        "text": "placeholders.phone"
+      },
+      {
+        "line": 535,
+        "text": "text-center mb-8"
+      },
+      {
+        "line": 536,
+        "text": "text-2xl font-bold mb-2"
+      },
+      {
+        "line": 536,
+        "text": "schedule.title"
+      },
+      {
+        "line": 537,
+        "text": "schedule.description"
+      },
+      {
+        "line": 540,
+        "text": "grid md:grid-cols-3 gap-6"
+      },
+      {
+        "line": 545,
+        "text": "flex flex-col"
+      },
+      {
+        "line": 553,
+        "text": "pl-3 text-left font-normal h-12"
+      },
+      {
+        "line": 560,
+        "text": "schedule.pickDate"
+      },
+      {
+        "line": 562,
+        "text": "ml-auto h-4 w-4 opacity-50"
+      },
+      {
+        "line": 566,
+        "text": "w-auto p-0"
+      },
+      {
+        "line": 571,
+        "text": "date"
+      },
+      {
+        "line": 586,
+        "text": "schedule.startTime"
+      },
+      {
+        "line": 590,
+        "text": "schedule.startTime"
+      },
+      {
+        "line": 601,
+        "text": "opacity-50 cursor-not-allowed"
+      },
+      {
+        "line": 603,
+        "text": "flex items-center justify-between w-full"
+      },
+      {
+        "line": 606,
+        "text": "text-xs text-red-500 ml-2"
+      },
+      {
+        "line": 606,
+        "text": "schedule.unavailable"
+      },
+      {
+        "line": 624,
+        "text": "schedule.endTime"
+      },
+      {
+        "line": 628,
+        "text": "schedule.endTime"
+      },
+      {
+        "line": 634,
+        "text": ":',"
+      },
+      {
+        "line": 634,
+        "text": ")) <= parseInt(startTime.replace("
+      },
+      {
+        "line": 634,
+        "text": ", '"
+      },
+      {
+        "line": 643,
+        "text": "opacity-50 cursor-not-allowed"
+      },
+      {
+        "line": 645,
+        "text": "flex items-center justify-between w-full"
+      },
+      {
+        "line": 648,
+        "text": "text-xs text-red-500 ml-2"
+      },
+      {
+        "line": 648,
+        "text": "schedule.unavailable"
+      },
+      {
+        "line": 651,
+        "text": "text-xs text-gray-500 ml-2"
+      },
+      {
+        "line": 651,
+        "text": "schedule.mustBeAfterStart"
+      },
+      {
+        "line": 670,
+        "text": "flex items-center gap-2"
+      },
+      {
+        "line": 671,
+        "text": "w-4 h-4"
+      },
+      {
+        "line": 672,
+        "text": "schedule.additionalMessage"
+      },
+      {
+        "line": 676,
+        "text": "schedule.messagePlaceholder"
+      },
+      {
+        "line": 677,
+        "text": "resize-none min-h-[120px]"
+      },
+      {
+        "line": 682,
+        "text": "schedule.messageDescription"
+      },
+      {
         "line": 700,
-        "text": "review.title"
+        "text": "text-center mb-8"
       },
       {
         "line": 701,
+        "text": "text-2xl font-bold mb-2"
+      },
+      {
+        "line": 701,
+        "text": "review.title"
+      },
+      {
+        "line": 702,
         "text": "review.description"
       },
       {
-        "line": 704,
+        "line": 705,
         "text": "bg-muted/50 rounded-lg p-6 space-y-4"
       },
       {
-        "line": 705,
+        "line": 706,
         "text": "grid md:grid-cols-2 gap-4"
       },
       {
-        "line": 707,
+        "line": 708,
         "text": "font-semibold mb-2"
       },
       {
-        "line": 707,
+        "line": 708,
         "text": "review.service"
       },
       {
-        "line": 711,
+        "line": 712,
         "text": "font-semibold mb-2"
       },
       {
-        "line": 711,
+        "line": 712,
         "text": "review.dateTime"
       },
       {
-        "line": 718,
+        "line": 719,
         "text": "font-semibold mb-2"
       },
       {
-        "line": 718,
+        "line": 719,
         "text": "review.contact"
       },
       {
-        "line": 727,
+        "line": 728,
         "text": "font-semibold mb-2"
       },
       {
-        "line": 727,
+        "line": 728,
         "text": "review.additionalMessage"
       },
       {
-        "line": 738,
+        "line": 739,
         "text": "flex justify-between mt-8"
       },
       {
-        "line": 744,
+        "line": 745,
         "text": "flex items-center gap-2"
-      },
-      {
-        "line": 746,
-        "text": "w-4 h-4"
       },
       {
         "line": 747,
+        "text": "w-4 h-4"
+      },
+      {
+        "line": 748,
         "text": "navigation.previous"
       },
       {
-        "line": 759,
+        "line": 760,
         "text": "flex items-center gap-2"
       },
       {
-        "line": 761,
+        "line": 762,
         "text": "navigation.next"
       },
       {
-        "line": 762,
+        "line": 763,
         "text": "w-4 h-4"
-      },
-      {
-        "line": 775,
-        "text": "flex items-center gap-2 min-w-[140px]"
       },
       {
         "line": 776,
-        "text": "bg-green-600 hover:bg-green-700"
+        "text": "flex items-center gap-2 min-w-[140px]"
       },
       {
         "line": 777,
+        "text": "bg-green-600 hover:bg-green-700"
+      },
+      {
+        "line": 778,
         "text": "bg-red-600 hover:bg-red-700"
       },
       {
-        "line": 785,
+        "line": 786,
         "text": "w-4 h-4 border-2 border-current border-t-transparent rounded-full"
       },
       {
-        "line": 787,
+        "line": 788,
         "text": "navigation.submitting"
       },
       {
-        "line": 797,
+        "line": 798,
         "text": "w-4 h-4"
       },
       {
-        "line": 809,
+        "line": 810,
         "text": "w-4 h-4"
-      },
-      {
-        "line": 816,
-        "text": "navigation.submitBooking"
       },
       {
         "line": 817,
+        "text": "navigation.submitBooking"
+      },
+      {
+        "line": 818,
         "text": "w-4 h-4"
       }
     ]
@@ -34108,7 +34164,7 @@
       },
       {
         "line": 30,
-        "text": "Studio Space 1"
+        "text": "images.studio1"
       },
       {
         "line": 44,
@@ -34789,475 +34845,459 @@
         "text": "/admin"
       },
       {
-        "line": 38,
+        "line": 39,
         "text": "flex items-center gap-3"
       },
       {
-        "line": 42,
+        "line": 43,
         "text": "w-8 h-8"
       },
       {
-        "line": 42,
+        "line": 43,
         "text": "w-10 h-10 md:w-12 md:h-12"
       },
       {
-        "line": 44,
+        "line": 45,
         "text": "0 0 3508 2480"
       },
       {
-        "line": 48,
+        "line": 49,
         "text": "translate(0,2480) scale(0.1,-0.1)"
       },
       {
-        "line": 50,
+        "line": 51,
         "text": "M17450 16309 c-137 -28 -243 -174 -226 -313 8 -70 49 -148 102 -195 43 -38 71 -53 257 -141 117 -55 204 -138 236 -225 30 -78 26 -188 -8 -253 -34 -66 -96 -128 -160 -159 -78 -39 -190 -39 -271 -2 -92 43 -170 137 -185 222 -6 28 -11 37 -22 33 -8 -4 -26 -9 -39 -12 -22 -6 -24 -10 -18 -38 20 -96 115 -221 202 -265 110 -56 232 -63 348 -20 45 17 75 38 130 93 94 94 118 152 118 286 0 136 -24 191 -123 290 -76 75 -90 83 -291 179 -155 73 -222 173 -191 285 43 159 232 215 344 103 23 -23 47 -50 52 -60 9 -15 14 -16 43 -6 36 12 38 19 18 57 -53 101 -197 166 -316 141z"
       },
       {
-        "line": 55,
+        "line": 56,
         "text": "M12225 16280 c4 -11 114 -319 245 -683 235 -656 238 -662 265 -662 27 0 29 6 266 665 132 366 242 673 245 683 5 16 0 18 -37 15 l-43 -3 -215 -609 c-118 -335 -217 -605 -219 -600 -1 5 -99 279 -216 609 l-212 600 -43 3 c-39 3 -42 2 -36 -18z"
       },
       {
-        "line": 61,
+        "line": 62,
         "text": "absolute inset-0 bg-primary/10 rounded-full blur-lg opacity-50 animate-pulse-glow"
       },
       {
-        "line": 64,
+        "line": 65,
         "text": "hidden sm:block"
       },
       {
-        "line": 65,
+        "line": 66,
         "text": "text-xl lg:text-2xl font-bold text-foreground"
       },
       {
-        "line": 68,
+        "line": 69,
         "text": "text-sm text-surface-variant-foreground -mt-1"
       },
       {
-        "line": 97,
+        "line": 98,
         "text": "aria.switchToLight"
       },
       {
-        "line": 97,
+        "line": 98,
         "text": "Switch to light mode"
       },
       {
-        "line": 97,
+        "line": 98,
         "text": "aria.switchToDark"
       },
       {
-        "line": 97,
+        "line": 98,
         "text": "Switch to dark mode"
       },
       {
-        "line": 100,
+        "line": 101,
         "text": "relative overflow-hidden rounded-full transition-colors duration-300"
       },
       {
-        "line": 102,
+        "line": 103,
         "text": "bg-zinc-800 border border-zinc-700 text-amber-400"
       },
       {
-        "line": 103,
+        "line": 104,
         "text": "bg-white border border-slate-200 text-sky-600"
       },
       {
-        "line": 104,
+        "line": 105,
         "text": "shadow-md flex items-center justify-center"
       },
       {
-        "line": 106,
+        "line": 107,
         "text": "w-full h-12 px-4 py-2"
       },
       {
-        "line": 107,
+        "line": 108,
         "text": "h-10 w-10"
       },
       {
-        "line": 121,
+        "line": 122,
         "text": "flex items-center gap-2"
       },
       {
-        "line": 123,
+        "line": 124,
         "text": "h-4 w-4"
       },
       {
-        "line": 125,
+        "line": 126,
         "text": "font-medium text-sm"
       },
       {
-        "line": 125,
+        "line": 126,
         "text": "theme.dark"
       },
       {
-        "line": 135,
+        "line": 136,
         "text": "flex items-center gap-2"
       },
       {
-        "line": 137,
+        "line": 138,
         "text": "h-4 w-4"
       },
       {
-        "line": 139,
+        "line": 140,
         "text": "font-medium text-sm"
       },
       {
-        "line": 139,
+        "line": 140,
         "text": "theme.light"
       },
       {
-        "line": 164,
+        "line": 165,
         "text": "en' ?"
       },
       {
-        "line": 164,
+        "line": 165,
         "text": ":"
       },
       {
-        "line": 170,
+        "line": 171,
         "text": "en' ? safeTranslate(t,"
       },
       {
-        "line": 170,
+        "line": 171,
         "text": ", 'Switch to Russian"
       },
       {
-        "line": 170,
+        "line": 171,
         "text": "aria.switchToEnglish"
       },
       {
-        "line": 170,
+        "line": 171,
         "text": "Switch to English"
       },
       {
-        "line": 173,
+        "line": 174,
         "text": "relative overflow-hidden rounded-full shadow-md transition-colors duration-300"
       },
       {
-        "line": 174,
+        "line": 175,
         "text": "border flex items-center justify-center"
       },
       {
-        "line": 177,
+        "line": 178,
         "text": "bg-zinc-800 border-zinc-700 text-sky-400"
       },
       {
-        "line": 178,
+        "line": 179,
         "text": "bg-white border-slate-200 text-sky-600"
       },
       {
-        "line": 180,
+        "line": 181,
         "text": "bg-zinc-800 border-zinc-700 text-rose-400"
       },
       {
-        "line": 181,
+        "line": 182,
         "text": "bg-white border-slate-200 text-rose-600"
       },
       {
-        "line": 183,
+        "line": 184,
         "text": "w-full h-12 px-4 py-2"
       },
       {
-        "line": 184,
+        "line": 185,
         "text": "h-10 w-10"
       },
       {
-        "line": 197,
+        "line": 198,
         "text": "flex items-center gap-1"
       },
       {
-        "line": 200,
+        "line": 201,
         "text": "text-xs font-bold"
       },
       {
-        "line": 201,
-        "text": "en' ?"
+        "line": 202,
+        "text": "en' ? t("
       },
       {
-        "line": 201,
-        "text": ":"
-      },
-      {
-        "line": 205,
-        "text": "h-4 w-4 mr-1"
+        "line": 202,
+        "text": ") : t("
       },
       {
         "line": 206,
+        "text": "h-4 w-4 mr-1"
+      },
+      {
+        "line": 207,
         "text": "font-medium text-sm"
       },
       {
-        "line": 207,
-        "text": "en' ?"
+        "line": 208,
+        "text": "en' ? t("
       },
       {
-        "line": 207,
-        "text": ":"
+        "line": 208,
+        "text": ") : t("
       },
       {
-        "line": 232,
+        "line": 234,
         "text": "/api/settings/services"
       },
       {
-        "line": 233,
+        "line": 235,
         "text": "Failed to load service settings"
       },
       {
-        "line": 248,
+        "line": 250,
         "text": "service-config.updated"
       },
       {
-        "line": 265,
+        "line": 267,
         "text": "/coworking"
       },
       {
-        "line": 266,
+        "line": 268,
         "text": "/studio"
       },
       {
-        "line": 314,
+        "line": 316,
         "text": "[aria-label=\"Toggle menu\"]"
       },
       {
-        "line": 332,
+        "line": 334,
         "text": "button, [href], input, select, textarea, [tabindex]:not([tabindex=\"-1\"])"
       },
       {
-        "line": 365,
+        "line": 367,
         "text": "sticky top-0 z-[60] w-full border-b border-outline-variant bg-surface-container/95 backdrop-blur-md"
       },
       {
-        "line": 366,
+        "line": 368,
         "text": "container mx-auto px-4 sm:px-6 lg:px-8"
       },
       {
-        "line": 367,
+        "line": 369,
         "text": "flex h-16 sm:h-20 lg:h-24 items-center justify-between"
       },
       {
-        "line": 368,
+        "line": 370,
         "text": "h-10 w-32 sm:h-12 sm:w-48"
       },
       {
-        "line": 369,
+        "line": 371,
         "text": "hidden md:flex items-center space-x-4 lg:space-x-6"
       },
       {
-        "line": 371,
+        "line": 373,
         "text": "h-6 w-12 lg:w-16"
       },
       {
-        "line": 374,
+        "line": 376,
         "text": "flex items-center space-x-3"
       },
       {
-        "line": 375,
-        "text": "h-12 w-12"
-      },
-      {
-        "line": 376,
-        "text": "h-12 w-12"
-      },
-      {
         "line": 377,
-        "text": "md:hidden"
+        "text": "h-12 w-12"
       },
       {
         "line": 378,
         "text": "h-12 w-12"
       },
       {
-        "line": 389,
-        "text": "#main-content"
+        "line": 379,
+        "text": "md:hidden"
       },
       {
-        "line": 389,
-        "text": "Skip to main content"
+        "line": 380,
+        "text": "h-12 w-12"
       },
       {
         "line": 391,
-        "text": "sticky top-0 z-[60] w-full border-b border-outline-variant bg-surface-container/95 backdrop-blur-md shadow-sm"
-      },
-      {
-        "line": 392,
-        "text": "container mx-auto px-4 sm:px-6 lg:px-8"
+        "text": "#main-content"
       },
       {
         "line": 393,
-        "text": "flex h-16 sm:h-20 lg:h-24 items-center justify-between"
+        "text": "sticky top-0 z-[60] w-full border-b border-outline-variant bg-surface-container/95 backdrop-blur-md shadow-sm"
       },
       {
         "line": 394,
+        "text": "container mx-auto px-4 sm:px-6 lg:px-8"
+      },
+      {
+        "line": 395,
+        "text": "flex h-16 sm:h-20 lg:h-24 items-center justify-between"
+      },
+      {
+        "line": 396,
         "text": "/\" className="
       },
       {
-        "line": 398,
+        "line": 400,
         "text": "hidden md:flex items-center space-x-2 lg:space-x-4"
       },
       {
-        "line": 404,
+        "line": 406,
         "text": "relative overflow-hidden rounded-full px-6 py-3 lg:px-8 lg:py-4 transition-all duration-200"
       },
       {
-        "line": 405,
+        "line": 407,
         "text": "text-base lg:text-lg font-medium"
       },
       {
-        "line": 406,
+        "line": 408,
         "text": "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
       },
       {
-        "line": 407,
+        "line": 409,
         "text": "bg-tertiary-container text-tertiary-container-foreground shadow-sm"
       },
       {
-        "line": 407,
+        "line": 409,
         "text": "text-surface-foreground hover:bg-surface-container-high"
       },
       {
-        "line": 412,
+        "line": 414,
         "text": "absolute bottom-1 left-1/2 w-6 h-1 bg-tertiary rounded-full"
       },
       {
-        "line": 412,
+        "line": 414,
         "text": "-50%"
       },
       {
-        "line": 418,
+        "line": 420,
         "text": "flex items-center space-x-3"
       },
       {
-        "line": 419,
+        "line": 421,
         "text": "hidden md:flex items-center space-x-3"
       },
       {
-        "line": 420,
+        "line": 422,
         "text": "/book"
       },
       {
-        "line": 421,
+        "line": 423,
         "text": "bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-2.5 px-5 rounded-full flex items-center gap-2 shadow-md"
       },
       {
-        "line": 422,
+        "line": 424,
         "text": "h-4 w-4"
       },
       {
-        "line": 430,
+        "line": 432,
         "text": "flex md:hidden items-center space-x-3"
       },
       {
-        "line": 431,
+        "line": 433,
         "text": "/book"
       },
       {
-        "line": 432,
+        "line": 434,
         "text": "bg-primary hover:bg-primary/90 text-primary-foreground w-10 h-10 rounded-full flex items-center justify-center shadow-md"
       },
       {
-        "line": 432,
-        "text": "Book Now"
-      },
-      {
-        "line": 433,
+        "line": 435,
         "text": "h-4 w-4"
       },
       {
-        "line": 439,
+        "line": 441,
         "text": "h-12 w-12 rounded-full border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 shadow-sm flex items-center justify-center transition-colors"
       },
       {
-        "line": 439,
-        "text": "Toggle menu"
+        "line": 441,
+        "text": "aria.toggleMenu"
       },
       {
-        "line": 443,
+        "line": 445,
         "text": "h-6 w-6 text-gray-700 dark:text-gray-300"
       },
       {
-        "line": 447,
+        "line": 449,
         "text": "h-6 w-6 text-gray-700 dark:text-gray-300"
-      },
-      {
-        "line": 461,
-        "text": "fixed inset-0 bg-black/60"
-      },
-      {
-        "line": 461,
-        "text": "rgba(0, 0, 0, 0.6)"
       },
       {
         "line": 463,
+        "text": "fixed inset-0 bg-black/60"
+      },
+      {
+        "line": 463,
+        "text": "rgba(0, 0, 0, 0.6)"
+      },
+      {
+        "line": 465,
         "text": "100%"
       },
       {
-        "line": 464,
+        "line": 466,
         "text": "h-full bg-white dark:bg-gray-900 rounded-l-3xl shadow-2xl border-l border-gray-200 dark:border-gray-700"
       },
       {
-        "line": 466,
+        "line": 468,
         "text": "flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700"
       },
       {
-        "line": 467,
+        "line": 469,
         "text": "flex items-center gap-3"
       },
       {
-        "line": 470,
+        "line": 472,
         "text": "font-semibold text-lg text-gray-900 dark:text-white"
       },
       {
-        "line": 470,
-        "text": "Navigation"
-      },
-      {
-        "line": 471,
+        "line": 473,
         "text": "text-sm text-gray-600 dark:text-gray-400"
       },
       {
-        "line": 471,
-        "text": "Menu"
-      },
-      {
-        "line": 481,
+        "line": 483,
         "text": "h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 flex items-center justify-center transition-colors"
       },
       {
-        "line": 483,
-        "text": "Close menu"
+        "line": 485,
+        "text": "aria.closeMenu"
       },
       {
-        "line": 485,
+        "line": 487,
         "text": "h-5 w-5 text-gray-700 dark:text-gray-300"
       },
       {
-        "line": 491,
+        "line": 493,
         "text": "flex flex-col h-[calc(100%-88px)] overflow-y-auto bg-white dark:bg-gray-900"
       },
       {
-        "line": 493,
+        "line": 495,
         "text": "flex-1 py-6 px-6"
       },
       {
-        "line": 514,
+        "line": 516,
         "text": "flex items-center justify-between w-full px-5 py-4 rounded-2xl transition-all duration-150"
       },
       {
-        "line": 515,
+        "line": 517,
         "text": "text-base font-medium"
       },
       {
-        "line": 517,
+        "line": 519,
         "text": "bg-yellow-400 text-gray-900 shadow-sm"
       },
       {
-        "line": 518,
+        "line": 520,
         "text": "text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800"
       },
       {
-        "line": 524,
+        "line": 526,
         "text": "w-2 h-2 bg-gray-900 rounded-full"
       },
       {
-        "line": 538,
+        "line": 540,
         "text": "mt-auto p-6 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 space-y-3"
       }
     ]
@@ -35693,43 +35733,43 @@
         "text": "@/lib/utils"
       },
       {
-        "line": 8,
+        "line": 9,
         "text": "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive"
       },
       {
-        "line": 13,
+        "line": 14,
         "text": "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90"
       },
       {
-        "line": 15,
+        "line": 16,
         "text": "bg-destructive text-white shadow-xs hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60"
       },
       {
-        "line": 17,
+        "line": 18,
         "text": "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50"
       },
       {
-        "line": 19,
+        "line": 20,
         "text": "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80"
       },
       {
-        "line": 21,
+        "line": 22,
         "text": "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50"
       },
       {
-        "line": 22,
+        "line": 23,
         "text": "text-primary underline-offset-4 hover:underline"
       },
       {
-        "line": 25,
+        "line": 26,
         "text": "h-9 px-4 py-2 has-[>svg]:px-3"
       },
       {
-        "line": 26,
+        "line": 27,
         "text": "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5"
       },
       {
-        "line": 27,
+        "line": 28,
         "text": "h-10 rounded-md px-6 has-[>svg]:px-4"
       }
     ]
@@ -36000,39 +36040,35 @@
         "text": "@radix-ui/react-dialog"
       },
       {
-        "line": 7,
+        "line": 8,
         "text": "@/lib/utils"
       },
       {
-        "line": 41,
+        "line": 42,
         "text": "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50"
       },
       {
-        "line": 60,
+        "line": 61,
         "text": "bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border p-6 shadow-lg duration-200 sm:max-w-lg"
       },
       {
-        "line": 66,
+        "line": 67,
         "text": "ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
       },
       {
-        "line": 68,
-        "text": "Close"
-      },
-      {
-        "line": 79,
+        "line": 80,
         "text": "flex flex-col gap-2 text-center sm:text-left"
       },
       {
-        "line": 90,
+        "line": 91,
         "text": "flex flex-col-reverse gap-2 sm:flex-row sm:justify-end"
       },
       {
-        "line": 105,
+        "line": 106,
         "text": "text-lg leading-none font-semibold"
       },
       {
-        "line": 118,
+        "line": 119,
         "text": "text-muted-foreground text-sm"
       }
     ]
@@ -36167,15 +36203,15 @@
         "text": "@/lib/utils"
       },
       {
-        "line": 11,
+        "line": 14,
         "text": "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
       },
       {
-        "line": 12,
+        "line": 15,
         "text": "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]"
       },
       {
-        "line": 13,
+        "line": 16,
         "text": "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive"
       }
     ]
@@ -37191,7 +37227,7 @@
       },
       {
         "line": 1,
-        "text": "\")||location.href;if(c[n])return;let t={};const r=e=>i(e,n),o={module:{uri:n},exports:t,require:r};c[n]=Promise.all(s.map((e=>o[e]||r(e)))).then((e=>(a(...e),t)))}}define(["
+        "text": "\")||location.href;if(s[n])return;let t={};const r=e=>c(e,n),o={module:{uri:n},exports:t,require:r};s[n]=Promise.all(i.map((e=>o[e]||r(e)))).then((e=>(a(...e),t)))}}define(["
       },
       {
         "line": 1,
@@ -37219,15 +37255,15 @@
       },
       {
         "line": 1,
-        "text": ",plugins:[{cacheWillUpdate:async({request:e,response:c,event:i,state:s})=>c&&"
+        "text": ",plugins:[{cacheWillUpdate:async({request:e,response:s,event:c,state:i})=>s&&"
       },
       {
         "line": 1,
-        "text": "===c.type?new Response(c.body,{status:200,statusText:"
+        "text": "===s.type?new Response(s.body,{status:200,statusText:"
       },
       {
         "line": 1,
-        "text": ",headers:c.headers}):c}]}),"
+        "text": ",headers:s.headers}):s}]}),"
       },
       {
         "line": 1,

@@ -18,7 +18,7 @@ import { useTranslations } from 'next-intl';
 interface GalleryImage {
   id: string;
   src: string;
-  alt: string;
+  altKey: string;
   category: "studio" | "coworking" | "events";
   tags: string[];
 }
@@ -27,7 +27,7 @@ const GALLERY_IMAGES: GalleryImage[] = [
   {
     id: "1",
     src: "/images/studio-1.jpg",
-    alt: "Studio Space 1",
+    altKey: "images.studio1",
     category: "studio",
     tags: ["portrait", "product"],
   },
@@ -152,7 +152,7 @@ export function Gallery() {
                   <div className="aspect-square overflow-hidden">
                     <Image
                       src={image.src}
-                      alt={image.alt}
+                      alt={t(String(image.altKey))}
                       width={600}
                       height={600}
                       className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
@@ -162,7 +162,7 @@ export function Gallery() {
                     className="absolute inset-0 bg-black/50 opacity-0 transition-opacity group-hover:opacity-100 flex items-center justify-center"
                     whileHover={{ opacity: 1 }}
                   >
-                    <span className="text-white font-medium">{image.alt}</span>
+                    <span className="text-white font-medium">{t(String(image.altKey))}</span>
                   </motion.div>
                 </motion.div>
               ))}
@@ -194,12 +194,12 @@ export function Gallery() {
               transition={{ duration: 0.3 }}
             >
               <DialogHeader>
-                <DialogTitle>{selectedImage.alt}</DialogTitle>
+                <DialogTitle>{t(String(selectedImage.altKey))}</DialogTitle>
               </DialogHeader>
               <div className="relative aspect-video w-full">
                 <Image
                   src={selectedImage.src}
-                  alt={selectedImage.alt}
+                  alt={t(String(selectedImage.altKey))}
                   fill
                   className="object-contain"
                 />
