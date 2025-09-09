@@ -309,12 +309,38 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
         duration: 5000,
       });
 
+      // Parse response body to extract optional payment info
+      const respJson = await response.json().catch(() => null);
+
       // Wait a moment to show success state
       setTimeout(() => {
         form.reset();
         setCurrentStep(1);
         setSubmitStatus('idle');
-        router.push('/booking-success');
+        try {
+          // Build absolute URL with locale to avoid router double-prefix issues
+          const currentLocale = typeof window !== 'undefined' ? (window.location.pathname.split('/')?.[1] || 'en') : 'en';
+          const params = new URLSearchParams();
+          if (respJson?.paymentUrl) {
+            params.set('paymentUrl', respJson.paymentUrl);
+            if (respJson.amount) {
+              const amountStr = respJson.currency ? `${respJson.amount} ${respJson.currency}` : String(respJson.amount);
+              params.set('amount', amountStr);
+            }
+          }
+
+          const fullUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/${currentLocale}/booking-success${params.toString() ? `?${params.toString()}` : ''}`;
+
+          if (typeof window !== 'undefined') {
+            window.location.assign(fullUrl);
+          } else {
+            // fallback for non-client contexts
+            router.push('/booking-success');
+          }
+        } catch (err) {
+          // fallback to basic redirect
+          router.push('/booking-success');
+        }
       }, 2000);
 
     } catch (error) {

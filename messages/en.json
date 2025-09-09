@@ -461,6 +461,14 @@
       "questions": "Have questions? Contact us at",
       "email": "hello@vashastudio.com",
       "phone": "(555) 123-4567"
+    },
+    "payment": {
+      "title": "Complete payment",
+      "instruction": "You can complete payment using the QR code below or via the payment link.",
+      "payNow": "Pay now",
+      "paymentLinkText": "Open payment link",
+      "qrAlt": "Payment QR code",
+      "unavailable": "Payment information is not available. If you were expecting a payment link, please check your booking email or contact us."
     }
   },
   "gallery": {

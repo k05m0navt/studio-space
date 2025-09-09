@@ -647,3 +647,4 @@ Create a user-friendly system allowing admins to easily enable/disable studio an
 - [x] I18N reflection: Added missing keys to messages/en.json and messages/ru.json (faq & navigation.aria) — 2025-09-07
 - [x] I18N archived: docs/archive/i18n-migration-20250907.md — 2025-09-08T13:40:58Z
 \n- [x] ARCHIVE: Booking form fix & migration — docs/archive/booking-form-fix-20250909.md ()
+- ARCHIVE: Booking Success — docs/archive/booking-success-20250909.md — 2025-09-09 — Status: COMPLETED
