@@ -22,8 +22,24 @@ export const GET = requireRole(['ADMIN'])(async () => {
 
     const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
-    const [totalBookings, pendingBookings, confirmedBookings, todayBookings, activeUsers,
-      lastWeekBookings, twoWeeksAgoBookings] = await Promise.all([
+const t0 = Date.now();
+
+    // Run all counts/aggregates in parallel for optimal performance
+    const [
+      totalBookings,
+      pendingBookings,
+      confirmedBookings,
+      todayBookings,
+      activeUsers,
+      lastWeekBookings,
+      twoWeeksAgoBookings,
+      // counts used as fallback
+      studioMonthlyCount,
+      coworkingMonthlyCount,
+      studioBookings,
+      // aggregate sum for monthly revenue (may be null if amount not set)
+      monthlyAmountAggregate
+    ] = await Promise.all([
       prisma.booking.count(),
       prisma.booking.count({ where: { status: 'pending' } }),
       prisma.booking.count({ where: { status: 'confirmed' } }),
@@ -31,32 +47,39 @@ export const GET = requireRole(['ADMIN'])(async () => {
       prisma.user.count(),
       prisma.booking.count({ where: { createdAt: { gte: sevenDaysAgo, lte: today } } }),
       prisma.booking.count({ where: { createdAt: { gte: fourteenDaysAgo, lte: sevenDaysAgo } } }),
+      // Monthly counts (fallback for revenue calculation)
+      prisma.booking.count({ where: { createdAt: { gte: startOfMonth }, status: 'confirmed', type: 'studio' } }),
+      prisma.booking.count({ where: { createdAt: { gte: startOfMonth }, status: 'confirmed', type: 'coworking' } }),
+      prisma.booking.count({ where: { type: 'studio', status: 'confirmed' } }),
+      // Use DB aggregate SUM(amount) when available for accurate revenue
+      prisma.booking.aggregate({
+        _sum: { amount: true },
+        where: { createdAt: { gte: startOfMonth }, status: 'confirmed' }
+      })
     ]);
 
     const weeklyGrowth = twoWeeksAgoBookings > 0
       ? ((lastWeekBookings - twoWeeksAgoBookings) / twoWeeksAgoBookings) * 100
       : 0;
 
-    const monthlyBookings = await prisma.booking.findMany({
-      where: { createdAt: { gte: startOfMonth }, status: 'confirmed' }
-    });
+    // Compute revenue preferring SUM(amount) aggregate if available, otherwise fall back to per-type pricing
+    let monthlyRevenue = 0;
+    const sumAmount = monthlyAmountAggregate?._sum?.amount;
+    if (sumAmount !== null && sumAmount !== undefined) {
+      // Prisma Decimal -> string/number
+      monthlyRevenue = Number(String(sumAmount));
+    } else {
+      monthlyRevenue = studioMonthlyCount * 150 + coworkingMonthlyCount * 50;
+    }
 
-    const studioBookings = await prisma.booking.count({
-      where: { type: 'studio', status: 'confirmed' }
-    });
-
-    const studioUtilization = totalBookings > 0 ? (studioBookings / totalBookings) * 100 : 0;
-
-    const monthlyRevenue = monthlyBookings.reduce((total, booking) => {
-      const price = booking.type === 'studio' ? 150 : 50;
-      return total + price;
-    }, 0);
+    const queryTime = Date.now() - t0;
+    console.info(`Admin stats: queries completed in ${queryTime}ms`);
 
     const result = {
       totalBookings,
       monthlyRevenue,
       activeMembers: activeUsers,
-      studioUtilization: Math.round(studioUtilization),
+      studioUtilization: totalBookings > 0 ? (studioBookings / totalBookings) * 100 : 0,
       pendingBookings,
       confirmedBookings,
       todayBookings,
