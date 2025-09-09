@@ -196,14 +196,23 @@ export async function POST(request: NextRequest) {
       console.error('Failed to compute amount from settings:', err);
     }
 
-    const booking = await prisma.booking.create({
-      data: {
-        ...validatedData,
-        date: new Date(validatedData.date),
-        amount: amount ?? undefined,
-        currency: currency ?? undefined,
-      },
-    });
+    // Create booking without writing amount/currency to avoid DB schema drift issues
+    let booking;
+    try {
+      booking = await prisma.booking.create({
+        data: {
+          ...validatedData,
+          date: new Date(validatedData.date),
+          // amount and currency intentionally omitted until DB migrations are applied
+        },
+      });
+    } catch (dbErr) {
+      console.error('Prisma create booking error:', dbErr);
+      return NextResponse.json(
+        { error: 'api.errors.internalServerError', message: 'Failed to create booking' },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json(booking, { status: 201 });
   } catch (error) {
@@ -215,8 +224,9 @@ export async function POST(request: NextRequest) {
     }
 
     console.error('Create booking error:', error);
+    const message = (error && (error as any).message) ? (error as any).message : 'Internal server error';
     return NextResponse.json(
-      { error: 'api.errors.internalServerError' },
+      { error: 'api.errors.internalServerError', message },
       { status: 500 }
     );
   }

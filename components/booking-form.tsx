@@ -250,26 +250,56 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
       setIsLoading(true);
       setSubmitStatus('loading');
 
+      // Guard: ensure date is present and valid before sending to the server
+      if (!data.date) {
+        setSubmitStatus('error');
+        toast.error(tCommon('error'), {
+          description: t('validation.date.required'),
+          duration: 4000,
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      const isoDate = data.date instanceof Date ? data.date.toISOString() : (typeof data.date === 'string' ? new Date(data.date).toISOString() : null);
+      if (!isoDate) {
+        setSubmitStatus('error');
+        toast.error(tCommon('error'), {
+          description: t('validation.date.required'),
+          duration: 4000,
+        });
+        setIsLoading(false);
+        return;
+      }
+
+      const payload = {
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        type: data.bookingType,
+        date: isoDate,
+        start_time: data.startTime,
+        end_time: data.endTime,
+        message: data.message,
+      };
+
+      // Helpful debug when running locally
+      console.debug('Submitting booking payload:', payload);
+
       const response = await fetch('/api/bookings', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          name: data.name,
-          email: data.email,
-          phone: data.phone,
-          type: data.bookingType,
-          date: data.date.toISOString(),
-          start_time: data.startTime,
-          end_time: data.endTime,
-          message: data.message,
-        }),
+        body: JSON.stringify(payload),
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData?.message ?? tApi('errors.failedToCreateBooking'));
+        // Try to parse JSON safely; fall back to generic message
+        let errorData: any = null;
+        try { errorData = await response.json(); } catch (e) { /* ignore parse errors */ }
+        const message = errorData?.message || errorData?.error || tApi('errors.failedToCreateBooking');
+        throw new Error(message);
       }
 
       setSubmitStatus('success');
