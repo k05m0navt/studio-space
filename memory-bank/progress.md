@@ -74,3 +74,5 @@
 - ARCHIVE: Booking Success — docs/archive/booking-success-20250909.md — 2025-09-09
 
 - ARCHIVE: Admin stats optimization - docs/archive/admin-stats-optimization-20250909.md — 2025-09-09
+
+- ARCHIVE: Booking Pricing & Admin Confirm/Cancel — docs/archive/booking-admin-confirm-cancel-20250910.md — 2025-09-10
