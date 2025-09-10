@@ -178,7 +178,7 @@ export async function POST(request: NextRequest) {
       const rateSetting = await prisma.settings.findUnique({ where: { key: `services.${validatedData.type}.price` } });
       const currencySetting = await prisma.settings.findUnique({ where: { key: `services.${validatedData.type}.currency` } });
       const rate = rateSetting?.value ? Number(rateSetting.value) : 0;
-      currency = currencySetting?.value ?? 'USD';
+      currency = currencySetting?.value ?? 'RUB';
 
       if (validatedData.start_time && validatedData.end_time) {
         const [sh, sm] = validatedData.start_time.split(':').map(Number);
@@ -203,7 +203,8 @@ export async function POST(request: NextRequest) {
         data: {
           ...validatedData,
           date: new Date(validatedData.date),
-          // amount and currency intentionally omitted until DB migrations are applied
+          amount: amount ?? undefined,
+          currency: currency ?? 'RUB',
         },
       });
     } catch (dbErr) {

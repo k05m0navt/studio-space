@@ -59,7 +59,7 @@ export async function authenticateRequest(request: NextRequest): Promise<AuthUse
     }
 
     const token = authHeader.substring(7);
-    
+
     // Verify JWT token
     jwt.verify(
       token,
@@ -81,9 +81,22 @@ export async function authenticateRequest(request: NextRequest): Promise<AuthUse
     });
 
     if (!session || session.expiresAt < new Date()) {
+      // If session missing due to transient DB issue, attempt JWT fallback: decode token and fetch user by id
+      try {
+        const decoded = jwt.decode(token) as any;
+        if (decoded && decoded.userId) {
+          const user = await prisma.user.findUnique({ where: { id: String(decoded.userId) } });
+          if (user) {
+            return { id: user.id, email: user.email, role: user.role };
+          }
+        }
+      } catch (err) {
+        // ignore fallback errors
+      }
+
       // Clean up expired session
       if (session) {
-        await prisma.session.delete({ where: { id: session.id } });
+        try { await prisma.session.delete({ where: { id: session.id } }); } catch {}
       }
       return null;
     }

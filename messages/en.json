@@ -727,6 +727,7 @@
       "dataRefreshed": "Data refreshed successfully",
       "bookingConfirmed": "Booking confirmed successfully",
       "bookingCancelled": "Booking cancelled successfully",
+      "bookingUpdateFailed": "Failed to update booking status",
       "statusUpdateFailed": "Failed to update booking status",
       "dataLoadFailed": "Failed to load dashboard data",
       "adminCreated": "Admin created successfully",

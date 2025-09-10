@@ -5,8 +5,9 @@ declare global {
   var prisma: PrismaClient | undefined
 }
 
-// Prefer DIRECT_URL (direct DB connection) if available, otherwise fall back to DATABASE_URL
-const connectionUrl = process.env.DIRECT_URL || process.env.DATABASE_URL;
+// Prefer the pooled DATABASE_URL for runtime. Use DIRECT_URL for migrations when explicitly requested.
+const isMigration = process.env.MIGRATION_MODE === 'true';
+const connectionUrl = isMigration ? (process.env.DIRECT_URL || process.env.DATABASE_URL) : (process.env.DATABASE_URL || process.env.DIRECT_URL);
 
 if (!connectionUrl) {
   throw new Error('No Prisma connection string found in DIRECT_URL or DATABASE_URL');

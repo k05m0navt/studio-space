@@ -1,0 +1,943 @@
+yarn run v1.22.22
+$ next dev
+   ▲ Next.js 15.3.3
+   - Local:        http://localhost:3000
+   - Network:      http://10.0.11.77:3000
+   - Environments: .env.local, .env
+   - Experiments (use with caution):
+     · optimizeCss
+
+ ✓ Starting...
+> [PWA] PWA support is disabled
+> [PWA] PWA support is disabled
+ ✓ Ready in 2.2s
+ ✓ Compiled /middleware in 186ms (211 modules)
+ ○ Compiling /[locale] ...
+ ✓ Compiled /[locale] in 1614ms (2099 modules)
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."Settings"."id", "public"."Settings"."key", "public"."Settings"."value", "public"."Settings"."type", "public"."Settings"."group", "public"."Settings"."isPublic", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE "public"."Settings"."key" IN ($1,$2) OFFSET $3
+prisma:query COMMIT
+ GET /ru 200 in 4192ms
+ ○ Compiling /[locale]/admin ...
+ ✓ Compiled /[locale]/admin in 723ms (2397 modules)
+ GET /ru/admin 200 in 1250ms
+ ✓ Compiled /[locale]/api/admin/stats in 371ms (2417 modules)
+ ⚠ ./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+Critical dependency: the request of a dependency is an expression
+
+Import trace for requested module:
+./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+./node_modules/@supabase/realtime-js/dist/main/index.js
+./node_modules/@supabase/supabase-js/dist/module/index.js
+./lib/supabase/server.ts
+./lib/auth.ts
+./app/api/admin/bookings/route.ts
+ ○ Compiling /api/admin/stats ...
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."Session"."id", "public"."Session"."userId", "public"."Session"."token", "public"."Session"."expiresAt", "public"."Session"."createdAt" FROM "public"."Session" WHERE "public"."Session"."token" IN ($1,$2) OFFSET $3
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text FROM "public"."User" WHERE "public"."User"."id" IN ($1) OFFSET $2
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."Session"."id", "public"."Session"."userId", "public"."Session"."token", "public"."Session"."expiresAt", "public"."Session"."createdAt" FROM "public"."Session" WHERE "public"."Session"."token" IN ($1,$2) OFFSET $3
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT "public"."Session"."id", "public"."Session"."userId", "public"."Session"."token", "public"."Session"."expiresAt", "public"."Session"."createdAt" FROM "public"."Session" WHERE "public"."Session"."token" IN ($1,$2) OFFSET $3
+prisma:query COMMIT
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text FROM "public"."User" WHERE "public"."User"."id" IN ($1) OFFSET $2
+prisma:query COMMIT
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text FROM "public"."User" WHERE "public"."User"."id" IN ($1) OFFSET $2
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query BEGIN
+prisma:query SELECT "public"."Booking"."id", "public"."Booking"."name", "public"."Booking"."email", "public"."Booking"."phone", "public"."Booking"."date", "public"."Booking"."start_time", "public"."Booking"."end_time", "public"."Booking"."message", "public"."Booking"."createdAt", "public"."Booking"."updatedAt", "public"."Booking"."type", "public"."Booking"."status", "public"."Booking"."userId" FROM "public"."Booking" WHERE 1=1 ORDER BY "public"."Booking"."createdAt" DESC LIMIT $1 OFFSET $2
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."email", "public"."User"."role"::text, "public"."User"."createdAt" FROM "public"."User" WHERE 1=1 ORDER BY "public"."User"."createdAt" DESC LIMIT $1 OFFSET $2
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."User"."id" FROM "public"."User" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query DEALLOCATE ALL
+prisma:query COMMIT
+prisma:query COMMIT
+ GET /api/admin/bookings 200 in 2787ms
+ GET /ru/api/admin/bookings 200 in 3662ms
+prisma:query COMMIT
+ GET /api/admin/users 200 in 2824ms
+ GET /ru/api/admin/users 200 in 3698ms
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query SELECT "public"."Booking"."id", "public"."Booking"."name", "public"."Booking"."email", "public"."Booking"."phone", "public"."Booking"."date", "public"."Booking"."start_time", "public"."Booking"."end_time", "public"."Booking"."message", "public"."Booking"."createdAt", "public"."Booking"."updatedAt", "public"."Booking"."type", "public"."Booking"."status", "public"."Booking"."userId" FROM "public"."Booking" WHERE 1=1 ORDER BY "public"."Booking"."createdAt" DESC LIMIT $1 OFFSET $2
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."email", "public"."User"."role"::text, "public"."User"."createdAt" FROM "public"."User" WHERE 1=1 ORDER BY "public"."User"."createdAt" DESC LIMIT $1 OFFSET $2
+prisma:query DEALLOCATE ALL
+prisma:query COMMIT
+ GET /api/admin/bookings 200 in 2962ms
+ GET /ru/api/admin/bookings 200 in 3834ms
+prisma:query DEALLOCATE ALL
+prisma:query BEGIN
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."User"."id" FROM "public"."User" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query DEALLOCATE ALL
+ GET /api/admin/users 200 in 3271ms
+prisma:query COMMIT
+prisma:query COMMIT
+prisma:query DEALLOCATE ALL
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE "public"."Booking"."status" = $1 OFFSET $2) AS "sub"
+ GET /ru/api/admin/users 200 in 4144ms
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query COMMIT
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."createdAt" <= $2) OFFSET $3) AS "sub"
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."createdAt" <= $2) OFFSET $3) AS "sub"
+prisma:query BEGIN
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query COMMIT
+prisma:query DEALLOCATE ALL
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE "public"."Booking"."status" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."createdAt" <= $2) OFFSET $3) AS "sub"
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query COMMIT
+prisma:query COMMIT
+prisma:query DEALLOCATE ALL
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."status" = $2 AND "public"."Booking"."type" = $3) OFFSET $4) AS "sub"
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query COMMIT
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query BEGIN
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."status" = $2 AND "public"."Booking"."type" = $3) OFFSET $4) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."type" = $1 AND "public"."Booking"."status" = $2) OFFSET $3) AS "sub"
+prisma:query DEALLOCATE ALL
+prisma:query COMMIT
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."User"."id" FROM "public"."User" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query COMMIT
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query BEGIN
+prisma:query COMMIT
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query SELECT SUM("amount") FROM (SELECT "public"."Booking"."amount" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."status" = $2) OFFSET $3) AS "sub"
+prisma:query DEALLOCATE ALL
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query BEGIN
+prisma:query COMMIT
+Admin stats: queries completed in 1843ms
+ GET /api/admin/stats 200 in 4397ms
+ GET /ru/api/admin/stats 200 in 5268ms
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query BEGIN
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE "public"."Booking"."status" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE "public"."Booking"."status" = $1 OFFSET $2) AS "sub"
+prisma:query COMMIT
+prisma:query DEALLOCATE ALL
+prisma:query COMMIT
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."User"."id" FROM "public"."User" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."createdAt" <= $2) OFFSET $3) AS "sub"
+prisma:query BEGIN
+prisma:query COMMIT
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."createdAt" <= $2) OFFSET $3) AS "sub"
+prisma:query DEALLOCATE ALL
+prisma:query BEGIN
+prisma:query COMMIT
+prisma:query DEALLOCATE ALL
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."type" = $1 AND "public"."Booking"."status" = $2) OFFSET $3) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."createdAt" <= $2) OFFSET $3) AS "sub"
+prisma:query BEGIN
+prisma:query SELECT SUM("amount") FROM (SELECT "public"."Booking"."amount" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."status" = $2) OFFSET $3) AS "sub"
+prisma:query COMMIT
+prisma:query DEALLOCATE ALL
+prisma:query COMMIT
+prisma:query COMMIT
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."status" = $2 AND "public"."Booking"."type" = $3) OFFSET $4) AS "sub"
+prisma:query COMMIT
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."status" = $2 AND "public"."Booking"."type" = $3) OFFSET $4) AS "sub"
+prisma:query COMMIT
+Admin stats: queries completed in 3241ms
+ GET /api/admin/stats 200 in 5794ms
+ GET /ru/api/admin/stats 200 in 6665ms
+ ⚠ ./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+Critical dependency: the request of a dependency is an expression
+
+Import trace for requested module:
+./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+./node_modules/@supabase/realtime-js/dist/main/index.js
+./node_modules/@supabase/supabase-js/dist/module/index.js
+./lib/supabase/server.ts
+./lib/auth.ts
+./app/api/admin/bookings/route.ts
+ ⚠ ./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+Critical dependency: the request of a dependency is an expression
+
+Import trace for requested module:
+./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+./node_modules/@supabase/realtime-js/dist/main/index.js
+./node_modules/@supabase/supabase-js/dist/module/index.js
+./lib/supabase/server.ts
+./lib/auth.ts
+./app/api/admin/bookings/route.ts
+ ⚠ ./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+Critical dependency: the request of a dependency is an expression
+
+Import trace for requested module:
+./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+./node_modules/@supabase/realtime-js/dist/main/index.js
+./node_modules/@supabase/supabase-js/dist/module/index.js
+./lib/supabase/server.ts
+./lib/auth.ts
+./app/api/admin/bookings/route.ts
+ ⚠ ./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+Critical dependency: the request of a dependency is an expression
+
+Import trace for requested module:
+./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+./node_modules/@supabase/realtime-js/dist/main/index.js
+./node_modules/@supabase/supabase-js/dist/module/index.js
+./lib/supabase/server.ts
+./lib/auth.ts
+./app/api/admin/bookings/route.ts
+prisma:query SELECT 1
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."Session"."id", "public"."Session"."userId", "public"."Session"."token", "public"."Session"."expiresAt", "public"."Session"."createdAt" FROM "public"."Session" WHERE ("public"."Session"."token" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text FROM "public"."User" WHERE "public"."User"."id" IN ($1) OFFSET $2
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query UPDATE "public"."Booking" SET "status" = $1, "updatedAt" = $2 WHERE ("public"."Booking"."id" = $3 AND 1=1) RETURNING "public"."Booking"."id", "public"."Booking"."name", "public"."Booking"."email", "public"."Booking"."phone", "public"."Booking"."date", "public"."Booking"."start_time", "public"."Booking"."end_time", "public"."Booking"."message", "public"."Booking"."createdAt", "public"."Booking"."updatedAt", "public"."Booking"."type", "public"."Booking"."status", "public"."Booking"."userId", "public"."Booking"."amount", "public"."Booking"."currency"
+prisma:query SELECT "public"."Booking"."id", "public"."Booking"."name", "public"."Booking"."email", "public"."Booking"."phone", "public"."Booking"."date", "public"."Booking"."start_time", "public"."Booking"."end_time", "public"."Booking"."message", "public"."Booking"."createdAt", "public"."Booking"."updatedAt", "public"."Booking"."type", "public"."Booking"."status", "public"."Booking"."userId", "public"."Booking"."amount", "public"."Booking"."currency" FROM "public"."Booking" WHERE "public"."Booking"."id" = $1 LIMIT $2 OFFSET $3
+prisma:query COMMIT
+Email would be sent: {
+  to: 'ertalun@gmail.com',
+  subject: 'Booking cancelled - studio on 9/10/2025',
+  body: '\n' +
+    '    Dear Daniil,\n' +
+    '\n' +
+    '    Your booking has been cancelled.\n' +
+    '\n' +
+    '    Booking Details:\n' +
+    '    - Service: studio\n' +
+    '    - Date: 9/10/2025\n' +
+    '    - Time: 12:00 - 13:00\n' +
+    '    \n' +
+    '    If you have any questions, please contact us.\n' +
+    '\n' +
+    '    Best regards,\n' +
+    '    Vasha Studio Team\n' +
+    '  '
+}
+ POST /api/bookings/confirm 200 in 2031ms
+ POST /ru/api/bookings/confirm 200 in 2644ms
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."Session"."id", "public"."Session"."userId", "public"."Session"."token", "public"."Session"."expiresAt", "public"."Session"."createdAt" FROM "public"."Session" WHERE ("public"."Session"."token" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text FROM "public"."User" WHERE "public"."User"."id" IN ($1) OFFSET $2
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query UPDATE "public"."Booking" SET "status" = $1, "updatedAt" = $2 WHERE ("public"."Booking"."id" = $3 AND 1=1) RETURNING "public"."Booking"."id", "public"."Booking"."name", "public"."Booking"."email", "public"."Booking"."phone", "public"."Booking"."date", "public"."Booking"."start_time", "public"."Booking"."end_time", "public"."Booking"."message", "public"."Booking"."createdAt", "public"."Booking"."updatedAt", "public"."Booking"."type", "public"."Booking"."status", "public"."Booking"."userId", "public"."Booking"."amount", "public"."Booking"."currency"
+prisma:query SELECT "public"."Booking"."id", "public"."Booking"."name", "public"."Booking"."email", "public"."Booking"."phone", "public"."Booking"."date", "public"."Booking"."start_time", "public"."Booking"."end_time", "public"."Booking"."message", "public"."Booking"."createdAt", "public"."Booking"."updatedAt", "public"."Booking"."type", "public"."Booking"."status", "public"."Booking"."userId", "public"."Booking"."amount", "public"."Booking"."currency" FROM "public"."Booking" WHERE "public"."Booking"."id" = $1 LIMIT $2 OFFSET $3
+prisma:query COMMIT
+Email would be sent: {
+  to: 'ertalun@gmail.com',
+  subject: 'Booking Confirmed - studio on 9/10/2025',
+  body: '\n' +
+    '    Dear Daniil,\n' +
+    '\n' +
+    '    Your booking has been confirmed.\n' +
+    '\n' +
+    '    Booking Details:\n' +
+    '    - Service: studio\n' +
+    '    - Date: 9/10/2025\n' +
+    '    - Time: 11:00 - 12:00\n' +
+    '    \n' +
+    '    We look forward to seeing you at Vasha Studio!\n' +
+    '\n' +
+    '    Best regards,\n' +
+    '    Vasha Studio Team\n' +
+    '  '
+}
+ POST /api/bookings/confirm 200 in 1464ms
+ POST /ru/api/bookings/confirm 200 in 1492ms
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:query SELECT 1
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."Session"."id", "public"."Session"."userId", "public"."Session"."token", "public"."Session"."expiresAt", "public"."Session"."createdAt" FROM "public"."Session" WHERE ("public"."Session"."token" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text FROM "public"."User" WHERE "public"."User"."id" IN ($1) OFFSET $2
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query UPDATE "public"."Booking" SET "status" = $1, "updatedAt" = $2 WHERE ("public"."Booking"."id" = $3 AND 1=1) RETURNING "public"."Booking"."id", "public"."Booking"."name", "public"."Booking"."email", "public"."Booking"."phone", "public"."Booking"."date", "public"."Booking"."start_time", "public"."Booking"."end_time", "public"."Booking"."message", "public"."Booking"."createdAt", "public"."Booking"."updatedAt", "public"."Booking"."type", "public"."Booking"."status", "public"."Booking"."userId", "public"."Booking"."amount", "public"."Booking"."currency"
+prisma:query SELECT "public"."Booking"."id", "public"."Booking"."name", "public"."Booking"."email", "public"."Booking"."phone", "public"."Booking"."date", "public"."Booking"."start_time", "public"."Booking"."end_time", "public"."Booking"."message", "public"."Booking"."createdAt", "public"."Booking"."updatedAt", "public"."Booking"."type", "public"."Booking"."status", "public"."Booking"."userId", "public"."Booking"."amount", "public"."Booking"."currency" FROM "public"."Booking" WHERE "public"."Booking"."id" = $1 LIMIT $2 OFFSET $3
+prisma:query COMMIT
+Email would be sent: {
+  to: 'ertalun@gmail.com',
+  subject: 'Booking cancelled - studio on 9/10/2025',
+  body: '\n' +
+    '    Dear Daniil,\n' +
+    '\n' +
+    '    Your booking has been cancelled.\n' +
+    '\n' +
+    '    Booking Details:\n' +
+    '    - Service: studio\n' +
+    '    - Date: 9/10/2025\n' +
+    '    - Time: 11:00 - 12:00\n' +
+    '    \n' +
+    '    If you have any questions, please contact us.\n' +
+    '\n' +
+    '    Best regards,\n' +
+    '    Vasha Studio Team\n' +
+    '  '
+}
+ POST /api/bookings/confirm 200 in 2734ms
+ POST /ru/api/bookings/confirm 200 in 2757ms
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."Session"."id", "public"."Session"."userId", "public"."Session"."token", "public"."Session"."expiresAt", "public"."Session"."createdAt" FROM "public"."Session" WHERE ("public"."Session"."token" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text FROM "public"."User" WHERE "public"."User"."id" IN ($1) OFFSET $2
+prisma:query COMMIT
+prisma:query SELECT 1
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query BEGIN
+prisma:query SELECT "public"."Session"."id", "public"."Session"."userId", "public"."Session"."token", "public"."Session"."expiresAt", "public"."Session"."createdAt" FROM "public"."Session" WHERE ("public"."Session"."token" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text FROM "public"."User" WHERE "public"."User"."id" IN ($1) OFFSET $2
+prisma:query SELECT "public"."Session"."id", "public"."Session"."userId", "public"."Session"."token", "public"."Session"."expiresAt", "public"."Session"."createdAt" FROM "public"."Session" WHERE ("public"."Session"."token" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query COMMIT
+prisma:query SELECT 1
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text FROM "public"."User" WHERE "public"."User"."id" IN ($1) OFFSET $2
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query COMMIT
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE "public"."Booking"."status" = $1 OFFSET $2) AS "sub"
+prisma:query BEGIN
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT "public"."Booking"."id", "public"."Booking"."name", "public"."Booking"."email", "public"."Booking"."phone", "public"."Booking"."date", "public"."Booking"."start_time", "public"."Booking"."end_time", "public"."Booking"."message", "public"."Booking"."createdAt", "public"."Booking"."updatedAt", "public"."Booking"."type", "public"."Booking"."status", "public"."Booking"."userId" FROM "public"."Booking" WHERE 1=1 ORDER BY "public"."Booking"."createdAt" DESC LIMIT $1 OFFSET $2
+prisma:query COMMIT
+prisma:query COMMIT
+prisma:query DEALLOCATE ALL
+prisma:query COMMIT
+ GET /api/admin/bookings 200 in 2283ms
+ GET /ru/api/admin/bookings 200 in 2332ms
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE "public"."Booking"."status" = $1 OFFSET $2) AS "sub"
+prisma:query DEALLOCATE ALL
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."createdAt" <= $2) OFFSET $3) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."User"."id" FROM "public"."User" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."createdAt" <= $2) OFFSET $3) AS "sub"
+prisma:query COMMIT
+prisma:query COMMIT
+prisma:query DEALLOCATE ALL
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query BEGIN
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."status" = $2 AND "public"."Booking"."type" = $3) OFFSET $4) AS "sub"
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query COMMIT
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."type" = $1 AND "public"."Booking"."status" = $2) OFFSET $3) AS "sub"
+prisma:query SELECT SUM("amount") FROM (SELECT "public"."Booking"."amount" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."status" = $2) OFFSET $3) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."status" = $2 AND "public"."Booking"."type" = $3) OFFSET $4) AS "sub"
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query COMMIT
+prisma:query COMMIT
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."createdAt" <= $2) OFFSET $3) AS "sub"
+prisma:query COMMIT
+Admin stats: queries completed in 1650ms
+ GET /api/admin/stats 200 in 3406ms
+prisma:query COMMIT
+prisma:query BEGIN
+ GET /ru/api/admin/stats 200 in 3462ms
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."email", "public"."User"."role"::text, "public"."User"."createdAt" FROM "public"."User" WHERE 1=1 ORDER BY "public"."User"."createdAt" DESC LIMIT $1 OFFSET $2
+prisma:query DEALLOCATE ALL
+prisma:query COMMIT
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."User"."id" FROM "public"."User" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query COMMIT
+ GET /api/admin/users 200 in 3840ms
+ GET /ru/api/admin/users 200 in 3893ms
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+ ⚠ ./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+Critical dependency: the request of a dependency is an expression
+
+Import trace for requested module:
+./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+./node_modules/@supabase/realtime-js/dist/main/index.js
+./node_modules/@supabase/supabase-js/dist/module/index.js
+./lib/supabase/server.ts
+./lib/auth.ts
+./app/api/admin/bookings/route.ts
+prisma:query SELECT 1
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+ ⚠ ./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+Critical dependency: the request of a dependency is an expression
+
+Import trace for requested module:
+./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+./node_modules/@supabase/realtime-js/dist/main/index.js
+./node_modules/@supabase/supabase-js/dist/module/index.js
+./lib/supabase/server.ts
+./lib/auth.ts
+./app/api/admin/bookings/route.ts
+prisma:query SELECT 1
+prisma:query SELECT "public"."Settings"."id", "public"."Settings"."key", "public"."Settings"."value", "public"."Settings"."type", "public"."Settings"."group", "public"."Settings"."isPublic", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE "public"."Settings"."key" IN ($1,$2) OFFSET $3
+prisma:query COMMIT
+ GET /ru/admin 200 in 799ms
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."Settings"."id", "public"."Settings"."key", "public"."Settings"."value", "public"."Settings"."type", "public"."Settings"."group", "public"."Settings"."isPublic", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE "public"."Settings"."key" IN ($1,$2) OFFSET $3
+prisma:query COMMIT
+ GET /ru/admin 200 in 1739ms
+prisma:query SELECT 1
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."Session"."id", "public"."Session"."userId", "public"."Session"."token", "public"."Session"."expiresAt", "public"."Session"."createdAt" FROM "public"."Session" WHERE ("public"."Session"."token" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."Session"."id", "public"."Session"."userId", "public"."Session"."token", "public"."Session"."expiresAt", "public"."Session"."createdAt" FROM "public"."Session" WHERE ("public"."Session"."token" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text FROM "public"."User" WHERE "public"."User"."id" IN ($1) OFFSET $2
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text FROM "public"."User" WHERE "public"."User"."id" IN ($1) OFFSET $2
+prisma:query COMMIT
+prisma:query COMMIT
+prisma:query SELECT 1
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query SELECT 1
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE "public"."Booking"."status" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."createdAt" <= $2) OFFSET $3) AS "sub"
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query BEGIN
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."Session"."id", "public"."Session"."userId", "public"."Session"."token", "public"."Session"."expiresAt", "public"."Session"."createdAt" FROM "public"."Session" WHERE ("public"."Session"."token" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."createdAt" <= $2) OFFSET $3) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."User"."id" FROM "public"."User" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query COMMIT
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text FROM "public"."User" WHERE "public"."User"."id" IN ($1) OFFSET $2
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."createdAt" <= $2) OFFSET $3) AS "sub"
+prisma:query COMMIT
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."type" = $1 AND "public"."Booking"."status" = $2) OFFSET $3) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."status" = $2 AND "public"."Booking"."type" = $3) OFFSET $4) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE "public"."Booking"."status" = $1 OFFSET $2) AS "sub"
+prisma:query SELECT SUM("amount") FROM (SELECT "public"."Booking"."amount" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."status" = $2) OFFSET $3) AS "sub"
+prisma:query COMMIT
+prisma:query COMMIT
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."status" = $2 AND "public"."Booking"."type" = $3) OFFSET $4) AS "sub"
+Admin stats: queries completed in 1695ms
+ GET /api/admin/stats 200 in 2400ms
+prisma:query COMMIT
+prisma:query COMMIT
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query BEGIN
+ GET /ru/api/admin/stats 200 in 2442ms
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT "public"."Booking"."id", "public"."Booking"."name", "public"."Booking"."email", "public"."Booking"."phone", "public"."Booking"."date", "public"."Booking"."start_time", "public"."Booking"."end_time", "public"."Booking"."message", "public"."Booking"."createdAt", "public"."Booking"."updatedAt", "public"."Booking"."type", "public"."Booking"."status", "public"."Booking"."userId" FROM "public"."Booking" WHERE 1=1 ORDER BY "public"."Booking"."createdAt" DESC LIMIT $1 OFFSET $2
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."User"."id" FROM "public"."User" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query COMMIT
+ GET /api/admin/bookings 200 in 2839ms
+prisma:query COMMIT
+ GET /ru/api/admin/bookings 200 in 2860ms
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."email", "public"."User"."role"::text, "public"."User"."createdAt" FROM "public"."User" WHERE 1=1 ORDER BY "public"."User"."createdAt" DESC LIMIT $1 OFFSET $2
+prisma:query COMMIT
+prisma:query COMMIT
+ GET /api/admin/users 200 in 2992ms
+ GET /ru/api/admin/users 200 in 3033ms
+ ⚠ ./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+Critical dependency: the request of a dependency is an expression
+
+Import trace for requested module:
+./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+./node_modules/@supabase/realtime-js/dist/main/index.js
+./node_modules/@supabase/supabase-js/dist/module/index.js
+./lib/supabase/server.ts
+./lib/auth.ts
+./app/api/admin/users/route.ts
+prisma:query SELECT 1
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."Settings"."id", "public"."Settings"."key", "public"."Settings"."value", "public"."Settings"."type", "public"."Settings"."group", "public"."Settings"."isPublic", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE "public"."Settings"."key" IN ($1,$2) OFFSET $3
+prisma:query COMMIT
+ GET /ru/admin 200 in 749ms
+prisma:query BEGIN
+prisma:query SELECT 1
+prisma:query SELECT 1
+prisma:query DEALLOCATE ALL
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."Session"."id", "public"."Session"."userId", "public"."Session"."token", "public"."Session"."expiresAt", "public"."Session"."createdAt" FROM "public"."Session" WHERE ("public"."Session"."token" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."Session"."id", "public"."Session"."userId", "public"."Session"."token", "public"."Session"."expiresAt", "public"."Session"."createdAt" FROM "public"."Session" WHERE ("public"."Session"."token" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text FROM "public"."User" WHERE "public"."User"."id" IN ($1) OFFSET $2
+prisma:query SELECT "public"."Session"."id", "public"."Session"."userId", "public"."Session"."token", "public"."Session"."expiresAt", "public"."Session"."createdAt" FROM "public"."Session" WHERE ("public"."Session"."token" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text FROM "public"."User" WHERE "public"."User"."id" IN ($1) OFFSET $2
+prisma:query COMMIT
+prisma:query COMMIT
+prisma:query SELECT 1
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."role"::text FROM "public"."User" WHERE "public"."User"."id" IN ($1) OFFSET $2
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT 1
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query COMMIT
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query SELECT "public"."Booking"."id", "public"."Booking"."name", "public"."Booking"."email", "public"."Booking"."phone", "public"."Booking"."date", "public"."Booking"."start_time", "public"."Booking"."end_time", "public"."Booking"."message", "public"."Booking"."createdAt", "public"."Booking"."updatedAt", "public"."Booking"."type", "public"."Booking"."status", "public"."Booking"."userId" FROM "public"."Booking" WHERE 1=1 ORDER BY "public"."Booking"."createdAt" DESC LIMIT $1 OFFSET $2
+prisma:query COMMIT
+prisma:query COMMIT
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE "public"."Booking"."status" = $1 OFFSET $2) AS "sub"
+prisma:query COMMIT
+ GET /api/admin/bookings 200 in 1195ms
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE "public"."Booking"."status" = $1 OFFSET $2) AS "sub"
+prisma:query BEGIN
+ GET /ru/api/admin/bookings 200 in 1224ms
+prisma:query BEGIN
+prisma:query COMMIT
+prisma:query DEALLOCATE ALL
+prisma:query BEGIN
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query BEGIN
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."createdAt" <= $2) OFFSET $3) AS "sub"
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."User"."id" FROM "public"."User" WHERE 1=1 OFFSET $1) AS "sub"
+prisma:query DEALLOCATE ALL
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."createdAt" <= $2) OFFSET $3) AS "sub"
+prisma:query COMMIT
+prisma:query COMMIT
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."createdAt" <= $2) OFFSET $3) AS "sub"
+prisma:query COMMIT
+prisma:query BEGIN
+prisma:query BEGIN
+prisma:query COMMIT
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."status" = $2 AND "public"."Booking"."type" = $3) OFFSET $4) AS "sub"
+prisma:query BEGIN
+prisma:query COMMIT
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query DEALLOCATE ALL
+prisma:query BEGIN
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."status" = $2 AND "public"."Booking"."type" = $3) OFFSET $4) AS "sub"
+prisma:query DEALLOCATE ALL
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."Booking"."id" FROM "public"."Booking" WHERE ("public"."Booking"."type" = $1 AND "public"."Booking"."status" = $2) OFFSET $3) AS "sub"
+prisma:query SELECT "public"."User"."id", "public"."User"."name", "public"."User"."email", "public"."User"."role"::text, "public"."User"."createdAt" FROM "public"."User" WHERE 1=1 ORDER BY "public"."User"."createdAt" DESC LIMIT $1 OFFSET $2
+prisma:query COMMIT
+prisma:query SELECT SUM("amount") FROM (SELECT "public"."Booking"."amount" FROM "public"."Booking" WHERE ("public"."Booking"."createdAt" >= $1 AND "public"."Booking"."status" = $2) OFFSET $3) AS "sub"
+prisma:query COMMIT
+prisma:query COMMIT
+prisma:query COMMIT
+prisma:query SELECT COUNT(*) AS "_count._all" FROM (SELECT "public"."User"."id" FROM "public"."User" WHERE 1=1 OFFSET $1) AS "sub"
+Admin stats: queries completed in 1498ms
+ GET /api/admin/stats 200 in 2240ms
+ GET /ru/api/admin/stats 200 in 2268ms
+ GET /api/admin/users 200 in 2421ms
+prisma:query COMMIT
+ GET /ru/api/admin/users 200 in 2449ms
+ ⚠ ./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+Critical dependency: the request of a dependency is an expression
+
+Import trace for requested module:
+./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+./node_modules/@supabase/realtime-js/dist/main/index.js
+./node_modules/@supabase/supabase-js/dist/module/index.js
+./lib/supabase/server.ts
+./lib/auth.ts
+./app/api/admin/bookings/route.ts
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."Settings"."id", "public"."Settings"."key", "public"."Settings"."value", "public"."Settings"."type", "public"."Settings"."group", "public"."Settings"."isPublic", "public"."Settings"."createdAt", "public"."Settings"."updatedAt" FROM "public"."Settings" WHERE "public"."Settings"."key" IN ($1,$2) OFFSET $3
+ ⨯ Failed to generate static paths for /[locale]/admin:
+[Error: ENOENT: no such file or directory, open '/Users/k05m0navt/Work/VashaStudio/studio-space/.next/build-manifest.json'] {
+  type: 'Error',
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/k05m0navt/Work/VashaStudio/studio-space/.next/build-manifest.json'
+}
+prisma:query COMMIT
+ GET /ru/admin 200 in 621ms
+ ⚠ ./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+Critical dependency: the request of a dependency is an expression
+
+Import trace for requested module:
+./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+./node_modules/@supabase/realtime-js/dist/main/index.js
+./node_modules/@supabase/supabase-js/dist/module/index.js
+./lib/supabase/server.ts
+./lib/auth.ts
+./app/api/admin/bookings/route.ts
+ ⚠ ./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+Critical dependency: the request of a dependency is an expression
+
+Import trace for requested module:
+./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+./node_modules/@supabase/realtime-js/dist/main/index.js
+./node_modules/@supabase/supabase-js/dist/module/index.js
+./lib/supabase/server.ts
+./lib/auth.ts
+./app/api/admin/bookings/route.ts
+ GET /_next/static/css/app/%5Blocale%5D/layout.css?v=1757435675871 404 in 1202ms
+ GET /_next/static/css/app/%5Blocale%5D/layout.css?v=1757435675871 404 in 27ms
+ ⨯ [Error: ENOENT: no such file or directory, open '/Users/k05m0navt/Work/VashaStudio/studio-space/.next/server/app/[locale]/api/admin/stats/route.js'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/k05m0navt/Work/VashaStudio/studio-space/.next/server/app/[locale]/api/admin/stats/route.js',
+  page: '/ru/api/admin/stats'
+}
+ ⚠ ./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+Critical dependency: the request of a dependency is an expression
+
+Import trace for requested module:
+./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+./node_modules/@supabase/realtime-js/dist/main/index.js
+./node_modules/@supabase/supabase-js/dist/module/index.js
+./lib/supabase/server.ts
+./lib/auth.ts
+./app/api/admin/bookings/route.ts
+ ⨯ [Error: ENOENT: no such file or directory, open '/Users/k05m0navt/Work/VashaStudio/studio-space/.next/server/app/[locale]/api/admin/users/route.js'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/k05m0navt/Work/VashaStudio/studio-space/.next/server/app/[locale]/api/admin/users/route.js',
+  page: '/ru/api/admin/users'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open '/Users/k05m0navt/Work/VashaStudio/studio-space/.next/server/app/[locale]/api/admin/bookings/route.js'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/k05m0navt/Work/VashaStudio/studio-space/.next/server/app/[locale]/api/admin/bookings/route.js',
+  page: '/ru/api/admin/bookings'
+}
+ ⚠ ./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+Critical dependency: the request of a dependency is an expression
+
+Import trace for requested module:
+./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+./node_modules/@supabase/realtime-js/dist/main/index.js
+./node_modules/@supabase/supabase-js/dist/module/index.js
+./lib/supabase/server.ts
+./lib/auth.ts
+./app/api/admin/bookings/route.ts
+ ⚠ ./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+Critical dependency: the request of a dependency is an expression
+
+Import trace for requested module:
+./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+./node_modules/@supabase/realtime-js/dist/main/index.js
+./node_modules/@supabase/supabase-js/dist/module/index.js
+./lib/supabase/server.ts
+./lib/auth.ts
+./app/api/admin/bookings/route.ts
+ ⚠ ./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+Critical dependency: the request of a dependency is an expression
+
+Import trace for requested module:
+./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+./node_modules/@supabase/realtime-js/dist/main/index.js
+./node_modules/@supabase/supabase-js/dist/module/index.js
+./lib/supabase/server.ts
+./lib/auth.ts
+./app/api/admin/users/route.ts
+Time 4ms
+Time 2ms
+Time 1ms
+ GET /ru/api/admin/stats 500 in 2226ms
+ GET /ru/api/admin/users 500 in 2227ms
+ GET /ru/api/admin/bookings 500 in 2228ms
+ ⨯ [Error: Cannot find module './vendor-chunks/@supabase.js'
+Require stack:
+- /Users/k05m0navt/Work/VashaStudio/studio-space/.next/server/webpack-runtime.js
+- /Users/k05m0navt/Work/VashaStudio/studio-space/.next/server/app/[locale]/admin/page.js
+- /Users/k05m0navt/Work/VashaStudio/studio-space/node_modules/next/dist/server/require.js
+- /Users/k05m0navt/Work/VashaStudio/studio-space/node_modules/next/dist/server/load-components.js
+- /Users/k05m0navt/Work/VashaStudio/studio-space/node_modules/next/dist/build/utils.js
+- /Users/k05m0navt/Work/VashaStudio/studio-space/node_modules/next/dist/server/dev/static-paths-worker.js
+- /Users/k05m0navt/Work/VashaStudio/studio-space/node_modules/next/dist/compiled/jest-worker/processChild.js] {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/ru/admin'
+}
+Time 0ms
+ GET /ru/admin 500 in 2230ms
+ ⨯ [Error: Cannot find module './vendor-chunks/@supabase.js'
+Require stack:
+- /Users/k05m0navt/Work/VashaStudio/studio-space/.next/server/webpack-runtime.js
+- /Users/k05m0navt/Work/VashaStudio/studio-space/.next/server/app/[locale]/admin/page.js
+- /Users/k05m0navt/Work/VashaStudio/studio-space/node_modules/next/dist/server/require.js
+- /Users/k05m0navt/Work/VashaStudio/studio-space/node_modules/next/dist/server/load-components.js
+- /Users/k05m0navt/Work/VashaStudio/studio-space/node_modules/next/dist/build/utils.js
+- /Users/k05m0navt/Work/VashaStudio/studio-space/node_modules/next/dist/server/dev/static-paths-worker.js
+- /Users/k05m0navt/Work/VashaStudio/studio-space/node_modules/next/dist/compiled/jest-worker/processChild.js] {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/ru/admin'
+}
+Time 1ms
+ GET /ru/admin 500 in 598ms
+ ⨯ [Error: Cannot find module './vendor-chunks/@supabase.js'
+Require stack:
+- /Users/k05m0navt/Work/VashaStudio/studio-space/.next/server/webpack-runtime.js
+- /Users/k05m0navt/Work/VashaStudio/studio-space/.next/server/app/[locale]/admin/page.js
+- /Users/k05m0navt/Work/VashaStudio/studio-space/node_modules/next/dist/server/require.js
+- /Users/k05m0navt/Work/VashaStudio/studio-space/node_modules/next/dist/server/load-components.js
+- /Users/k05m0navt/Work/VashaStudio/studio-space/node_modules/next/dist/build/utils.js
+- /Users/k05m0navt/Work/VashaStudio/studio-space/node_modules/next/dist/server/dev/static-paths-worker.js
+- /Users/k05m0navt/Work/VashaStudio/studio-space/node_modules/next/dist/compiled/jest-worker/processChild.js] {
+  type: 'Error',
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/ru/admin'
+}
+Time 0ms
+ GET /ru/admin 500 in 556ms
+ ⚠ ./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+Critical dependency: the request of a dependency is an expression
+
+Import trace for requested module:
+./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+./node_modules/@supabase/realtime-js/dist/main/index.js
+./node_modules/@supabase/supabase-js/dist/module/index.js
+./lib/supabase/server.ts
+./lib/auth.ts
+./app/api/admin/users/route.ts
+ ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ ⚠ ./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+Critical dependency: the request of a dependency is an expression
+
+Import trace for requested module:
+./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+./node_modules/@supabase/realtime-js/dist/main/index.js
+./node_modules/@supabase/supabase-js/dist/module/index.js
+./lib/supabase/server.ts
+./lib/auth.ts
+./app/api/admin/users/route.ts
+ ⚠ ./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+Critical dependency: the request of a dependency is an expression
+
+Import trace for requested module:
+./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+./node_modules/@supabase/realtime-js/dist/main/index.js
+./node_modules/@supabase/supabase-js/dist/module/index.js
+./lib/supabase/server.ts
+./lib/auth.ts
+./app/api/admin/bookings/route.ts
+ ⚠ ./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+Critical dependency: the request of a dependency is an expression
+
+Import trace for requested module:
+./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+./node_modules/@supabase/realtime-js/dist/main/index.js
+./node_modules/@supabase/supabase-js/dist/module/index.js
+./lib/supabase/server.ts
+./lib/auth.ts
+./app/api/admin/bookings/route.ts
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+ ✓ Compiled /_error in 923ms (2745 modules)
+ ✓ Compiled in 770ms (2745 modules)
+ ✓ Compiled in 221ms (1327 modules)
+ ✓ Compiled in 193ms (1327 modules)
+ ✓ Compiled in 338ms (2745 modules)
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 866ms (2736 modules)
+ GET /ru 404 in 1220ms
+ GET /_next/static/chunks/app-pages-internals.js 404 in 46ms
+ GET /_next/static/chunks/main-app.js?v=1757503806325 404 in 47ms
+ ⨯ [Error: ENOENT: no such file or directory, open '/Users/k05m0navt/Work/VashaStudio/studio-space/.next/server/app/[locale]/page.js'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/k05m0navt/Work/VashaStudio/studio-space/.next/server/app/[locale]/page.js',
+  page: '/ru'
+}
+ ⨯ [Error: ENOENT: no such file or directory, open '/Users/k05m0navt/Work/VashaStudio/studio-space/.next/server/pages/_document.js'] {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/Users/k05m0navt/Work/VashaStudio/studio-space/.next/server/pages/_document.js'
+}
+Time 1ms
+ GET /ru 500 in 1656ms
+ ✓ Compiled in 5.7s (2745 modules)
+ ✓ Compiled in 1210ms (2745 modules)
+ ✓ Compiled in 1747ms (2745 modules)
+ ✓ Compiled in 1435ms (1327 modules)
+ ✓ Compiled in 399ms (1327 modules)
+ ✓ Compiled in 928ms (2745 modules)
+ ✓ Compiled in 436ms (2745 modules)
+ ✓ Compiled in 565ms (2745 modules)
+ ✓ Compiled in 797ms (2745 modules)
+ ✓ Compiled in 264ms (1327 modules)
+ ✓ Compiled in 304ms (1327 modules)
+ ✓ Compiled in 250ms (1327 modules)
+ ○ Compiling /[locale]/api/bookings/confirm ...
+ ✓ Compiled /[locale]/api/bookings/confirm in 705ms (1434 modules)
+ ⚠ ./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+Critical dependency: the request of a dependency is an expression
+
+Import trace for requested module:
+./node_modules/@supabase/realtime-js/dist/main/RealtimeClient.js
+./node_modules/@supabase/realtime-js/dist/main/index.js
+./node_modules/@supabase/supabase-js/dist/module/index.js
+./lib/supabase/server.ts
+./lib/auth.ts
+./app/api/bookings/confirm/route.ts
+ POST /api/bookings/confirm 401 in 493ms
+ POST /en/api/bookings/confirm 401 in 1292ms
+ ○ Compiling /api/bookings/confirm ...
+ ✓ Compiled /api/bookings/confirm in 724ms (2745 modules)
+ ✓ Compiled in 1295ms (2745 modules)
+ ✓ Compiled in 296ms (1327 modules)
+ ✓ Compiled in 500ms (1327 modules)
+ ✓ Compiled in 300ms (1327 modules)
+ ✓ Compiled in 163ms (1327 modules)
+ ✓ Compiled /[locale]/api/auth/login in 380ms (2747 modules)
+ ✓ Compiled /api/auth/login in 364ms (2838 modules)
+prisma:query BEGIN
+prisma:query DEALLOCATE ALL
+prisma:query SELECT "public"."User"."id", "public"."User"."email", "public"."User"."name", "public"."User"."role"::text, "public"."User"."password", "public"."User"."createdAt", "public"."User"."updatedAt" FROM "public"."User" WHERE ("public"."User"."email" = $1 AND 1=1) LIMIT $2 OFFSET $3
+prisma:query COMMIT
+ POST /api/auth/login 401 in 2452ms
+ POST /en/api/auth/login 401 in 3221ms
+ ✓ Compiled in 1596ms (2852 modules)
+ ✓ Compiled in 573ms (2852 modules)
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+ ✓ Compiled in 347ms (2850 modules)
+ ✓ Compiled in 357ms (2745 modules)
+ ✓ Compiled in 1328ms (2745 modules)
+ ✓ Compiled in 760ms (2745 modules)
+ ✓ Compiled in 2.3s (2745 modules)
+ ✓ Compiled in 203ms (1327 modules)
+ ✓ Compiled in 192ms (1327 modules)
+ ✓ Compiled in 576ms (2745 modules)
+ ✓ Compiled in 579ms (2745 modules)
+ ✓ Compiled in 322ms (2745 modules)
+ ✓ Compiled in 394ms (2745 modules)
+ ✓ Compiled in 329ms (2745 modules)
+ ✓ Compiled in 571ms (2745 modules)
+ ✓ Compiled in 447ms (2745 modules)
+ ✓ Compiled in 711ms (2745 modules)
+ ✓ Compiled in 325ms (2745 modules)
+ ✓ Compiled in 357ms (2745 modules)
+ ✓ Compiled in 466ms (2745 modules)
+ ✓ Compiled in 521ms (2745 modules)
+ ✓ Compiled in 382ms (2745 modules)
+ ✓ Compiled in 536ms (2745 modules)
+ ✓ Compiled in 509ms (2745 modules)
+ ✓ Compiled in 475ms (2745 modules)
+ ✓ Compiled in 330ms (2745 modules)
+ ✓ Compiled in 381ms (2745 modules)
+ ✓ Compiled in 336ms (2745 modules)
+ ✓ Compiled in 1530ms (2745 modules)
+ ✓ Compiled in 194ms (1327 modules)
+ ✓ Compiled in 211ms (1327 modules)
+ ✓ Compiled in 481ms (2745 modules)
+ ✓ Compiled in 422ms (2745 modules)
+ ✓ Compiled in 834ms (2745 modules)
+ ✓ Compiled in 206ms (1327 modules)
+ ✓ Compiled in 331ms (1327 modules)
+ ✓ Compiled in 386ms (2745 modules)

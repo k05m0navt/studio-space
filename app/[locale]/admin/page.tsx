@@ -383,6 +383,40 @@ export default function AdminDashboard() {
     }
   }, [t, handleUnauthorized]);
 
+  // Persist booking status change to server and refresh UI
+  async function persistBookingStatus(id: string, status: 'confirmed' | 'cancelled') {
+    try {
+      const locale = window.location.pathname.split('/')[1] || 'en';
+      const res = await authorizedFetch(`/${locale}/api/bookings/confirm`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ bookingId: id, status }),
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        handleUnauthorized();
+        return;
+      }
+
+      if (!res.ok) {
+        const body = await res.text().catch(() => null);
+        let msg = t('messages.bookingUpdateFailed');
+        try { const j = body ? JSON.parse(body) : null; msg = j?.message || j?.error || msg; } catch {}
+        toast.error(msg);
+        return;
+      }
+
+      const data = await res.json();
+      const updatedBooking = data?.booking ?? data;
+      setBookings(prev => prev.map(b => (b.id === id ? { ...b, ...(updatedBooking as any) } : b)));
+      toast.success(status === 'confirmed' ? t('messages.bookingConfirmed') : t('messages.bookingCancelled'));
+      try { await loadDashboardData(); } catch (e) { console.warn('Failed to refresh dashboard after booking update', e); }
+    } catch (err) {
+      console.error('persistBookingStatus error:', err);
+      toast.error(t('messages.bookingUpdateFailed'));
+    }
+  }
+
   useEffect(() => {
     const adminAuth = localStorage.getItem("adminAuth");
     if (adminAuth === "authenticated") {
@@ -754,29 +788,13 @@ export default function AdminDashboard() {
                                           {t('bookingManagement.viewDetails')}
                                         </DropdownMenuItem>
                                         {booking.status === 'pending' && (
-                                          <DropdownMenuItem
-                                            onClick={() => {
-                                              const updatedBookings = bookings.map(b =>
-                                                b.id === booking.id ? { ...b, status: 'confirmed' as const } : b
-                                              );
-                                              setBookings(updatedBookings);
-                                              toast.success(t('messages.bookingConfirmed'));
-                                            }}
-                                          >
+                                          <DropdownMenuItem onClick={() => persistBookingStatus(booking.id, 'confirmed')}>
                                             <CheckCircle className="mr-2 h-4 w-4" />
                                             {t('bookingManagement.confirmBooking')}
                                           </DropdownMenuItem>
                                         )}
                                         {booking.status !== 'cancelled' && (
-                                          <DropdownMenuItem
-                                            onClick={() => {
-                                              const updatedBookings = bookings.map(b =>
-                                                b.id === booking.id ? { ...b, status: 'cancelled' as const } : b
-                                              );
-                                              setBookings(updatedBookings);
-                                              toast.success(t('messages.bookingCancelled'));
-                                            }}
-                                          >
+                                          <DropdownMenuItem onClick={() => persistBookingStatus(booking.id, 'cancelled')}>
                                             <XCircle className="mr-2 h-4 w-4" />
                                             {t('bookingManagement.cancelBooking')}
                                           </DropdownMenuItem>

@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { requireRole } from '@/lib/auth';
+import { invalidateStatsCache } from '@/lib/statsCache';
 
 interface BookingData {
   id: string;
@@ -13,9 +14,12 @@ interface BookingData {
 }
 
 // Protected endpoint for confirming bookings
-export const POST = requireRole(['ADMIN', 'MODERATOR'])(async ({ request }) => {
+export const POST = requireRole(['ADMIN', 'MODERATOR'])(async ({ user, request }) => {
   try {
-    const { bookingId, status } = await request.json();
+    const body = await request.json();
+    const { bookingId, status } = body;
+
+    console.info('Bookings.confirm called by user:', { userId: user?.id, bookingId, status });
 
     if (!bookingId || !status) {
       return new Response(
@@ -37,6 +41,11 @@ export const POST = requireRole(['ADMIN', 'MODERATOR'])(async ({ request }) => {
         },
       },
     });
+
+    console.info('Booking status updated:', { bookingId, status, updatedBookingId: updatedBooking?.id });
+
+    // Invalidate stats cache so stats endpoint recomputes on next request
+    try { invalidateStatsCache(); } catch (e) { console.warn('Failed to invalidate stats cache', e); }
 
     // Here you would integrate with an email service like Nodemailer, SendGrid, etc.
     // For now, we'll just simulate sending an email

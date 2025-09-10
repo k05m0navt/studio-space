@@ -23,11 +23,11 @@ const ServiceConfigSchema = z.object({
 
 // Defaults
 const DEFAULT = {
-  studio: { enabled: true, price: 0, currency: 'USD', unit: 'hour', address: '', images: [] as string[] },
-  coworking: { enabled: true, price: 0, currency: 'USD', unit: 'hour', address: '', images: [] as string[] },
+  studio: { enabled: true, price: 0, currency: 'RUB', unit: 'hour', address: '', images: [] as string[] },
+  coworking: { enabled: true, price: 0, currency: 'RUB', unit: 'hour', address: '', images: [] as string[] },
 };
 
-const ALLOWED_CURRENCIES = ['USD','EUR','GBP','UAH'];
+const ALLOWED_CURRENCIES = ['USD','EUR','GBP','UAH','RUB'];
 const ALLOWED_UNITS = ['hour','half-day','day'];
 const MAX_UPLOAD_BYTES = 5 * 1024 * 1024; // 5 MB
 

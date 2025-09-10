@@ -18,7 +18,7 @@ import { Trash2, Edit } from "lucide-react";
 import { OptimizedImage } from "@/components/optimized-image";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
-const CURRENCIES = ['USD','EUR','GBP','UAH'];
+const CURRENCIES = ['USD','EUR','GBP','UAH','RUB'];
 const UNITS = ['hour','half-day','day'];
 
 interface ServiceDetails {
@@ -65,9 +65,9 @@ const serviceName = service === 'studio' ? t ? t('services.studio.name') : 'Stud
 
   // Edit dialog state
   const [open, setOpen] = useState(false);
-  const initial = config ? config[service] : { price: 0, currency: 'USD', unit: 'hour', address: '', images: [] as string[] };
+  const initial = config ? config[service] : { price: 0, currency: 'RUB', unit: 'hour', address: '', images: [] as string[] };
   const [price, setPrice] = useState<string>(String(initial?.price ?? ''));
-  const [currency, setCurrency] = useState<string>(initial?.currency ?? 'USD');
+  const [currency, setCurrency] = useState<string>(initial?.currency ?? 'RUB');
   const [unit, setUnit] = useState<string>(initial?.unit ?? 'hour');
   const [address, setAddress] = useState<string>(initial?.address ?? '');
   const [images, setImages] = useState<string[]>(initial?.images ?? []);

@@ -85,13 +85,17 @@ const t0 = Date.now();
       todayBookings,
       weeklyGrowth: Math.round(weeklyGrowth * 10) / 10
     };
+    // Cache for 30s
     _statsCache = { data: result, expiresAt: Date.now() + 30 * 1000 };
     return new Response(JSON.stringify(result), { status: 200, headers: { 'Content-Type': 'application/json' } });
   } catch (error) {
     console.error("Error fetching stats:", error);
-    return new Response(
-      JSON.stringify({ error: "Failed to fetch stats" }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+    if (_statsCache && _statsCache.data) {
+      // Return stale cached data with 200 but note in logs that it's stale
+      console.warn('Returning stale stats cache due to DB error');
+      return new Response(JSON.stringify({ ..._statsCache.data, stale: true }), { status: 200, headers: { 'Content-Type': 'application/json' } });
+    }
+    // No cache available — return 503 to indicate upstream dependency is unavailable
+    return new Response(JSON.stringify({ error: 'Service temporarily unavailable' }), { status: 503, headers: { 'Content-Type': 'application/json' } });
   }
 }); 
