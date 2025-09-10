@@ -378,6 +378,10 @@
       "service": "Service",
       "dateTime": "Date & Time",
       "contact": "Contact",
+      "price": "Total",
+      "pricePerUnit": "{rate} / {unit}",
+      "duration": "{hours} hours",
+      "previewNote": "Preview only — final amount will be calculated on the server",
       "additionalMessage": "Additional Message"
     },
     "navigation": {

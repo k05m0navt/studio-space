@@ -428,6 +428,10 @@
       "service": "Услуга",
       "dateTime": "Дата и время",
       "contact": "Контакты",
+      "price": "Итого",
+      "pricePerUnit": "{rate} / {unit}",
+      "duration": "{hours} часов",
+      "previewNote": "Предварительный расчёт — окончательная сумма будет рассчитана на сервере",
       "additionalMessage": "Дополнительное сообщение"
     },
     "navigation": {

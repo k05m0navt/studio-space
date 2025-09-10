@@ -128,6 +128,9 @@
 - IMPLEMENT MODE (no creative phases required)
 
 ## Reflection Highlights (Mid-implementation)
+
+- [x] Reflection complete: Booking pricing implemented and reviewed (2025-09-10)
+
 - **What Went Well**: RBAC enforced across admin and bookings GET; Prisma wrapper adopted in APIs; availability API live and consumed; locale-aware admin proxies in place.
 - **Challenges**: `lib/auth.ts` uses its own Prisma client; auth routes not split; booking UI duplicated; gallery not using next/image.
 - **Lessons Learned**: Consolidate data/auth layers first; prefer dedicated route files over pathname branching; standardize response shape early.

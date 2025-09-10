@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { requireRole } from '@/lib/auth';
-
+import { computeHours, computeAmount } from '@/lib/pricing';
 
 
 const bookingSchema = z.object({
@@ -170,26 +170,20 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Compute amount based on service rate and duration
-    // Parse start/end times like '09:00'
+    // Compute amount based on service rate and duration using shared pricing util
     let amount: string | undefined = undefined;
     let currency: string | undefined = undefined;
     try {
       const rateSetting = await prisma.settings.findUnique({ where: { key: `services.${validatedData.type}.price` } });
       const currencySetting = await prisma.settings.findUnique({ where: { key: `services.${validatedData.type}.currency` } });
+      const unitSetting = await prisma.settings.findUnique({ where: { key: `services.${validatedData.type}.unit` } });
       const rate = rateSetting?.value ? Number(rateSetting.value) : 0;
       currency = currencySetting?.value ?? 'RUB';
+      const unit = (unitSetting?.value as any) ?? 'hour';
 
       if (validatedData.start_time && validatedData.end_time) {
-        const [sh, sm] = validatedData.start_time.split(':').map(Number);
-        const [eh, em] = validatedData.end_time.split(':').map(Number);
-        const start = new Date();
-        start.setHours(sh, sm, 0, 0);
-        const end = new Date();
-        end.setHours(eh, em, 0, 0);
-        const diffMs = end.getTime() - start.getTime();
-        const hours = Math.max(0, diffMs / (1000 * 60 * 60));
-        const computed = Number((rate * hours).toFixed(2));
+        const hours = computeHours(validatedData.start_time, validatedData.end_time);
+        const computed = computeAmount({ unit: unit as any, rate, hours });
         amount = String(computed);
       }
     } catch (err) {
