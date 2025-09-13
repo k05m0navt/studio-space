@@ -99,6 +99,7 @@ interface User {
 interface Stats {
   totalBookings: number;
   monthlyRevenue: number;
+  currency?: string;
   activeMembers: number;
   studioUtilization: number;
   pendingBookings: number;
@@ -303,6 +304,7 @@ export default function AdminDashboard() {
   const [stats, setStats] = useState<Stats>({
     totalBookings: 0,
     monthlyRevenue: 0,
+    currency: 'RUB',
     activeMembers: 0,
     studioUtilization: 0,
     pendingBookings: 0,
@@ -350,6 +352,7 @@ export default function AdminDashboard() {
       let statsData: Stats = {
         totalBookings: 0,
         monthlyRevenue: 0,
+        currency: 'RUB',
         activeMembers: 0,
         studioUtilization: 0,
         pendingBookings: 0,
@@ -574,7 +577,7 @@ export default function AdminDashboard() {
                     />
                     <StatsCard
                       title={t('stats.monthlyRevenue')}
-                      value={`$${stats.monthlyRevenue.toLocaleString()}`}
+                      value={new Intl.NumberFormat(undefined, { style: 'currency', currency: stats.currency || 'RUB' }).format(stats.monthlyRevenue)}
                       icon={DollarSign}
                       trend={8.2}
                       trendLabel={t('stats.thisMonth')}

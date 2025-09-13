@@ -38,7 +38,9 @@ const t0 = Date.now();
       coworkingMonthlyCount,
       studioBookings,
       // aggregate sum for monthly revenue (may be null if amount not set)
-      monthlyAmountAggregate
+      monthlyAmountAggregate,
+      studioCurrencySetting,
+      coworkingCurrencySetting
     ] = await Promise.all([
       prisma.booking.count(),
       prisma.booking.count({ where: { status: 'pending' } }),
@@ -55,8 +57,13 @@ const t0 = Date.now();
       prisma.booking.aggregate({
         _sum: { amount: true },
         where: { createdAt: { gte: startOfMonth }, status: 'confirmed' }
-      })
+      }),
+      prisma.settings.findUnique({ where: { key: 'services.studio.currency' } }),
+      prisma.settings.findUnique({ where: { key: 'services.coworking.currency' } })
     ]);
+
+    // Determine currency preference: prefer studio, then coworking, then default to RUB
+    const currency = (studioCurrencySetting?.value as string) ?? (coworkingCurrencySetting?.value as string) ?? 'RUB';
 
     const weeklyGrowth = twoWeeksAgoBookings > 0
       ? ((lastWeekBookings - twoWeeksAgoBookings) / twoWeeksAgoBookings) * 100
@@ -78,6 +85,7 @@ const t0 = Date.now();
     const result = {
       totalBookings,
       monthlyRevenue,
+      currency,
       activeMembers: activeUsers,
       studioUtilization: totalBookings > 0 ? (studioBookings / totalBookings) * 100 : 0,
       pendingBookings,
