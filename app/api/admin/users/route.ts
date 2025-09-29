@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/auth";
 
-export const GET = requireRole(['ADMIN'])(async ({ user, request }) => {
+export const GET = requireRole(['ADMIN'])(async ({ request }) => {
   try {
     const url = new URL(request.url);
     const page = Math.max(1, Number(url.searchParams.get('page') || '1'));

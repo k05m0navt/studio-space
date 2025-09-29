@@ -1,19 +1,4 @@
-import { NextRequest, NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import { z } from 'zod';
-import { prisma } from '@/lib/prisma';
-
-const loginSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
-});
-
-const registerSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(6),
-  name: z.string().min(2),
-});
+import { NextResponse } from 'next/server';
 
 /**
  * @swagger
@@ -60,7 +45,7 @@ const registerSchema = z.object({
  *       400:
  *         description: Validation error
  */
-export async function POST(request: NextRequest) {
+export async function POST() {
   return NextResponse.json(
     { error: 'Invalid endpoint. Use /api/auth/login or /api/auth/register' },
     { status: 404 }

@@ -15,17 +15,19 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   };
 }
 
-export default async function BookingSuccessPage(props: any) {
-  // props may contain promises for params and searchParams in Next.js app router
-  const { params, searchParams } = await props;
+type PageProps = {
+  params: Promise<{ locale: string }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}
 
-  const resolvedParams = params ? await params : undefined;
-  const resolvedSearchParams = searchParams ? await searchParams : undefined;
+export default async function BookingSuccessPage(props: PageProps) {
+  const params = await props.params;
+  const searchParams = await props.searchParams;
 
-  const locale = resolvedParams?.locale ?? 'en';
+  const locale = params.locale;
   const t = await getTranslations({ locale, namespace: 'bookingSuccess' });
 
-  const sp = resolvedSearchParams as Record<string, string | string[]> | undefined;
+  const sp = searchParams as Record<string, string | string[]> | undefined;
 
   const rawPaymentUrl = Array.isArray(sp?.paymentUrl)
     ? sp?.paymentUrl[0]
@@ -100,6 +102,7 @@ export default async function BookingSuccessPage(props: any) {
               {paymentUrl ? (
                 <div className="flex flex-col sm:flex-row items-center gap-4">
                   {qrDataUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img src={qrDataUrl} alt={t('payment.qrAlt')} className="w-48 h-48 mx-auto sm:mx-0 rounded-md shadow" />
                   ) : (
                     <p className="text-sm text-muted-foreground">{t('payment.instruction')}</p>

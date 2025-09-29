@@ -3,6 +3,7 @@ import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { prisma } from '@/lib/prisma';
+import { Role } from '@/app/generated/prisma';
 
 const schema = z.object({
   email: z.string().email(),
@@ -19,7 +20,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 
-    const hasAdmin = await prisma.user.findFirst({ where: { role: 'ADMIN' as any } });
+    const hasAdmin = await prisma.user.findFirst({ where: { role: Role.ADMIN } });
     if (hasAdmin) {
       return NextResponse.json({ error: 'Admin already exists' }, { status: 400 });
     }
@@ -29,7 +30,7 @@ export async function POST(request: NextRequest) {
 
     const hashedPassword = await bcrypt.hash(password, 12);
     const user = await prisma.user.create({
-      data: { email, password: hashedPassword, name, role: 'ADMIN' as any },
+      data: { email, password: hashedPassword, name, role: Role.ADMIN },
       select: { id: true, email: true, name: true, role: true }
     });
 

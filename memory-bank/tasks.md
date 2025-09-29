@@ -1,724 +1,404 @@
 # Tasks (Single Source of Truth)
 
-- [x] Initialize Memory Bank structure
-- [x] Gather user goal/task for this session: "Analyze entire app and help finish it"
-- [x] Determine complexity level: Level 3 (multi-feature refactor)
-- [x] If Level 2-4: switch to PLAN → CREATIVE → IMPLEMENT → QA
-## Backlog to finish app (prioritized)
-1. Unify Prisma client usage via `lib/prisma` across all API routes.
-
-   - Include `lib/auth.ts` to use shared `prisma` wrapper.
-
-2. Protect admin API (`app/api/admin/*`) with `requireRole([`ADMIN])`; standardize JSON shape.
-3. Implement real admin login using `POST /api/auth/login`; store JWT; attach Authorization header in admin fetches.
-4. Refactor `app/[locale]/book/page.tsx` to reuse `components/booking-form` or extract shared form; wire to `/api/bookings`.
-5. Internationalize `components/booking-form.tsx` and switch to localized router, fix redirect path.
-6. Replace Gallery images with `next/image` or `OptimizedImage`; move assets to WebP with sizes.
-7. Use availability API in booking UI; remove hardcoded slots.
-8. Standardize Prisma import in `app/api/auth/route.ts` to use `@/lib/prisma`.
-9. Add tests for booking APIs and admin stats with Jest.
-10. Audit CSP and security headers; remove unsafe-eval if feasible.
-
-# Feature Planning Document: Finish Studio Space MVP
-
-## Requirements Analysis
-- Core Requirements:
-  - Secure admin endpoints with JWT auth and RBAC via `requireRole([ADMIN])`.
-  - Unify Prisma usage through `@/lib/prisma` to prevent multiple clients.
-  - Single, i18n-ready booking flow using `/api/bookings` and `/api/bookings/availability`.
-  - Real admin login via `/api/auth/login`; persist JWT; attach `Authorization: Bearer <token>` for admin fetches.
-  - Consistent i18n navigation and locale-aware redirects.
-  - Image optimization with `next/image` or `OptimizedImage` and WebP assets.
-- Technical Constraints:
-  - Next.js 15 + React 19; App Router with RSC preference.
-  - Prisma client output at `app/generated/prisma`; wrapper at `lib/prisma` with `DIRECT_URL`.
-  - next-intl routing (`/en`, `/ru` segments). PWA + CSP headers in `middleware.ts`.
-
-## Component Analysis
-- Affected Components/Routes:
-  - API: `app/api/admin/{bookings,users,stats}/route.ts`, `app/api/bookings/*`, `app/api/auth/*`.
-  - Proxies: `app/[locale]/api/admin/*` (keep as thin proxies).
-  - Lib: `lib/prisma.ts`, `lib/auth.ts`.
-  - UI: `app/[locale]/admin/page.tsx`, `app/[locale]/book/page.tsx`, `components/booking-form.tsx`, `app/[locale]/gallery/page.tsx`.
-
-## Design Decisions
-- Architecture:
-  - Use a single Prisma instance from `lib/prisma` in all routes.
-  - Split auth endpoints into dedicated files: `app/api/auth/login/route.ts` and `app/api/auth/register/route.ts`.
-  - Wrap admin APIs with `requireRole([ADMIN])` (optionally allow `[ADMIN,MODERATOR]`).
-  - Use i18n router (`@/i18n/routing`) for locale-aware navigation from client components.
-- UI/UX:
-  - Replace duplicated booking page form with `components/booking-form.tsx` or extract shared subcomponents.
-  - Switch gallery images to `OptimizedImage`/`next/image` with sizes and lazy loading.
-- Algorithms:
-  - Availability computed server-side from existing bookings; client consumes `unavailableSlots` only.
-
-## Implementation Strategy
-1. Security & Data Layer (Phase 1)
-   - Refactor all API routes to import `prisma` from `@/lib/prisma` (remove `new PrismaClient()`).
-   - Create `app/api/auth/login/route.ts` and `app/api/auth/register/route.ts` by moving logic out of `app/api/auth/route.ts` and fixing imports to `@/lib/prisma`.
-   - Protect `app/api/admin/*` with `requireRole([ADMIN])`; standardize JSON responses and error handling.
-2. Booking Flow (Phase 2)
-   - Update `app/[locale]/book/page.tsx` to render `<BookingForm />` (remove duplicate logic) or extract shared pieces.
-   - Internationalize `components/booking-form.tsx` using `useTranslations` and i18n `useRouter` for success redirect (e.g., `router.push(/booking-success)` locale-aware).
-   - Ensure booking UI uses `/api/bookings/availability` results to disable time slots (remove hard-coded examples).
-3. UX/Performance (Phase 3)
-   - Replace plain `<img>`/`motion.img` usage in `app/[locale]/gallery/page.tsx` with `OptimizedImage`/`next/image` and confirm WebP assets/sizes.
-   - Minor accessibility: ensure primary CTAs are focus-visible, add `aria-*` where missing.
-4. QA (Phase 4)
-   - Add Jest + RTL config; unit tests for `POST /api/bookings` (validation/conflict), admin stats aggregation, and auth login flow.
-   - Tighten CSP (attempt to remove `unsafe-eval`/inline where feasible, or scope to required origins).
-
-## Detailed Steps
-- Step A: Prisma unification
-  - Files: `app/api/**/route.ts`, `app/[locale]/api/**/route.ts`, `app/api/auth/*`.
-  - Replace `import { PrismaClient } from ...` + `new PrismaClient()` with `import { prisma } from @/lib/prisma`.
-- Step B: Auth endpoints split
-  - Create `app/api/auth/login/route.ts`, `app/api/auth/register/route.ts` using logic from current `app/api/auth/route.ts` and `zod` validation.
-  - Remove path-based branching on `pathname`; ensure each route returns `{ token, user }` and persists `Session`.
-- Step C: Admin API protection
-  - Wrap handlers in `requireRole([ADMIN])`; return 401/403 consistently; document expected response shapes.
-- Step D: Admin UI wiring
-  - In `app/[locale]/admin/page.tsx`, replace local credential check with real login flow calling `/api/auth/login` and store JWT in `localStorage`.
-  - For data fetches, add `Authorization` header using stored token; handle 401 by clearing token and showing login.
-- Step E: Booking form unification + i18n
-  - Render `components/booking-form.tsx` in `app/[locale]/book/page.tsx` and remove duplicate form code.
-  - Update `components/booking-form.tsx` to use `useTranslations` and i18n `useRouter` from `@/i18n/routing` for locale-aware navigation to `/booking-success`.
-- Step F: Gallery optimization
-  - Use `OptimizedImage` with sizes; ensure assets in `public/images/gallery/*.webp` and include width/height or responsive sizes.
-- Step G: Tests & CSP
-  - Add tests for bookings, admin stats, and auth; refine CSP to drop `unsafe-eval` if compatible with current libs.
-
-## Dependencies
-- Environment: `DIRECT_URL`, `JWT_SECRET` must be set.
-- Packages: Jest + RTL (dev) if tests are added.
-
-## Challenges & Mitigations
-- Multiple Prisma clients creating connection churn → unify via `lib/prisma`.
-- Auth route path design mismatch (`/api/auth/route.ts` vs `/api/auth/login`) → split into dedicated routes.
-- CSP constraints with animations → if removal of `unsafe-inline` breaks, scope rules minimally.
-
-## Creative Phases Required
-- UI/UX Design: No (minor edits only).
-- Architecture: No (standard refactor).
-- Algorithm: No.
-
-## Status
-- [x] Initialization complete
-- [x] Planning complete
-- [x] Technology validation complete
-- [x] Implementation complete
-- [x] Reflection complete
-- [x] Archiving complete
-
-## Technology Stack
-- Framework: Next.js 15 (App Router, RSC priority)
-- Language: TypeScript
-- Database: PostgreSQL via Prisma
-- Auth: JWT + Prisma `Session` model, optional Supabase later
-- i18n: next-intl
-
-## Technology Validation Checkpoints
-- [x] Build runs after Prisma import unification
-- [x] Auth routes respond at `/api/auth/login` and `/api/auth/register`
-- [x] Admin endpoints enforce RBAC
-- [ ] Booking flow works end-to-end in both locales
-
-## NEXT RECOMMENDED MODE
-- IMPLEMENT MODE (no creative phases required)
-
-## Reflection Highlights (Mid-implementation)
-
-- [x] Reflection complete: Booking pricing implemented and reviewed (2025-09-10)
-
-- **What Went Well**: RBAC enforced across admin and bookings GET; Prisma wrapper adopted in APIs; availability API live and consumed; locale-aware admin proxies in place.
-- **Challenges**: `lib/auth.ts` uses its own Prisma client; auth routes not split; booking UI duplicated; gallery not using next/image.
-- **Lessons Learned**: Consolidate data/auth layers first; prefer dedicated route files over pathname branching; standardize response shape early.
-- **Next Steps**: Refactor `lib/auth.ts` to use shared prisma; create `/api/auth/{login,register}` routes; reuse `components/booking-form` in `app/[locale]/book/page.tsx` with i18n; optimize gallery images; run build and smoke tests.
-
-## Archive
-- **Date**: 2025-08-12
-- **Archive Document**: /Users/k05m0navt/Work/VashaStudio/studio-space/docs/archive/finish-studio-space-mvp-phases-1-2-20250812.md
-- **Status**: COMPLETED
-
-
-## Deployment Fixes
-- [x] Ensure Prisma Client is generated on Vercel by adding `postinstall` and prepending `prisma generate` to `build` script in `package.json`.
-
-
-## Archive
-- **Date**: 2025-08-12
-- **Archive Document**: /Users/k05m0navt/Work/VashaStudio/studio-space/docs/archive/vercel-prisma-generate-fix-20250812.md
-- **Status**: COMPLETED
-
-## PLAN: Booking Flow E2E + Gallery Optimization (Level 3)
-
-### Requirements
-- [x] i18n-ready booking form uses /api/bookings and /api/bookings/availability
-- [x] Success redirect uses locale-aware router to /booking-success
-- [x] Replace gallery images with OptimizedImage/next/image using WebP + sizes
-
-### Components Affected
-- app/[locale]/book/page.tsx
-- components/booking-form.tsx
-- app/[locale]/gallery/page.tsx
-- lib/auth.ts (JWT usage in admin fetches)
-
-### Implementation Steps
-1. [ ] Render <BookingForm /> in app/[locale]/book/page.tsx
-2. [ ] Add useTranslations to components/booking-form.tsx; replace text literals
-3. [ ] Use i18n useRouter from @/i18n/routing for redirect to /booking-success
-4. [ ] Wire availability API to disable/unselect unavailable slots
-5. [ ] Swap gallery images to OptimizedImage with sizes and WebP assets
-
-### Dependencies
-- JWT_SECRET, DIRECT_URL set
-- Images available in public/images/gallery/*.webp
-
-### Challenges & Mitigations
-- Locale routing edge cases → rely on i18n router helpers
-- Availability race conditions → revalidate on submit, display conflict errors
-
-### Status
-- [x] Planning complete
-- [x] Implementation complete
-
-### Next Mode
-- IMPLEMENT
-
-
-## BUILD: Booking Flow E2E + Gallery Optimization
-
-### Items Completed
-- [x] Render <BookingForm /> in app/[locale]/book/page.tsx (Server Component)
-- [x] Booking form uses useTranslations for labels and copy
-- [x] Success redirect uses i18n useRouter to /booking-success
-- [x] Availability API wired to disable unavailable time slots
-- [x] Gallery images switched to OptimizedImage with responsive sizes
-
-### Verification
-- yarn build: SUCCESS (swagger-jsdoc warning only)
-
-
-## Archive
-- **Date**: 2025-08-12
-- **Archive Document**: /Users/k05m0navt/Work/VashaStudio/studio-space/docs/archive/booking-flow-e2e-gallery-optimization-20250812.md
-- **Status**: COMPLETED
-
-
-## PLAN: Admin Login Wiring (Level 3)
-
-### Requirements
-- [x] Use `POST /api/auth/login` to authenticate and receive `{ token, user }`
-- [x] Store JWT in `localStorage` as `adminToken` and set `adminAuth=authenticated`
-- [x] Attach `Authorization: Bearer <token>` to all admin fetches
-- [x] Handle 401/403 by clearing token, showing login form, and surfacing i18n toast
-- [x] Keep locale-aware admin proxy routes; forward headers intact
-- [x] Use `messages/*` i18n keys for auth toasts and states
-
-### Components Affected
-- `app/[locale]/admin/page.tsx`
-- `app/[locale]/api/admin/{bookings,users,stats}/route.ts` (verify header forwarding)
-- `lib/auth.ts` (no change required for this task)
-- `messages/{en,ru}.json` (strings already present)
-
-### Architecture Considerations
-- Introduce a small client helper to centralize token header injection and 401 handling:
-  - `authorizedFetch(input, init?)` → adds `Authorization` header if token exists; on 401/403 clears auth storage and returns an error shape
-  - `getAuthHeaders()` → returns `{ Authorization: Bearer <token> } | {}`
-- Keep token in `localStorage` for now (future: httpOnly cookie)
-- Use locale-aware paths for client fetches (existing proxies)
-
-### Implementation Strategy
-1. Add `authorizedFetch` and `getAuthHeaders` inside `app/[locale]/admin/page.tsx` (scoped for now) or a tiny `lib/client-auth.ts`.
-2. Update `AdminLoginForm` submit to also persist `user` as `adminUser` (stringified) and keep existing token/adminAuth writes.
-3. Replace direct `fetch` calls in `loadDashboardData` with `authorizedFetch` and handle unauthorized by:
-   - Clearing token/admin flags
-   - `setIsAuthenticated(false)` and showing login form
-   - Toast `auth.sessionExpired` or `common.unauthorized`
-4. On mount, if token present, attempt a lightweight authorized call (e.g., stats) to validate session; fallback to login on 401.
-5. Ensure proxy routes keep forwarding `Authorization` (already implemented); no changes expected.
-6. Add minimal JSDoc comments for helpers and key functions.
-
-### Detailed Steps
-- [x] Create `authorizedFetch` + `getAuthHeaders`
-- [x] Store `user` in `localStorage` on successful login
-- [x] Migrate admin data fetches to `authorizedFetch`
-- [x] Add 401/403 handling: clear storage, set unauthenticated, toast
-- [x] Validate session on mount via a single authorized call
-
-### Dependencies
-- `JWT_SECRET` set in environment (server)
-- Working endpoints: `/api/auth/login`, `/api/admin/{bookings,users,stats}`
-
-### Challenges & Mitigations
-- Token expiry / invalidation → centralized 401 handler resets state and prompts login
-- UI state flicker on re-auth → gate data loads behind `isAuthenticated`, show spinner while validating
-
-### Status
-- [x] Planning complete
-- [x] Implementation complete
-
-### Next Mode
-- REFLECT
-
-
-
-# PLAN: Configurable Service Management System (Level 3)
-
-## Task Description
-Create a user-friendly system allowing admins to easily enable/disable studio and coworking services throughout the application, affecting navigation, booking options, and page accessibility.
-
-## Complexity Assessment
-**Level: 3 (Intermediate Feature)**
-**Type: Multi-Component Configuration System**
-
-## Requirements Analysis
-### Core Requirements:
-- [x] Admin interface to toggle studio/coworking services on/off
-- [x] Dynamic navigation that shows/hides service links based on configuration
-- [x] Conditional booking form that adapts service options to enabled services
-- [x] Page access control (404 for disabled services)
-- [x] Database persistence of service settings
-- [x] Real-time configuration updates across the application
-
-### Technical Constraints:
-- [x] Must work with existing Next.js 15 + App Router architecture
-- [x] Must maintain i18n compatibility (English/Russian)
-- [x] Must integrate with existing Prisma Settings model
-- [x] Must preserve existing booking flow for enabled services
-- [x] Must handle edge cases (what if both services disabled?)
-
-## Component Analysis
-### Affected Components:
-1. **Database Layer**
-   - Changes needed: Extend Settings model usage for service configuration
-   - Dependencies: Prisma client, existing Settings API
-
-2. **Navigation Component** (`components/navbar.tsx`)
-   - Changes needed: Dynamic filtering of NAV_ITEMS based on enabled services
-   - Dependencies: Settings API, client-side state management
-
-3. **Booking Form** (`components/booking-form.tsx`)
-   - Changes needed: Dynamic service options in enum validation and UI
-   - Dependencies: Settings API, form validation logic
-
-4. **Service Pages** (`app/[locale]/studio/page.tsx`, `app/[locale]/coworking/page.tsx`)
-   - Changes needed: Access control middleware or page-level checks
-   - Dependencies: Settings API, route protection
-
-5. **Admin Interface** (`app/[locale]/admin/page.tsx`)
-   - Changes needed: Add service management section
-   - Dependencies: Settings API, admin authentication
-
-6. **API Layer**
-   - Changes needed: Settings CRUD endpoints for service configuration
-   - Dependencies: Prisma client, authentication middleware
-
-## Architecture Decisions
-### Configuration Storage:
-- [x] Use existing `Settings` model with keys like `services.studio.enabled` and `services.coworking.enabled`
-- [x] Store as boolean values with type='boolean' and group='services'
-
-### Real-time Updates:
-- [x] Use React Query/SWR for client-side settings caching
-- [x] Implement settings context provider for global state management
-
-### Access Control:
-- [ ] Create middleware for service page protection
-- [ ] Implement conditional rendering patterns throughout UI
-
-## Implementation Strategy
-### Phase 1: Database & API Foundation
-1. [x] Create service settings API endpoints (`/api/settings/services`)
-   - GET: Retrieve current service configuration
-   - PUT: Update service configuration (admin only)
-2. [x] Seed default service settings in database
-3. [x] Create settings context provider for client-side access
-
-### Phase 2: Core Service Management
-1. [x] Implement admin interface for service toggles
-2. [x] Add service configuration validation and error handling
-3. [x] Create custom hooks for service status checking
-
-### Phase 3: UI/UX Integration  
-1. [ ] Update navigation component with dynamic filtering
-2. [ ] Modify booking form for conditional service options
-3. [ ] Implement page access control for service routes
-
-### Phase 4: Testing & Edge Cases
-1. [ ] Handle edge cases (both services disabled scenario)
-2. [ ] Add comprehensive testing for all configuration combinations
-3. [ ] Implement proper error boundaries and fallbacks
-
-## Technology Stack
-- **Framework**: Next.js 15 (App Router) ✓ Existing
-- **Database**: PostgreSQL + Prisma ✓ Existing  
-- **State Management**: React Context + React Query ✓ Added
-- **Validation**: Zod ✓ Existing
-- **Styling**: Tailwind CSS ✓ Existing
-
-## Technology Validation Checkpoints
-- [x] Verify React Query integration with existing setup
-- [x] Test Settings model CRUD operations
-- [ ] Validate middleware integration with App Router
-- [x] Confirm state management pattern compatibility
-- [x] Test build process with new dependencies
-
-## Dependencies
-- **External**: React Query (tanstack/react-query) for client-side caching
-- **Internal**: Existing auth system, Settings model, admin protection middleware
-
-## Challenges & Mitigations
-### Challenge 1: Real-time configuration updates across tabs/sessions
-**Mitigation**: Implement WebSocket or polling mechanism for live config updates
-
-### Challenge 2: Edge case where both services are disabled
-**Mitigation**: Add validation preventing both services from being disabled simultaneously, or redirect to alternative landing page
-
-### Challenge 3: SEO and static generation concerns with dynamic content
-**Mitigation**: Use ISR (Incremental Static Regeneration) for service pages with revalidation based on settings changes
-
-### Challenge 4: Maintaining booking flow consistency 
-**Mitigation**: Preserve existing booking logic but add pre-checks for service availability
-
-## Creative Phases Required
-### 🎨 UI/UX Design: YES
-- **Component**: Admin service management interface design
-- **Scope**: Toggle switches, status indicators, confirmation dialogs
-- **Justification**: Need intuitive interface for non-technical administrators
-
-### 🏗️ Architecture Design: NO  
-- **Justification**: Standard configuration pattern, no novel architectural decisions required
-
-### ⚙️ Algorithm Design: NO
-- **Justification**: Simple boolean logic, no complex algorithms needed
-
-## Status
-- [x] Initialization complete (VAN mode)
-- [x] Planning complete (PLAN mode)  
-- [x] Technology validation complete
-- [x] Creative phase complete (UI/UX)
-- [x] Implementation complete
-- [ ] Testing and integration pending
-
-## Next Recommended Mode
-**REFLECT MODE** - Implementation complete, ready for reflection and archiving
-
-
-## TECHNOLOGY VALIDATION
-
-### Current Stack Analysis:
-✅ **Next.js 15.3.3** - Compatible with App Router
-✅ **React 19.1.0** - Latest stable version
-✅ **Prisma 6.9.0** - Latest with Settings model available
-✅ **Existing Auth System** - requireRole(['ADMIN']) pattern confirmed
-
-### Required Dependencies:
-✅ **@tanstack/react-query** - Successfully installed for client-side caching
-✅ **@radix-ui/react-switch** - Successfully installed for toggle components
-
-### Technology Validation Checkpoints:
-- [x] Project uses compatible Next.js version (15.3.3)
-- [x] Prisma Settings model exists and is functional  
-- [x] Admin authentication middleware available (requireRole)
-- [x] React Query integration tested
-- [x] Settings CRUD operations validated
-- [x] Build process confirmed with new dependencies
-
-### Next Steps:
-1. Install @tanstack/react-query
-2. Create minimal proof of concept for settings API
-3. Test integration with existing auth system
-
-
-### ✅ TECHNOLOGY VALIDATION COMPLETE
-
-**React Query Integration**: ✅ Successfully installed @tanstack/react-query v5.x
-**Build Process**: ✅ Build completes successfully with new dependency  
-**Existing Stack**: ✅ All components remain compatible
-**API Pattern**: ✅ requireRole(['ADMIN']) wrapper confirmed compatible
-
-**Note**: Settings API implementation moved to Creative/Implementation phase to focus on admin UI design.
-
-## 📋 PLAN VERIFICATION CHECKLIST
-
-✅ **Requirements clearly documented** - Comprehensive requirements analysis complete
-✅ **Technology stack validated** - React Query added, build process confirmed  
-✅ **Affected components identified** - 6 core components mapped with dependencies
-✅ **Implementation steps detailed** - 4-phase implementation strategy created
-✅ **Dependencies documented** - Internal and external dependencies mapped
-✅ **Challenges & mitigations addressed** - 4 major challenges with mitigation strategies
-✅ **Creative phases identified (Level 3)** - UI/UX design phase flagged as required
-✅ **tasks.md updated with plan** - Comprehensive Level 3 plan documented
-
-→ **ALL CHECKPOINTS PASSED**: Planning complete - ready for next mode
-
-## PLANNING COMPLETE
-
-✅ Implementation plan created
-✅ Technology stack validated (React Query added)
-✅ tasks.md updated with comprehensive plan
-✅ Challenges and mitigations documented  
-✅ Creative phases identified (UI/UX required)
-
-→ **NEXT RECOMMENDED MODE: CREATIVE MODE** - UI/UX design for admin interface required before implementation
-
-
-
-## CREATIVE PHASE COMPLETED ✅
-
-### UI/UX Design Phase Results:
-- [x] **Style Guide Created**: Documented Material Design 3 system with Black/Yellow/White theme
-- [x] **User Analysis Complete**: Admin persona and service management requirements defined
-- [x] **Options Explored**: 3 distinct UI approaches analyzed with pros/cons
-- [x] **Design Decision Made**: Toggle Card Layout selected with detailed rationale
-- [x] **Implementation Specification**: Complete component architecture and styling guide
-- [x] **Accessibility Verified**: WCAG AA compliance ensured in design
-- [x] **Responsive Design**: Mobile-first approach with breakpoint specifications
-
-### Creative Documentation:
-- **Style Guide**: `memory-bank/style-guide.md`
-- **UI/UX Design**: `memory-bank/creative/service-management-ui.md`
-
-### Selected Solution: Enhanced Toggle Card Layout
-**Key Features**:
-- Clean card-based interface using established MD3 patterns  
-- Prominent toggle switches with confirmation dialogs
-- Clear status indicators with semantic colors
-- Impact area preview (Navigation, Booking, Pages)
-- Full accessibility and responsive design support
-
-### Ready for Implementation:
-- [x] Component architecture defined
-- [x] Visual specifications complete  
-- [x] Interaction patterns documented
-- [x] Style guide adherence verified
-- [x] All creative phases required completed
-
-→ **NEXT RECOMMENDED MODE: IMPLEMENT MODE**
-
-
-## BUILD: Configurable Service Management System ✅
-
-### Implementation Status: COMPLETE
-
-#### Phase 1: Database & API Foundation ✅
-- [x] **Service Settings API**: Created `/api/settings/services` endpoint
-  - GET: Retrieve current service configuration
-  - PUT: Update service configuration (admin only with auth validation)
-  - Uses existing Prisma Settings model with keys: `services.studio.enabled`, `services.coworking.enabled`
-  - Proper error handling and validation with Zod schema
-
-#### Phase 2: Core Service Management ✅  
-- [x] **React Query Setup**: QueryProvider component created and integrated
-- [x] **Custom Hook**: `useServiceToggle` hook for toggle logic and API integration
-- [x] **Component Architecture**: Following creative phase specifications
-  - `ServiceIcon.tsx` - Consistent service iconography
-  - `ServiceStatusBadge.tsx` - Status indicators with semantic colors
-  - `ServiceConfirmDialog.tsx` - Enhanced confirmation dialogs
-  - `ServiceToggleCard.tsx` - Individual service cards with toggle functionality
-  - `ServiceManagementSection.tsx` - Main container component
-
-#### Phase 3: UI Integration ✅
-- [x] **Admin Interface**: Service management section added to admin dashboard
-  - New "Services" tab with Zap icon
-  - Responsive card layout with loading states
-  - Error handling and retry functionality
-  - Real-time updates with optimistic UI
-- [x] **Switch Component**: Added missing Radix UI Switch component
-- [x] **QueryProvider Integration**: Wrapped admin page with React Query client
-
-### Technical Implementation Details:
-- **API Authentication**: Uses `authenticateRequest` + role check for admin-only access
-- **State Management**: React Query for server state, local state for UI interactions  
-- **Error Handling**: Comprehensive error boundaries and user feedback
-- **Loading States**: Skeleton components and loading overlays
-- **Accessibility**: ARIA labels, keyboard navigation, semantic colors
-- **Responsive Design**: Mobile-first approach with proper breakpoints
-
-### Verification Results:
-- ✅ **Build Success**: `npm run build` completed without errors
-- ✅ **TypeScript Validation**: All type errors resolved
-- ✅ **Component Integration**: All components properly imported and structured
-- ✅ **API Endpoint**: `/api/settings/services` route created and validated
-- ✅ **Dependencies**: React Query and Radix UI Switch successfully installed
-
-### Files Created/Modified:
-```
-📁 API Layer:
-└── app/api/settings/services/route.ts
-
-📁 Components:
-├── components/providers/QueryProvider.tsx
-├── components/admin/ServiceIcon.tsx
-├── components/admin/ServiceStatusBadge.tsx
-├── components/admin/ServiceConfirmDialog.tsx
-├── components/admin/ServiceToggleCard.tsx
-├── components/admin/ServiceManagementSection.tsx
-└── components/ui/switch.tsx
-
-📁 Hooks:
-└── hooks/useServiceToggle.ts
-
-📁 Integration:
-└── app/[locale]/admin/page.tsx (QueryProvider + Services tab)
-```
-
-### Remaining Work for Phase 3 & 4:
-- [ ] **Navigation Integration**: Update navbar to filter services based on settings
-- [ ] **Booking Form Integration**: Modify booking form to show only enabled services
-- [ ] **Page Access Control**: Add middleware for service page protection
-- [ ] **Edge Case Handling**: Prevent both services from being disabled
-- [ ] **Testing**: Unit and integration tests for service management
-
-### Performance & Security:
-- ✅ **Caching**: 5-minute stale time for service configuration
-- ✅ **Authentication**: Admin-only API access with JWT validation
-- ✅ **Error Handling**: Proper 401/403 responses and client-side handling
-- ✅ **Optimistic Updates**: Immediate UI feedback with rollback on errors
-- ✅ **Proxy Route Fixes**: Admin proxies now properly forward auth errors (no more 500s)
-- ✅ **Token Expiration UX**: Enhanced handling with automatic logout and session refresh
-
-### Authentication Improvements ✅
-- ✅ **Smart Error Detection**: Distinguishes auth errors from other failures
-- ✅ **Automatic Logout**: Clears storage and redirects on token expiry
-- ✅ **Better Proxy Handling**: Forwards original status codes (401/403) instead of throwing 500 errors
-- ✅ **Enhanced User Feedback**: Session expired messages with refresh options
-- ✅ **No Auth Retries**: Prevents unnecessary API calls on authentication failures
-
-→ **NEXT RECOMMENDED MODE: REFLECT MODE** - Implementation complete with robust authentication handling
-
-
-- [x] Reflection & Archive: service visibility + server guards implemented and archived (2025-09-05)
-  Archive: `docs/archive/service-visibility-and-guards-20250905.md`
-
-
-- [x] Implemented service pricing, currency, unit, and image management in admin UI and API.
-- ReflectionRecorded: 2025-09-06 17:50:03Z
-
-
-## Archive: Auth & Prisma Unification (2025-09-06T19:52:30Z)
-- Archive file: `memory-bank/archive/archive-auth-prisma-20250906.md`
-- Docs archive: `docs/archive/auth-prisma-unification-20250906.md`
-- Status: ARCHIVED
-
-## REFLECTION: Navbar Service-Visibility Fix (2025-09-07)
-
-### Status Update
-- [x] Planning complete
-- [x] Implementation complete  
-- [x] Reflection complete
-- [ ] Archiving
-
-### Reflection Highlights
-- **What Went Well**: Rapid root cause identification of nested QueryProvider isolation; clean architecture improvement with centralized auth helpers; comprehensive solution fixing both desktop and mobile navigation
-- **Challenges**: Understanding React Query client isolation behavior; ensuring mobile nav respected service visibility flags
-- **Lessons Learned**: Nested QueryProviders create isolated cache contexts preventing data sharing; centralizing client auth helpers improves maintainability; focused debugging from minimal reproduction is more effective than broad architectural changes
-- **Next Steps**: Create archive document; establish testing standards for UI interaction features; document React Query best practices
-
-### Reflection Document
-- **Location**: `memory-bank/reflection.md`
-- **Completion Date**: 2025-09-07
-- **Key Insights**: React Query architecture patterns, client-side auth centralization, incremental verification strategies
-
-### Next Recommended Mode
-**ARCHIVE MODE** - Type "ARCHIVE NOW" to proceed with archiving process
-
-### Archive Status ✅
-- [x] Archiving complete
-- **Archive Document**: `docs/archive/navbar-service-visibility-fix-20250907.md`
-- **Status**: COMPLETED & ARCHIVED
-- **Date Archived**: 2025-09-07
-
-
-## I18N IMPLEMENTATION TASKS
-
-- [ ] Run the i18n audit script and attach report: `node ./scripts/i18n-audit.js` (CI: `npm run i18n:audit`)
-- [ ] Add i18n audit to CI (recommended to fail on new hard-coded strings)
-- [x] Create `lib/i18n.ts` helper utilities
-- [ ] Migrate `components/ui/*` to use `useTranslations` / server `getTranslator`
-- [ ] Migrate `Navbar`, `Footer`, `booking-form` to localized messages
-- [ ] Localize page metadata and `manifest.json`
-- [ ] Update API error shapes or return i18n keys for client localization
-- [ ] Update tests and snapshots to use messages or `messages/en.json` baseline
-- [ ] QA pass in staging for `en` and `ru` (smoke test major flows)
-- [ ] Add documentation: `memory-bank/creative/i18n-migration.md`
-
-
-- ARCHIVE: i18n migration — docs/archive/i18n-migration-20250907.md (completed 2025-09-07)
-- [x] I18N reflection: Added missing keys to messages/en.json and messages/ru.json (faq & navigation.aria) — 2025-09-07
-- [x] I18N archived: docs/archive/i18n-migration-20250907.md — 2025-09-08T13:40:58Z
-\n- [x] ARCHIVE: Booking form fix & migration — docs/archive/booking-form-fix-20250909.md ()
-- ARCHIVE: Booking Success — docs/archive/booking-success-20250909.md — 2025-09-09 — Status: COMPLETED
-
-## CURRENT TASK: Admin Performance Optimization (Level 2) ✅ COMPLETE
-
-### Implementation Summary
-**Problem**: VAN reported admin page data fetching is slow  
-**Root Cause**: Critical database connection pool misconfiguration + inefficient queries  
-**Solution**: Fixed Prisma configuration mismatch + optimized DB queries + resolved connection bottleneck  
-**Status**: ✅ IMPLEMENTATION COMPLETE & VERIFIED  
-
-### Key Changes Made
-- **File Modified**: `app/api/admin/stats/route.ts`
-- **File Modified**: `lib/prisma.ts` ⭐ **CRITICAL FIX**
-- **Query Optimization**: Replaced `findMany()` with 10 parallel `count()` queries
-- **Revenue Logic**: Direct calculation from counts (`studio*150 + coworking*50`)
-- **Caching**: Configurable TTL via `STATS_CACHE_TTL_MS` env (default 60s, up from 30s)
-- **Infrastructure Fix**: Corrected DATABASE_URL → DIRECT_URL configuration mismatch
-- **Connection Pool**: Eliminated `connection_limit=1` bottleneck from pooled connection
-
-### Critical Infrastructure Issue Resolved ⚠️→✅
-**Discovered**: Prisma client using `DATABASE_URL` (connection_limit=1) instead of `DIRECT_URL`
-**Impact**: Severe connection pool exhaustion causing 10+ second response times
-**Fix**: Updated `lib/prisma.ts` to use `DIRECT_URL` matching `schema.prisma`
-**Result**: Response time improved from **10+ seconds → 1.4 seconds** (86% reduction)
-
-### Performance Impact
-- **Database I/O**: Eliminated loading 100+ booking rows per request
-- **Memory Usage**: Reduced from full object arrays to simple counts  
-- **Query Efficiency**: 10 optimized parallel queries vs sequential findMany + reduce
-- **Connection Pool**: Fixed from 1 connection limit to unrestricted direct connection
-- **Cache Duration**: Doubled from 30s to 60s (configurable)
-- **Response Time**: **86% improvement** (10s → 1.4s measured)
-
-### Verification ✅
-All tests passed via comprehensive verification script:
-- ✅ Response structure maintained (8 required fields)
-- ✅ Revenue calculation accurate (`studio*150 + coworking*50`)
-- ✅ All arithmetic calculations correct (utilization, growth)
-- ✅ Data types properly handled
-- ✅ Cache TTL configurable via environment
-- ✅ Performance logging implemented
-- ✅ **Live performance test**: 1.4s response (vs 10+ seconds before)
-- ✅ **Connection pool errors eliminated**: No more timeout errors
-
-### Production Ready
-- No breaking changes to API contract
-- Environment configurable (`STATS_CACHE_TTL_MS`)
-- Performance monitoring in place  
-- Comprehensive verification completed
-- Infrastructure issue resolved
-- Documentation updated in `memory-bank/tasks.md`
-
-### Lessons Learned
-- **Infrastructure First**: Connection pool configuration can override all query optimizations
-- **Configuration Alignment**: Ensure Prisma client uses same URL as schema definition
-- **Holistic Debugging**: Performance issues may have multiple root causes (queries + infrastructure)
-- **Measurement Matters**: Real performance testing revealed the true bottleneck
-
-**The admin dashboard should now load significantly faster with both optimized queries and proper database connections.**
-
-**Status**: ✅ **FULLY RESOLVED** - Ready for production deployment
+## 🎯 CURRENT TASK: Project Cleanup & Optimization (2025-09-29)
+
+**Task ID**: project-cleanup-optimization-20250929
+**Complexity**: Level 2 (Simple Enhancement)
+**Status**: Planning Complete → Ready for Implementation
+**Priority**: High
+**Estimated Effort**: Medium (1 hour)
 
 ---
 
+## 📋 IMPLEMENTATION PLAN: Option B (Cleanup + Linting)
 
-- ARCHIVE: admin-stats-optimization -> docs/archive/admin-stats-optimization-20250909.md
+### Phase 1: Repository Cleanup (15 minutes)
 
+#### Step 1.1: Remove Junk Files (5 min)
+**Files to Remove**:
+- [ ] `.DS_Store` (6KB) - macOS artifact at root
+- [ ] `dev.log` (54KB) - development log file
+- [ ] `tsconfig.tsbuildinfo` (242KB) - build cache
+- [ ] `.reports/` directory (1.3MB) - old audit reports
+- [ ] `memory-bank/tasks.md.backup` (28KB) - redundant backup
 
-### REFLECTION: Admin Stats Cache & Currency Formatting (2025-09-13)
-- Reflection file: `memory-bank/reflection-admin-stats-20250913.md`
-- Archive: `docs/archive/admin-stats-cache-currency-20250913.md`
-- Status: COMPLETED & ARCHIVED
+**Command**:
+```bash
+rm .DS_Store dev.log tsconfig.tsbuildinfo
+rm -rf .reports
+rm memory-bank/tasks.md.backup
+```
+
+#### Step 1.2: Update .gitignore (2 min)
+**File**: `.gitignore`
+
+**Add Missing Entries**:
+```gitignore
+# Build artifacts
+*.tsbuildinfo
+
+# Development files
+dev.log
+
+# Reports
+.reports/
+```
+
+**Verification**: Confirm .DS_Store is already in .gitignore (line 24)
+
+#### Step 1.3: Clean Memory Bank (8 min)
+**Actions**:
+- [ ] Move 7 reflection files to `memory-bank/archive/reflections/`
+  - reflection-admin-stats-20250913.md
+  - reflection-booking-pricing-20250910.md
+  - reflection-booking-admin-20250910.md
+  - reflection-admin-stats-20250909.md
+  - reflection-booking-success-20250909.md
+  - reflection-i18n-20250908.md
+  - reflection-service-management-20250906.md
+  - reflection-service-management-20250905.md
+  
+- [ ] Archive general reflection.md → `memory-bank/archive/reflection-general.md`
+
+- [ ] Create consolidated archive index: `memory-bank/archive/README.md`
+
+---
+
+### Phase 2: Fix Linting Errors (45 minutes)
+
+#### Step 2.1: Remove Dead Code (10 min)
+
+##### File 1: `app/api/auth/route.ts` (COMPLETE CLEANUP)
+**Issue**: File contains unused imports and dead code (auth logic moved to dedicated routes)
+
+**Action**: Clean up to minimal endpoint
+```typescript
+// Remove lines 2-5 (unused imports: bcrypt, jwt, prisma)
+// Remove lines 7-16 (unused schemas)
+// Keep only lines 1, 18-68 (NextRequest/NextResponse + 404 handler)
+```
+
+**Lines to Remove**:
+- Line 2: `import bcrypt from 'bcryptjs';`
+- Line 3: `import jwt from 'jsonwebtoken';`
+- Line 4: `import { z } from 'zod';`
+- Line 5: `import { prisma } from '@/lib/prisma';`
+- Lines 7-16: `loginSchema` and `registerSchema` definitions
+
+##### File 2: `app/[locale]/admin/page.tsx` (REMOVE UNUSED HANDLERS)
+**Issue**: Unused functions `handleConfirmBooking` and `handleCancelBooking` (lines 446-454)
+
+**Action**: Remove both function definitions
+- Line 446-449: `handleConfirmBooking` function
+- Line 451-454: `handleCancelBooking` function
+
+**Note**: These were intended for optimistic UI but never connected to UI elements
+
+##### File 3: `app/api/admin/bookings/route.ts`
+**Issue**: Unused `user` variable in destructuring (line 5)
+
+**Action**: Remove `user` from destructuring or use it for logging
+
+##### File 4: `app/api/admin/users/route.ts`
+**Issue**: Unused `user` variable in destructuring (line 4)
+
+**Action**: Remove `user` from destructuring
+
+##### File 5: `app/[locale]/admin/page.tsx` (ERROR HANDLING)
+**Issue**: Unused `err` variable (line 155)
+
+**Action**: Replace with underscore `_err` to indicate intentionally unused
+
+---
+
+#### Step 2.2: Fix TypeScript `any` Types (25 min)
+
+##### Category A: Page Props (Next.js 15 App Router Pattern)
+**Files**:
+- `app/[locale]/book/page.tsx` (line 4)
+- `app/[locale]/booking-success/page.tsx` (line 18)
+- `app/[locale]/coworking/page.tsx` (line 5)
+- `app/[locale]/studio/page.tsx` (line 5)
+
+**Current Pattern**:
+```typescript
+export default async function PageName(props: any) {
+  const { params } = await props
+}
+```
+
+**Fix**: Define proper type for Next.js 15 async params
+```typescript
+type PageProps = {
+  params: Promise<{ locale: string }>
+}
+
+export default async function PageName(props: PageProps) {
+  const { params } = await props
+}
+```
+
+##### Category B: Stats Cache Type
+**File**: `app/api/admin/stats/route.ts` (line 4)
+
+**Current**:
+```typescript
+let _statsCache: { data: any; expiresAt: number } | null = null;
+```
+
+**Fix**: Define proper StatsData type
+```typescript
+type StatsData = {
+  totalBookings: number;
+  totalRevenue: number;
+  averageBookingValue: number;
+  utilizationRate: number;
+  studioBookings: number;
+  coworkingBookings: number;
+  weekOverWeekGrowth: number;
+  revenueByService: { studio: number; coworking: number };
+};
+
+let _statsCache: { data: StatsData; expiresAt: number } | null = null;
+```
+
+##### Category C: Type Assertions in Bookings
+**File**: `app/api/bookings/route.ts`
+
+**Issue 1** (line 182):
+```typescript
+const unit = (unitSetting?.value as any) ?? 'hour';
+```
+
+**Fix**:
+```typescript
+const unit = (unitSetting?.value as string) ?? 'hour';
+```
+
+**Issue 2** (line 186):
+```typescript
+const computed = computeAmount({ unit: unit as any, rate, hours });
+```
+
+**Fix**:
+```typescript
+const computed = computeAmount({ 
+  unit: unit as 'hour' | 'day' | 'month', 
+  rate, 
+  hours 
+});
+```
+
+**Issue 3** (line 239 - error handling):
+```typescript
+const message = (error && (error as any).message) ? (error as any).message : 'Internal server error';
+```
+
+**Fix**:
+```typescript
+const message = error instanceof Error ? error.message : 'Internal server error';
+```
+
+##### Category D: Bootstrap Auth Types
+**File**: `app/api/auth/bootstrap/route.ts` (lines 22, 32)
+
+**Action**: Add proper error types or use `unknown` instead of `any`
+
+---
+
+#### Step 2.3: Fix Image Optimization Warning (10 min)
+
+##### File: `app/[locale]/booking-success/page.tsx`
+**Issue**: Using `<img>` tag instead of Next.js `<Image />` (line 103)
+
+**Current**:
+```typescript
+<img src={qrDataUrl} alt={t('payment.qrAlt')} className="w-48 h-48 mx-auto sm:mx-0 rounded-md shadow" />
+```
+
+**Fix**: Replace with Next.js Image (for data URLs, regular img is acceptable, but add eslint-disable)
+```typescript
+{/* eslint-disable-next-line @next/next/no-img-element */}
+<img 
+  src={qrDataUrl} 
+  alt={t('payment.qrAlt')} 
+  className="w-48 h-48 mx-auto sm:mx-0 rounded-md shadow" 
+/>
+```
+
+**Note**: QR code is a data URL generated client-side, so `<Image />` won't work. Suppress warning instead.
+
+**Also**: Remove unused eslint-disable at line 46
+
+---
+
+## 🔧 TECHNOLOGY VALIDATION
+
+### Technology Stack
+- ✅ **Framework**: Next.js 15.3.3 (App Router)
+- ✅ **Language**: TypeScript 5.x
+- ✅ **Runtime**: Node 18+
+- ✅ **Build Tool**: Next.js build system
+- ✅ **Linting**: ESLint with Next.js config
+
+### Technology Validation Checkpoints
+- [x] Build configuration validated (npm run build: ✅ SUCCESS)
+- [x] ESLint configuration present (eslint.config.mjs exists)
+- [x] TypeScript strict mode enabled (tsconfig.json checked)
+- [x] All dependencies installed (node_modules present)
+- [x] No new dependencies required
+
+**Validation Result**: ✅ **PASSED** - No technology changes needed
+
+---
+
+## 📊 FILES TO MODIFY
+
+### Cleanup Phase (5 files/directories removed)
+1. `.DS_Store` (delete)
+2. `dev.log` (delete)
+3. `tsconfig.tsbuildinfo` (delete)
+4. `.reports/` (delete directory)
+5. `memory-bank/tasks.md.backup` (delete)
+
+### Code Quality Phase (11 files modified)
+1. `.gitignore` (add entries)
+2. `app/api/auth/route.ts` (remove dead code)
+3. `app/[locale]/admin/page.tsx` (remove unused handlers + fix err)
+4. `app/api/admin/bookings/route.ts` (remove unused var)
+5. `app/api/admin/users/route.ts` (remove unused var)
+6. `app/[locale]/book/page.tsx` (fix any type)
+7. `app/[locale]/booking-success/page.tsx` (fix any type + img warning)
+8. `app/[locale]/coworking/page.tsx` (fix any type)
+9. `app/[locale]/studio/page.tsx` (fix any type)
+10. `app/api/admin/stats/route.ts` (fix any type)
+11. `app/api/bookings/route.ts` (fix any types)
+
+### Memory Bank Reorganization
+1. Create `memory-bank/archive/reflections/` directory
+2. Move 8 reflection files to archive
+3. Create `memory-bank/archive/README.md` index
+
+---
+
+## ⚠️ POTENTIAL CHALLENGES & MITIGATIONS
+
+### Challenge 1: TypeScript Type Errors After Changes
+**Mitigation**: 
+- Test build after each file modification
+- Use proper Next.js 15 type patterns for async params
+- Reference existing working pages for type examples
+
+### Challenge 2: Accidentally Breaking Working Features
+**Mitigation**:
+- Only remove truly unused code (verified via linter)
+- Keep all functional logic intact
+- Run full build verification after changes
+
+### Challenge 3: Git History Cleanup
+**Mitigation**:
+- Junk files should be removed but not retroactively from git history
+- Add to .gitignore to prevent future commits
+- Clear working directory only
+
+### Challenge 4: Memory Bank File References
+**Mitigation**:
+- Check for any links to moved reflection files
+- Update archive index with proper references
+- Maintain file naming consistency
+
+---
+
+## ✅ VERIFICATION CHECKLIST
+
+### Post-Cleanup Verification
+- [ ] All junk files removed from working directory
+- [ ] `.gitignore` updated with new entries
+- [ ] No junk files appear in `git status`
+- [ ] Memory Bank organized with archive directory
+
+### Post-Linting Verification
+- [ ] `npm run lint` shows 0 errors
+- [ ] `npm run build` completes successfully
+- [ ] TypeScript compilation has no errors
+- [ ] All tests pass (if any exist)
+
+### Code Quality Verification
+- [ ] No `any` types in modified files
+- [ ] No unused variables
+- [ ] No dead code
+- [ ] All imports used
+- [ ] Proper type definitions throughout
+
+---
+
+## 🎯 EXPECTED OUTCOMES
+
+### Before:
+- ❌ 22 linting errors across 11 files
+- ❌ 1.5MB of junk files in repository
+- ❌ Cluttered Memory Bank (8 loose reflection files)
+- ❌ Incomplete .gitignore
+
+### After:
+- ✅ **0 linting errors** (production-ready code)
+- ✅ **Clean repository** (all junk removed)
+- ✅ **Organized Memory Bank** (archived reflections)
+- ✅ **Complete .gitignore** (prevents future clutter)
+
+### Quality Metrics:
+- **Code Quality**: Enterprise-grade (zero linting warnings)
+- **Build Status**: ✅ Clean successful build
+- **TypeScript Coverage**: 100% typed (no `any`)
+- **Repository Size**: -1.5MB (cleanup savings)
+
+---
+
+## 🚀 NEXT STEPS AFTER COMPLETION
+
+### Option A: Proceed to QA Mode
+- Verify all changes work correctly
+- Test build and deployment readiness
+- Validate linting passes
+
+### Option B: Proceed to Reflection
+- Document lessons learned
+- Update progress.md
+- Archive this task
+
+### Option C: Continue with Phase 3 (Testing)
+- Set up Jest + RTL
+- Write initial test suite
+- Add test scripts to package.json
+
+---
+
+## 📝 CREATIVE PHASES REQUIRED
+**None** - This is straightforward code cleanup and type safety improvements
+
+---
+
+## 📅 STATUS TRACKING
+
+- [x] VAN Analysis Complete (2025-09-29)
+- [x] Planning Complete (2025-09-29)
+- [x] Technology Validation Complete (2025-09-29)
+- [ ] Implementation Started
+- [ ] Phase 1: Cleanup Complete
+- [ ] Phase 2: Linting Fixes Complete
+- [ ] Verification Complete
+- [ ] Reflection Complete
+- [ ] Archiving Complete
+
+---
+
+## 🎬 READY TO IMPLEMENT
+
+**Estimated Time**: 1 hour (15 min cleanup + 45 min linting)
+**Risk Level**: Low (no architectural changes)
+**Impact**: High (production-ready code quality)
+
+**Type `IMPLEMENT` to begin execution**
+
+---
+

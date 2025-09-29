@@ -152,7 +152,7 @@ const AdminLoginForm = ({ onLogin }: { onLogin: () => void }) => {
       } else {
         toast.error(tAuth('loginFailed'));
       }
-    } catch (err) {
+    } catch {
       toast.error(tAuth('loginFailed'));
     } finally {
       setIsLoading(false);
@@ -411,7 +411,7 @@ export default function AdminDashboard() {
 
       const data = await res.json();
       const updatedBooking = data?.booking ?? data;
-      setBookings(prev => prev.map(b => (b.id === id ? { ...b, ...(updatedBooking as any) } : b)));
+      setBookings(prev => prev.map(b => (b.id === id ? { ...b, ...(updatedBooking as Partial<Booking>) } : b)));
       toast.success(status === 'confirmed' ? t('messages.bookingConfirmed') : t('messages.bookingCancelled'));
       try { await loadDashboardData(); } catch (e) { console.warn('Failed to refresh dashboard after booking update', e); }
     } catch (err) {
@@ -440,17 +440,6 @@ export default function AdminDashboard() {
     localStorage.removeItem("adminToken");
     setIsAuthenticated(false);
     toast.success(t('messages.logoutSuccess'));
-  };
-
-  // Local handlers for bookings actions (update UI optimistically)
-  const handleConfirmBooking = (id: string) => {
-    setBookings(prev => prev.map(b => b.id === id ? { ...b, status: 'confirmed' as const } : b));
-    toast.success(t('messages.bookingConfirmed'));
-  };
-
-  const handleCancelBooking = (id: string) => {
-    setBookings(prev => prev.map(b => b.id === id ? { ...b, status: 'cancelled' as const } : b));
-    toast.success(t('messages.bookingCancelled'));
   };
 
   if (isLoading) {

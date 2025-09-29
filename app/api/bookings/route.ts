@@ -179,11 +179,11 @@ export async function POST(request: NextRequest) {
       const unitSetting = await prisma.settings.findUnique({ where: { key: `services.${validatedData.type}.unit` } });
       const rate = rateSetting?.value ? Number(rateSetting.value) : 0;
       currency = currencySetting?.value ?? 'RUB';
-      const unit = (unitSetting?.value as any) ?? 'hour';
+      const unit = (unitSetting?.value as string) ?? 'hour';
 
       if (validatedData.start_time && validatedData.end_time) {
         const hours = computeHours(validatedData.start_time, validatedData.end_time);
-        const computed = computeAmount({ unit: unit as any, rate, hours });
+        const computed = computeAmount({ unit: unit as 'hour' | 'half-day' | 'day', rate, hours });
         amount = String(computed);
       }
     } catch (err) {
@@ -236,7 +236,7 @@ export async function POST(request: NextRequest) {
     }
 
     console.error('Create booking error:', error);
-    const message = (error && (error as any).message) ? (error as any).message : 'Internal server error';
+    const message = error instanceof Error ? error.message : 'Internal server error';
     return NextResponse.json(
       { error: 'api.errors.internalServerError', message },
       { status: 500 }

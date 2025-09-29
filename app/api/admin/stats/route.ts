@@ -1,7 +1,19 @@
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/auth";
 
-let _statsCache: { data: any; expiresAt: number } | null = null;
+type StatsData = {
+  totalBookings: number;
+  monthlyRevenue: number;
+  currency: string;
+  activeMembers: number;
+  studioUtilization: number;
+  pendingBookings: number;
+  confirmedBookings: number;
+  todayBookings: number;
+  weeklyGrowth: number;
+};
+
+let _statsCache: { data: StatsData; expiresAt: number } | null = null;
 
 export const GET = requireRole(['ADMIN'])(async () => {
   try {

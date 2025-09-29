@@ -2,8 +2,12 @@ import { prisma } from '@/lib/prisma';
 import React from 'react';
 import { getMessages } from 'next-intl/server';
 
-export default async function StudioPage(props: any) {
-  const { params } = props as { params: { locale: string } };
+type PageProps = {
+  params: Promise<{ locale: string }>
+}
+
+export default async function StudioPage(props: PageProps) {
+  const params = await props.params;
   try {
     const setting = await prisma.settings.findUnique({ where: { key: 'services.studio.enabled' } });
     const enabled = setting ? setting.value === 'true' : true;
