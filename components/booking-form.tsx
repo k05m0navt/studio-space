@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
-import { Calendar as CalendarIcon, Check, ArrowRight, ArrowLeft, User, Mail, Phone, Clock, MessageSquare, XCircle, Save } from "lucide-react";
+import { Calendar as CalendarIcon, Check, ArrowRight, ArrowLeft, User, Mail, Phone, Clock, MessageSquare, XCircle, Save, Ban, XCircleIcon, CheckCircle2 } from "lucide-react";
 import { format } from "date-fns";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -11,7 +11,7 @@ import { useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import { EnhancedCalendar } from "@/components/ui/enhanced-calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Form,
@@ -719,13 +719,17 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
                                       </Button>
                                     </FormControl>
                                   </PopoverTrigger>
-                                  <PopoverContent className="w-auto p-0" align="start">
-                                    <Calendar
-                                      mode="single"
+                                  <PopoverContent className="w-auto p-3" align="start">
+                                    <EnhancedCalendar
                                       selected={field.value}
                                       onSelect={field.onChange}
-                                      disabled={(date) => date < new Date()}
+                                      disabled={(date) => {
+                                        const today = new Date();
+                                        today.setHours(0, 0, 0, 0);
+                                        return date < today;
+                                      }}
                                       initialFocus
+                                      showQuickActions={true}
                                     />
                                   </PopoverContent>
                                 </Popover>
@@ -756,10 +760,15 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
                                           disabled={isUnavailable}
                                           className={isUnavailable ? "opacity-50 cursor-not-allowed" : ""}
                                         >
-                                          <div className="flex items-center justify-between w-full">
-                                            <span>{time}</span>
-                                            {isUnavailable && (
-                                              <span className="text-xs text-red-500 ml-2">{t('schedule.unavailable')}</span>
+                                          <div className="flex items-center justify-between w-full gap-2">
+                                            <span className="font-medium">{time}</span>
+                                            {isUnavailable ? (
+                                              <span className="flex items-center text-xs text-destructive gap-1">
+                                                <XCircleIcon className="w-3 h-3" />
+                                                {t('schedule.unavailable')}
+                                              </span>
+                                            ) : (
+                                              <CheckCircle2 className="w-4 h-4 text-green-600 opacity-60" />
                                             )}
                                           </div>
                                       </SelectItem>
@@ -802,13 +811,20 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
                                           disabled={disabled}
                                           className={disabled ? "opacity-50 cursor-not-allowed" : ""}
                                         >
-                                          <div className="flex items-center justify-between w-full">
-                                            <span>{time}</span>
-                                            {isUnavailable && (
-                                              <span className="text-xs text-red-500 ml-2">{t('schedule.unavailable')}</span>
-                                            )}
-                                            {isBeforeStart && !isUnavailable && (
-                                              <span className="text-xs text-gray-500 ml-2">{t('schedule.mustBeAfterStart')}</span>
+                                          <div className="flex items-center justify-between w-full gap-2">
+                                            <span className="font-medium">{time}</span>
+                                            {isBeforeStart ? (
+                                              <span className="flex items-center text-xs text-orange-600 gap-1">
+                                                <Ban className="w-3 h-3" />
+                                                {t('schedule.mustBeAfterStart')}
+                                              </span>
+                                            ) : isUnavailable ? (
+                                              <span className="flex items-center text-xs text-destructive gap-1">
+                                                <XCircleIcon className="w-3 h-3" />
+                                                {t('schedule.unavailable')}
+                                              </span>
+                                            ) : (
+                                              <CheckCircle2 className="w-4 h-4 text-green-600 opacity-60" />
                                             )}
                                           </div>
                                       </SelectItem>
