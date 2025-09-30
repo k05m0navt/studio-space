@@ -43,7 +43,7 @@ function addSecurityHeaders(response: NextResponse): NextResponse {
   // CSP header
   response.headers.set(
     'Content-Security-Policy',
-    "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https:; frame-ancestors 'none';"
+    "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' https://api-maps.yandex.ru https://yastatic.net https://*.yastatic.net https:; script-src-elem 'self' 'unsafe-inline' https://api-maps.yandex.ru https://yastatic.net https://*.yastatic.net; style-src 'self' 'unsafe-inline' https://yastatic.net https://*.yastatic.net; img-src 'self' data: https://yastatic.net https:; font-src 'self' data: https://yastatic.net https:; connect-src 'self' https://api-maps.yandex.ru https://yastatic.net https:; frame-ancestors 'none';"
   );
   
   return response;
