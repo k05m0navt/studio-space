@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { MapPin, Clock, Phone, Mail, Car, Train, ExternalLink, Navigation } from "lucide-react";
 import { motion } from "framer-motion";
 import { useTranslations } from 'next-intl';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 declare global {
   interface Window {
@@ -17,13 +17,22 @@ declare global {
 function YandexMap({ className }: { className?: string }) {
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
+  const [mapError, setMapError] = useState<string | null>(null);
 
   useEffect(() => {
     const loadYandexMap = async () => {
       // Load Yandex Maps API
       if (typeof window !== 'undefined' && !window.ymaps) {
+        const apiKey = process.env.NEXT_PUBLIC_YANDEX_MAPS_API_KEY;
+        
+        if (!apiKey) {
+          console.error('Yandex Maps API key is not configured. Please set NEXT_PUBLIC_YANDEX_MAPS_API_KEY in your environment variables.');
+          setMapError('Map configuration missing. Please contact support.');
+          return;
+        }
+        
         const script = document.createElement('script');
-        script.src = 'https://api-maps.yandex.ru/2.1/?apikey=YOUR_API_KEY&lang=en_US';
+        script.src = `https://api-maps.yandex.ru/2.1/?apikey=${apiKey}&lang=en_US`;
         script.type = 'text/javascript';
         document.head.appendChild(script);
         
@@ -95,11 +104,20 @@ function YandexMap({ className }: { className?: string }) {
 
   return (
     <div className={className}>
-      <div 
-        ref={mapRef} 
-        className="w-full h-full rounded-xl overflow-hidden elevation-2"
-        style={{ minHeight: '400px' }}
-      />
+      {mapError ? (
+        <div className="w-full h-full rounded-xl overflow-hidden elevation-2 flex items-center justify-center bg-muted" style={{ minHeight: '400px' }}>
+          <div className="text-center p-6">
+            <MapPin className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+            <p className="text-sm text-muted-foreground">{mapError}</p>
+          </div>
+        </div>
+      ) : (
+        <div 
+          ref={mapRef} 
+          className="w-full h-full rounded-xl overflow-hidden elevation-2"
+          style={{ minHeight: '400px' }}
+        />
+      )}
     </div>
   );
 }

@@ -58,6 +58,10 @@
     "faq": "FAQ",
     "admin": "Admin",
     "bookNow": "Book Now",
+    "theme": {
+      "dark": "Dark",
+      "light": "Light"
+    },
     "aria": {
       "switchToRussian": "Switch to Russian",
       "switchToEnglish": "Switch to English",
@@ -158,6 +162,10 @@
     "title": "Vasha Studio",
     "subtitle": "Creative Space",
     "description": "Premium photography studio and coworking space for creatives in the heart of the city",
+    "serviceUnavailable": {
+      "title": "Service Unavailable",
+      "description": "This service is currently unavailable. Please check back later or contact us for assistance."
+    },
     "features": {
       "professional": "Professional Equipment",
       "lighting": "Advanced Lighting",
@@ -400,7 +408,7 @@
         "required": "Please enter your name",
         "min": "Name must be at least {min} characters",
         "max": "Name must be at most {max} characters",
-        "pattern": "Name contains invalid characters",
+        "pattern": "Name can only contain letters (English or Russian) and spaces",
         "too_small": "Name must be at least {min} characters",
         "too_big": "Name must be at most {max} characters"
       },
@@ -598,6 +606,8 @@
     }
   },
   "contact": {
+    "title": "Contact Us",
+    "subtitle": "Get in Touch with Our Team",
     "phone": "Phone",
     "call": "Call us",
     "email": "Email",
@@ -607,6 +617,15 @@
     "getDirections": "Get directions",
     "hours": "Hours",
     "hoursShort": "Mon-Fri: 8AM-8PM, Sat-Sun: 9AM-6PM",
+    "monday_friday": "Monday - Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday",
+    "parking": "Parking",
+    "metro": "Metro",
+    "freeOnSite": "Free on site",
+    "blocksAway": "blocks away",
+    "gettingHere": "Getting Here",
+    "memberAccess": "24/7 access for monthly members",
     "viewSchedule": "View schedule",
     "cta": "Book a Consultation"
   },

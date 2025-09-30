@@ -59,7 +59,7 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
     name: z.string({ required_error: t('validation.name.required') })
       .min(2, t('validation.name.min', { min: 2 }))
       .max(50, t('validation.name.max', { max: 50 }))
-      .regex(/^[a-zA-Z\s]+$/, t('validation.name.pattern')),
+      .regex(/^[a-zA-Zа-яА-ЯёЁ\s]+$/u, t('validation.name.pattern')),
     email: z.string({ required_error: t('validation.email.required') })
       .min(1, t('validation.email.required'))
       .email(t('validation.email.invalid'))
