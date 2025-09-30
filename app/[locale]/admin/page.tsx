@@ -69,6 +69,7 @@ import {
 import { cn } from "@/lib/utils";
 // QueryProvider removed here to rely on the root provider from layout
 import { ServiceManagementSection } from "@/components/admin/ServiceManagementSection";
+import { BookingsTable } from "@/components/admin/BookingsTable";
 import { authorizedFetch } from "@/lib/client-auth";
 
 // Types
@@ -718,87 +719,13 @@ export default function AdminDashboard() {
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <div className="rounded-md border">
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>{tCommon('name')}</TableHead>
-                              <TableHead>{tCommon('email')}</TableHead>
-                              <TableHead>Service</TableHead>
-                              <TableHead>{tCommon('date')}</TableHead>
-                              <TableHead>{tCommon('time')}</TableHead>
-                              <TableHead>{tCommon('status')}</TableHead>
-                              <TableHead>{tCommon('actions')}</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {bookings
-                              .filter(booking => 
-                                filterStatus === 'all' || booking.status === filterStatus
-                              )
-                              .filter(booking =>
-                                booking.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                                booking.email.toLowerCase().includes(searchQuery.toLowerCase())
-                              )
-                              .map((booking, index) => (
-                                <motion.tr
-                                  key={booking.id}
-                                  initial={{ opacity: 0, y: 10 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  transition={{ duration: 0.3, delay: index * 0.05 }}
-                                  className="hover:bg-muted/50"
-                                >
-                                  <TableCell className="font-medium">{booking.name}</TableCell>
-                                  <TableCell>{booking.email}</TableCell>
-                                  <TableCell>
-                                    <Badge variant="outline" className="capitalize">
-                                      {booking.type}
-                                    </Badge>
-                                  </TableCell>
-                                  <TableCell>{new Date(booking.date).toLocaleDateString()}</TableCell>
-                                  <TableCell>{booking.start_time} - {booking.end_time}</TableCell>
-                                  <TableCell>
-                                    <Badge variant={
-                                      booking.status === 'confirmed' ? 'default' :
-                                      booking.status === 'pending' ? 'secondary' : 'destructive'
-                                    }>
-                                      {booking.status}
-                                    </Badge>
-                                  </TableCell>
-                                  <TableCell>
-                                    <DropdownMenu>
-                                      <DropdownMenuTrigger asChild>
-                                        <Button variant="ghost" className="h-8 w-8 p-0">
-                                          <MoreHorizontal className="h-4 w-4" />
-                                        </Button>
-                                      </DropdownMenuTrigger>
-                                      <DropdownMenuContent align="end">
-                                        <DropdownMenuLabel>{tCommon('actions')}</DropdownMenuLabel>
-                                        <DropdownMenuSeparator />
-                                        <DropdownMenuItem>
-                                          <Eye className="mr-2 h-4 w-4" />
-                                          {t('bookingManagement.viewDetails')}
-                                        </DropdownMenuItem>
-                                        {booking.status === 'pending' && (
-                                          <DropdownMenuItem onClick={() => persistBookingStatus(booking.id, 'confirmed')}>
-                                            <CheckCircle className="mr-2 h-4 w-4" />
-                                            {t('bookingManagement.confirmBooking')}
-                                          </DropdownMenuItem>
-                                        )}
-                                        {booking.status !== 'cancelled' && (
-                                          <DropdownMenuItem onClick={() => persistBookingStatus(booking.id, 'cancelled')}>
-                                            <XCircle className="mr-2 h-4 w-4" />
-                                            {t('bookingManagement.cancelBooking')}
-                                          </DropdownMenuItem>
-                                        )}
-                                      </DropdownMenuContent>
-                                    </DropdownMenu>
-                                  </TableCell>
-                                </motion.tr>
-                              ))}
-                          </TableBody>
-                        </Table>
-                      </div>
+                      <BookingsTable
+                        bookings={bookings}
+                        filterStatus={filterStatus}
+                        searchQuery={searchQuery}
+                        onConfirmBooking={(id) => persistBookingStatus(id, 'confirmed')}
+                        onCancelBooking={(id) => persistBookingStatus(id, 'cancelled')}
+                      />
                     </CardContent>
                   </Card>
                 </motion.div>

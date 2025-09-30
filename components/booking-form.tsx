@@ -1,8 +1,8 @@
 // components/booking-form.tsx
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
-import { Calendar as CalendarIcon, Check, ArrowRight, ArrowLeft, User, Mail, Phone, Clock, MessageSquare, XCircle } from "lucide-react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { Calendar as CalendarIcon, Check, ArrowRight, ArrowLeft, User, Mail, Phone, Clock, MessageSquare, XCircle, Save } from "lucide-react";
 import { format } from "date-fns";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -38,6 +38,13 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { 
+  autoSaveBookingDraft, 
+  restoreBookingDraft, 
+  clearBookingDrafts,
+  formatDraftAge,
+  getDraftAge
+} from "@/lib/booking-persistence";
 
 const TIME_SLOTS = [
   "09:00", "10:00", "11:00", "12:00", 
@@ -49,6 +56,9 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
   const [isLoading, setIsLoading] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [unavailableSlots, setUnavailableSlots] = useState<string[]>([]);
+  const [draftRestored, setDraftRestored] = useState(false);
+  const [showDraftNotification, setShowDraftNotification] = useState(false);
+  const autoSaveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const router = useRouter();
   const t = useTranslations('booking');
   const tCommon = useTranslations('common');
@@ -101,6 +111,8 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
 
   const watchBookingType = form.watch("bookingType");
   const watchDate = form.watch("date");
+  const watchStartTime = form.watch("startTime");
+  const watchEndTime = form.watch("endTime");
 
   const bookingTypes = useMemo(() => ([
     {
@@ -170,6 +182,74 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
 
   // `serviceRates` is provided by the server page via props; no client fetch here.
 
+  // Restore draft on mount
+  useEffect(() => {
+    const { draft, source } = restoreBookingDraft();
+    if (draft && !draftRestored) {
+      // Restore form values
+      if (draft.bookingType) form.setValue('bookingType', draft.bookingType);
+      if (draft.name) form.setValue('name', draft.name);
+      if (draft.email) form.setValue('email', draft.email);
+      if (draft.phone) form.setValue('phone', draft.phone);
+      if (draft.date) form.setValue('date', draft.date);
+      if (draft.startTime) form.setValue('startTime', draft.startTime);
+      if (draft.endTime) form.setValue('endTime', draft.endTime);
+      if (draft.message) form.setValue('message', draft.message || '');
+      
+      setDraftRestored(true);
+      setShowDraftNotification(true);
+      
+      const age = getDraftAge();
+      const ageText = age ? formatDraftAge(age) : 'recently';
+      toast.info(`Draft restored from ${ageText}`, {
+        duration: 5000,
+        action: {
+          label: 'Clear',
+          onClick: () => {
+            clearBookingDrafts();
+            form.reset();
+            setShowDraftNotification(false);
+          }
+        }
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Auto-save on form changes (debounced)
+  useEffect(() => {
+    if (!draftRestored) return; // Don't auto-save until after restoration
+    
+    const subscription = form.watch((value) => {
+      // Clear existing timeout
+      if (autoSaveTimeoutRef.current) {
+        clearTimeout(autoSaveTimeoutRef.current);
+      }
+      
+      // Set new timeout for auto-save (500ms debounce)
+      autoSaveTimeoutRef.current = setTimeout(() => {
+        autoSaveBookingDraft({
+          bookingType: value.bookingType,
+          name: value.name || '',
+          email: value.email || '',
+          phone: value.phone || '',
+          date: value.date,
+          startTime: value.startTime || '',
+          endTime: value.endTime || '',
+          message: value.message || '',
+          version: 1,
+        });
+      }, 500);
+    });
+    
+    return () => {
+      subscription.unsubscribe();
+      if (autoSaveTimeoutRef.current) {
+        clearTimeout(autoSaveTimeoutRef.current);
+      }
+    };
+  }, [form, draftRestored]);
+
   const computeHours = (start?: string, end?: string) => {
     if (!start || !end) return 0;
     const [sh, sm] = start.split(':').map(Number);
@@ -183,6 +263,19 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
   const formatCurrency = (amount: number, currency: string) => {
     try { return new Intl.NumberFormat(undefined, { style: 'currency', currency }).format(amount); } catch { return `${currency} ${amount}`; }
   };
+
+  // Reset endTime if it becomes invalid when startTime changes
+  useEffect(() => {
+    if (watchStartTime && watchEndTime) {
+      const start = parseInt(watchStartTime.replace(':', ''));
+      const end = parseInt(watchEndTime.replace(':', ''));
+      
+      // If end time is before or equal to start time, reset it
+      if (end <= start) {
+        form.setValue('endTime', '');
+      }
+    }
+  }, [watchStartTime, watchEndTime, form]);
 
   // Check for unavailable time slots when date changes
   const checkAvailability = useCallback(async (date: Date) => {
@@ -304,44 +397,43 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
 
       setSubmitStatus('success');
 
-      toast.success(tSuccess('title'), {
-        description: tSuccess('description'),
-        duration: 5000,
-      });
-
       // Parse response body to extract optional payment info
       const respJson = await response.json().catch(() => null);
 
-      // Wait a moment to show success state
-      setTimeout(() => {
-        form.reset();
-        setCurrentStep(1);
-        setSubmitStatus('idle');
-        try {
-          // Build absolute URL with locale to avoid router double-prefix issues
-          const currentLocale = typeof window !== 'undefined' ? (window.location.pathname.split('/')?.[1] || 'en') : 'en';
-          const params = new URLSearchParams();
-          if (respJson?.paymentUrl) {
-            params.set('paymentUrl', respJson.paymentUrl);
-            if (respJson.amount) {
-              const amountStr = respJson.currency ? `${respJson.amount} ${respJson.currency}` : String(respJson.amount);
-              params.set('amount', amountStr);
-            }
-          }
+      // Clear saved drafts on successful booking
+      clearBookingDrafts();
 
-          const fullUrl = `${typeof window !== 'undefined' ? window.location.origin : ''}/${currentLocale}/booking-success${params.toString() ? `?${params.toString()}` : ''}`;
+      // Show success toast
+      toast.success(tSuccess('title'), {
+        description: tSuccess('description'),
+        duration: 3000,
+      });
 
-          if (typeof window !== 'undefined') {
-            window.location.assign(fullUrl);
-          } else {
-            // fallback for non-client contexts
-            router.push('/booking-success');
+      // Immediate redirect to booking success page (no delay)
+      try {
+        // Build absolute URL with locale to avoid router double-prefix issues
+        const currentLocale = typeof window !== 'undefined' ? (window.location.pathname.split('/')?.[1] || 'en') : 'en';
+        const params = new URLSearchParams();
+        if (respJson?.paymentUrl) {
+          params.set('paymentUrl', respJson.paymentUrl);
+          if (respJson.amount) {
+            const amountStr = respJson.currency ? `${respJson.amount} ${respJson.currency}` : String(respJson.amount);
+            params.set('amount', amountStr);
           }
-        } catch (err) {
-          // fallback to basic redirect
-          router.push('/booking-success');
         }
-      }, 2000);
+
+        const fullUrl = `/${currentLocale}/booking-success${params.toString() ? `?${params.toString()}` : ''}`;
+
+        if (typeof window !== 'undefined') {
+          window.location.href = fullUrl; // Direct navigation, no history back to booking form
+        } else {
+          // fallback for non-client contexts
+          router.replace('/booking-success');
+        }
+      } catch (err) {
+        // fallback to basic redirect
+        router.replace('/booking-success');
+      }
 
     } catch (error) {
       console.error(tApi('errors.failedToCreateBooking') ?? 'Booking submission error', error);
@@ -686,7 +778,11 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel>{t('schedule.endTime')}</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <Select 
+                                  key={`endTime-${watchStartTime}`} 
+                                  onValueChange={field.onChange} 
+                                  value={field.value}
+                                >
                                   <FormControl>
                                     <SelectTrigger className="h-12">
                                       <SelectValue placeholder={t('schedule.endTime')} />
@@ -694,7 +790,7 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
                                   </FormControl>
                                   <SelectContent>
                                     {TIME_SLOTS.map((time) => {
-                                      const startTime = form.getValues("startTime");
+                                      const startTime = watchStartTime;
                                       const isBeforeStart = startTime && parseInt(time.replace(':', '')) <= parseInt(startTime.replace(':', ''));
                                       const isUnavailable = unavailableSlots.includes(time);
                                       const disabled = isBeforeStart || isUnavailable;
