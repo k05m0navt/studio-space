@@ -34,7 +34,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { toast } from "sonner";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { 
   DropdownMenu,
   DropdownMenuContent,
@@ -70,6 +70,7 @@ import { cn } from "@/lib/utils";
 // QueryProvider removed here to rely on the root provider from layout
 import { ServiceManagementSection } from "@/components/admin/ServiceManagementSection";
 import { BookingsTable } from "@/components/admin/BookingsTable";
+import { SettingsPanel } from "@/components/admin/SettingsPanel";
 import { authorizedFetch } from "@/lib/client-auth";
 
 // Types
@@ -297,6 +298,7 @@ const StatsCard = ({
 };
 
 export default function AdminDashboard() {
+  const locale = useLocale();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
@@ -997,15 +999,7 @@ export default function AdminDashboard() {
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-6">
-                        <div className="text-center py-12">
-                          <Settings className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-                          <h3 className="text-lg font-semibold mb-2">Settings Panel</h3>
-                          <p className="text-muted-foreground">
-                            Settings and configuration options will be available here.
-                          </p>
-                        </div>
-                      </div>
+                      <SettingsPanel locale={locale} />
                     </CardContent>
                   </Card>
                 </motion.div>
