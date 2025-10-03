@@ -1,0 +1,33 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+COMMIT_MSG_FILE="$1"
+COMMIT_SOURCE="$2"
+
+# Skip for merge or squash commits
+if [ "$COMMIT_SOURCE" = "merge" ] || [ "$COMMIT_SOURCE" = "squash" ]; then
+  exit 0
+fi
+
+# If checklist already present, don't add again
+if grep -q "^Contributing checklist:" "$COMMIT_MSG_FILE"; then
+  exit 0
+fi
+
+# Prepend the checklist to the commit message
+cat << 'EOF' > /tmp/commitmsg.$$
+Contributing checklist:
+- [ ] Branch: (feature|fix|chore)/
+- [ ] Conventional commit: type(scope): short summary
+- [ ] Linted & formatted
+- [ ] Tests run (if applicable)
+
+EOF
+
+# Preserve original message after the checklist
+cat "$COMMIT_MSG_FILE" >> /tmp/commitmsg.$$
+
+# Replace the original commit message file
+mv /tmp/commitmsg.$$ "$COMMIT_MSG_FILE"
+
+exit 0
