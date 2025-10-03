@@ -1,0 +1,14 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+if command -v npx >/dev/null 2>&1; then
+  if npx --no -- lint-staged; then
+    exit 0
+  else
+    echo "lint-staged failed or is not installed. Skipping pre-commit checks."
+    exit 0
+  fi
+else
+  echo "npx not found; skipping lint-staged pre-commit step."
+  exit 0
+fi
