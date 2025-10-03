@@ -68,3 +68,11 @@ From the last completed task, these patterns may be useful for future work:
 ---
 
 *Last updated: 2025-09-30*
+
+---
+
+## 📎 Agent Contribution Rules
+
+Automated agents and scripts: please load and apply `memory-bank/contributing.md` when performing edits, commits, or creating PRs in this workspace. The file contains branch naming, commit message format, linting, and PR checklist rules to follow.
+
+Agents that cannot run git hooks should still conform to the commit message style and include the PR checklist in PR descriptions.
