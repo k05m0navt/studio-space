@@ -598,3 +598,46 @@ This task does NOT require additional CREATIVE mode because:
 ---
 
 *Task archived and completed: 2025-09-30*
+
+---
+
+# Task: Admin & Mobile UX + PWA + Tooling
+
+## Description
+Add admin-editable contact/location settings, simplify mobile navbar (only Book button), make admin panel responsive (mobile), hide public admin link, replace hardcoded admin stats with live data, remove non-working features, fix i18n gaps, enable PWA, add CONTRIBUTING.md and Husky.
+
+## Complexity
+Level: 3
+Type: Feature / UX + Backend
+
+## Files to Modify
+- `components/navbar.tsx`
+- `app/[locale]/admin/page.tsx`
+- `components/admin/BookingsTable.tsx`
+- `components/admin/SettingsPanel.tsx` (create/extend)
+- `app/api/settings/*` (server endpoints)
+- `app/api/admin/stats` (ensure live data)
+- `messages/en.json`, `messages/ru.json`
+- `public/manifest.json`, `service-worker.js`
+- `CONTRIBUTING.md`, `package.json`, `.husky/`
+
+## Implementation Plan (high level)
+1. Settings API + admin settings UI (phone, address, hours, email, photos, coords)
+2. Mobile navbar: show only Book button on small screens; remove public admin link
+3. Admin panel responsiveness: responsive header buttons, responsive tables, remove Users tab
+4. Replace hardcoded stats with live `api/admin/stats`
+5. FAQ conditional rendering by service flags
+6. Fix missing i18n keys
+7. Enable PWA
+8. Audit & remove broken features
+9. Add `CONTRIBUTING.md` and Husky pre-commit hooks
+
+## Status
+- [x] Planning complete
+- [ ] Technology validation
+- [ ] Implementation in progress
+
+## Estimate
+Overall: 8-14 hours (Level 3 estimate)
+
+**Created**: 2025-10-01

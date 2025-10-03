@@ -1,4 +1,5 @@
-import { computeHours, computeAmount } from '@/lib/pricing';
+import { describe, test, expect } from 'vitest';
+import { computeHours, computeAmount } from '../../lib/pricing';
 
 describe('pricing util', () => {
   test('computeHours returns fractional hours', () => {

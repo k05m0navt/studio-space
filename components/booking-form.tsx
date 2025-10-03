@@ -227,19 +227,17 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
       }
       
       // Set new timeout for auto-save (500ms debounce)
-      autoSaveTimeoutRef.current = setTimeout(() => {
-        autoSaveBookingDraft({
-          bookingType: value.bookingType,
-          name: value.name || '',
-          email: value.email || '',
-          phone: value.phone || '',
-          date: value.date,
-          startTime: value.startTime || '',
-          endTime: value.endTime || '',
-          message: value.message || '',
-          version: 1,
-        });
-      }, 500);
+      autoSaveBookingDraft({
+        bookingType: value.bookingType,
+        name: value.name || '',
+        email: value.email || '',
+        phone: value.phone || '',
+        date: value.date,
+        startTime: value.startTime || '',
+        endTime: value.endTime || '',
+        message: value.message || '',
+        version: 1,
+      });
     });
     
     return () => {
@@ -289,6 +287,19 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
       console.error(tApi('errors.failedToCheckAvailability') ?? 'Failed to check availability', error);
     }
   }, [watchBookingType]);
+
+  // Helper: check if a candidate time range overlaps any unavailableSlots
+  const rangeOverlapsUnavailable = (start?: string, end?: string) => {
+    if (!start || !end) return false;
+    const startHour = parseInt(String(start).split(':')[0]);
+    const endHour = parseInt(String(end).split(':')[0]);
+    if (isNaN(startHour) || isNaN(endHour)) return false;
+    for (let hour = startHour; hour < endHour; hour++) {
+      const slot = `${String(hour).padStart(2, '0')}:00`;
+      if (unavailableSlots.includes(slot)) return true;
+    }
+    return false;
+  };
 
   useEffect(() => {
     if (watchDate) {
@@ -753,16 +764,19 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
                                   <SelectContent>
                                     {TIME_SLOTS.map((time) => {
                                       const isUnavailable = unavailableSlots.includes(time);
+                                      // If an end time is selected, ensure choosing this start time won't create an overlapping range
+                                      const disabledDueToRange = watchEndTime ? rangeOverlapsUnavailable(time, watchEndTime) : false;
+                                      const disabled = isUnavailable || disabledDueToRange;
                                       return (
                                         <SelectItem 
                                           key={time} 
                                           value={time}
-                                          disabled={isUnavailable}
-                                          className={isUnavailable ? "opacity-50 cursor-not-allowed" : ""}
+                                          disabled={disabled}
+                                          className={disabled ? "opacity-50 cursor-not-allowed" : ""}
                                         >
                                           <div className="flex items-center justify-between w-full gap-2">
                                             <span className="font-medium">{time}</span>
-                                            {isUnavailable ? (
+                                            {disabled ? (
                                               <span className="flex items-center text-xs text-destructive gap-1">
                                                 <XCircleIcon className="w-3 h-3" />
                                                 {t('schedule.unavailable')}
@@ -802,8 +816,10 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
                                       const startTime = watchStartTime;
                                       const isBeforeStart = startTime && parseInt(time.replace(':', '')) <= parseInt(startTime.replace(':', ''));
                                       const isUnavailable = unavailableSlots.includes(time);
-                                      const disabled = isBeforeStart || isUnavailable;
-                                      
+                                      // Prevent selecting an end time that makes the full range overlap unavailable slots
+                                      const disabledDueToRange = startTime ? rangeOverlapsUnavailable(startTime, time) : false;
+                                      const disabled = isBeforeStart || isUnavailable || disabledDueToRange;
+
                                       return (
                                         <SelectItem 
                                           key={time} 
@@ -818,7 +834,7 @@ export function BookingForm({ serviceRates }: { serviceRates: { [k: string]: any
                                                 <Ban className="w-3 h-3" />
                                                 {t('schedule.mustBeAfterStart')}
                                               </span>
-                                            ) : isUnavailable ? (
+                                            ) : (isUnavailable || disabledDueToRange) ? (
                                               <span className="flex items-center text-xs text-destructive gap-1">
                                                 <XCircleIcon className="w-3 h-3" />
                                                 {t('schedule.unavailable')}

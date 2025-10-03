@@ -28,6 +28,49 @@ export const POST = requireRole(['ADMIN', 'MODERATOR'])(async ({ user, request }
       );
     }
 
+    // Fetch existing booking to validate times/type before confirming
+    const existing = await prisma.booking.findUnique({ where: { id: bookingId } });
+    if (!existing) {
+      return new Response(JSON.stringify({ error: 'Booking not found' }), { status: 404, headers: { 'Content-Type': 'application/json' } });
+    }
+
+    // If confirming, ensure no overlapping bookings exist for the same date/type
+    if (status === 'confirmed') {
+      const bookingDate = new Date(existing.date);
+      const startOfDay = new Date(bookingDate);
+      startOfDay.setHours(0, 0, 0, 0);
+      const endOfDay = new Date(bookingDate);
+      endOfDay.setHours(23, 59, 59, 999);
+
+      // Only perform overlap check if times are present
+      if (existing.start_time && existing.end_time) {
+        const conflicting = await prisma.booking.findMany({
+          where: {
+            id: { not: bookingId },
+            type: existing.type,
+            date: {
+              gte: startOfDay,
+              lte: endOfDay,
+            },
+            status: {
+              in: ['pending', 'confirmed'],
+            },
+            AND: [
+              { start_time: { lt: existing.end_time } },
+              { end_time: { gt: existing.start_time } },
+            ],
+          },
+        });
+
+        if (conflicting.length > 0) {
+          return new Response(
+            JSON.stringify({ error: 'Booking time conflicts with an existing booking' }),
+            { status: 409, headers: { 'Content-Type': 'application/json' } }
+          );
+        }
+      }
+    }
+
     // Update booking status
     const updatedBooking = await prisma.booking.update({
       where: { id: bookingId },

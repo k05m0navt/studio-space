@@ -302,7 +302,11 @@ export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("overview");
-  const [bookings, setBookings] = useState<Booking[]>([]);
+  // Server-side pagination state for bookings
+  const [bookingsData, setBookingsData] = useState<Booking[]>([]);
+  const [bookingsTotal, setBookingsTotal] = useState(0);
+  const [bookingsPage, setBookingsPage] = useState(1);
+  const [bookingsPageSize, setBookingsPageSize] = useState(10);
   const [users, setUsers] = useState<User[]>([]);
   const [stats, setStats] = useState<Stats>({
     totalBookings: 0,
@@ -337,49 +341,39 @@ export default function AdminDashboard() {
   const loadDashboardData = useCallback(async () => {
     setIsLoadingData(true);
     try {
-      const locale = window.location.pathname.split('/')[1] || 'en';
+      const localePath = window.location.pathname.split('/')[1] || 'en';
 
-      const [bookingsResponse, usersResponse, statsResponse] = await Promise.all([
-        authorizedFetch(`/${locale}/api/admin/bookings`),
-        authorizedFetch(`/${locale}/api/admin/users`),
-        authorizedFetch(`/${locale}/api/admin/stats`)
-      ]);
+      // Fetch bookings page with server-side pagination
+      const params = new URLSearchParams();
+      params.set('limit', String(bookingsPageSize));
+      params.set('offset', String((bookingsPage - 1) * bookingsPageSize));
+      if (filterStatus && filterStatus !== 'all') params.set('status', filterStatus);
+
+      const bookingsResponse = await authorizedFetch(`/${localePath}/api/admin/bookings?${params.toString()}`);
+      const usersResponse = await authorizedFetch(`/${localePath}/api/admin/users`);
+      const statsResponse = await authorizedFetch(`/${localePath}/api/admin/stats`);
 
       if ([bookingsResponse, usersResponse, statsResponse].some(r => r.status === 401 || r.status === 403)) {
         handleUnauthorized();
         return;
       }
 
-      let bookingsData: Booking[] = [];
-      let usersData: User[] = [];
-      let statsData: Stats = {
-        totalBookings: 0,
-        monthlyRevenue: 0,
-        currency: 'RUB',
-        activeMembers: 0,
-        studioUtilization: 0,
-        pendingBookings: 0,
-        confirmedBookings: 0,
-        todayBookings: 0,
-        weeklyGrowth: 0
-      };
-      
       if (bookingsResponse.ok) {
         const data = await bookingsResponse.json();
-        bookingsData = Array.isArray(data) ? data : (data?.bookings ?? []);
+        setBookingsData(Array.isArray(data?.bookings) ? data.bookings : (data?.bookings ?? []));
+        setBookingsTotal(Number(data?.total || 0));
       }
+
       if (usersResponse.ok) {
         const data = await usersResponse.json();
-        usersData = Array.isArray(data) ? data : (data?.users ?? []);
+        setUsers(Array.isArray(data) ? data : (data?.users ?? []));
       }
+
       if (statsResponse.ok) {
-        statsData = await statsResponse.json();
+        const data = await statsResponse.json();
+        setStats(data);
       }
-      
-      setStats(statsData);
-      setBookings(bookingsData);
-      setUsers(usersData);
-      
+
       toast.success(t('messages.dataRefreshed'));
     } catch (error) {
       console.error('Failed to load dashboard data:', error);
@@ -387,7 +381,7 @@ export default function AdminDashboard() {
     } finally {
       setIsLoadingData(false);
     }
-  }, [t, handleUnauthorized]);
+  }, [t, handleUnauthorized, bookingsPage, bookingsPageSize, filterStatus]);
 
   // Persist booking status change to server and refresh UI
   async function persistBookingStatus(id: string, status: 'confirmed' | 'cancelled') {
@@ -414,7 +408,7 @@ export default function AdminDashboard() {
 
       const data = await res.json();
       const updatedBooking = data?.booking ?? data;
-      setBookings(prev => prev.map(b => (b.id === id ? { ...b, ...(updatedBooking as Partial<Booking>) } : b)));
+      setBookingsData(prev => prev.map(b => (b.id === id ? { ...b, ...(updatedBooking as Partial<Booking>) } : b)));
       toast.success(status === 'confirmed' ? t('messages.bookingConfirmed') : t('messages.bookingCancelled'));
       try { await loadDashboardData(); } catch (e) { console.warn('Failed to refresh dashboard after booking update', e); }
     } catch (err) {
@@ -484,7 +478,7 @@ export default function AdminDashboard() {
               {t('description')}
             </p>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-wrap">
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <Button
                 variant="outline"
@@ -517,7 +511,7 @@ export default function AdminDashboard() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
-            <TabsList className="grid w-full grid-cols-6 lg:w-fit lg:grid-cols-6">
+            <TabsList className="grid w-full grid-cols-5 lg:w-fit lg:grid-cols-5">
               <TabsTrigger value="overview" className="flex items-center gap-2">
                 <BarChart3 className="w-4 h-4" />
                 <span className="hidden sm:inline">{t('overview')}</span>
@@ -525,10 +519,6 @@ export default function AdminDashboard() {
               <TabsTrigger value="bookings" className="flex items-center gap-2">
                 <Calendar className="w-4 h-4" />
                 <span className="hidden sm:inline">{t('bookings')}</span>
-              </TabsTrigger>
-              <TabsTrigger value="users" className="flex items-center gap-2">
-                <Users className="w-4 h-4" />
-                <span className="hidden sm:inline">{t('users')}</span>
               </TabsTrigger>
               <TabsTrigger value="admins" className="flex items-center gap-2">
                 <Shield className="w-4 h-4" />
@@ -602,7 +592,7 @@ export default function AdminDashboard() {
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-4">
-                          {bookings.slice(0, 3).map((booking, index) => (
+                          {bookingsData.slice(0, 3).map((booking, index) => (
                             <motion.div
                               key={booking.id}
                               initial={{ opacity: 0, y: 10 }}
@@ -648,7 +638,6 @@ export default function AdminDashboard() {
                           <div className="space-y-3">
                             {[
                               { icon: Plus, label: t('quickActions.addBooking'), onClick: () => setActiveTab('bookings') },
-                              { icon: Users, label: t('quickActions.manageUsers'), onClick: () => setActiveTab('users') },
                               { icon: Shield, label: t('quickActions.createAdmin'), onClick: () => setActiveTab('admins') },
                               { icon: Download, label: t('quickActions.exportData'), onClick: () => toast.info(t('quickActions.exportSoon')) }
                             ].map((action, index) => (
@@ -722,11 +711,17 @@ export default function AdminDashboard() {
                     </CardHeader>
                     <CardContent>
                       <BookingsTable
-                        bookings={bookings}
+                        bookings={bookingsData}
                         filterStatus={filterStatus}
                         searchQuery={searchQuery}
                         onConfirmBooking={(id) => persistBookingStatus(id, 'confirmed')}
                         onCancelBooking={(id) => persistBookingStatus(id, 'cancelled')}
+                        serverMode={true}
+                        serverTotal={bookingsTotal}
+                        serverPage={bookingsPage}
+                        serverPageSize={bookingsPageSize}
+                        onPageChange={(p) => setBookingsPage(p)}
+                        onPageSizeChange={(s) => { setBookingsPageSize(s); setBookingsPage(1); }}
                       />
                     </CardContent>
                   </Card>

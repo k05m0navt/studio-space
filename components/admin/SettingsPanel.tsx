@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Bell, Globe, Palette, Shield, Save, Check } from "lucide-react";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
+import { authorizedFetch } from "@/lib/client-auth";
 
 interface SettingsPanelProps {
   locale?: string;
@@ -20,7 +21,7 @@ interface SettingsPanelProps {
 export function SettingsPanel({ locale = "en" }: SettingsPanelProps) {
   const t = useTranslations('admin');
   const tCommon = useTranslations('common');
-  
+
   // Settings state
   const [settings, setSettings] = useState({
     // General
@@ -28,16 +29,16 @@ export function SettingsPanel({ locale = "en" }: SettingsPanelProps) {
     siteDescription: "Creative Space & Photography Studio",
     adminEmail: "admin@vashastudio.com",
     timezone: "Europe/Moscow",
-    
+
     // Notifications
     emailNotifications: true,
     bookingNotifications: true,
     systemNotifications: false,
-    
+
     // Appearance
     defaultLocale: locale,
     enableDarkMode: true,
-    
+
     // Security
     twoFactorAuth: false,
     sessionTimeout: 30,
@@ -46,28 +47,57 @@ export function SettingsPanel({ locale = "en" }: SettingsPanelProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'success'>('idle');
 
+  useEffect(() => {
+    async function load() {
+      try {
+        const localePath = typeof window !== 'undefined' ? window.location.pathname.split('/')[1] || 'en' : 'en';
+        const res = await authorizedFetch(`/${localePath}/api/settings/general`);
+        if (!res.ok) return;
+        const json = await res.json();
+        const data = json?.data ?? {};
+        setSettings(prev => ({
+          ...prev,
+          siteName: data.site?.name ?? prev.siteName,
+          siteDescription: data.site?.description ?? prev.siteDescription,
+          adminEmail: data.contact?.email ?? prev.adminEmail,
+          // timezone left as-is (not stored in general settings yet)
+        }));
+      } catch (err) {
+        console.error('Failed to load general settings', err);
+      }
+    }
+    load();
+  }, []);
+
   const handleSave = async () => {
     setIsSaving(true);
     setSaveStatus('idle');
-    
+
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // In a real implementation, save to API:
-      // const response = await fetch('/api/admin/settings', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(settings),
-      // });
-      
-      localStorage.setItem('adminSettings', JSON.stringify(settings));
-      
+      const payload = {
+        site: { name: settings.siteName, description: settings.siteDescription },
+        contact: { email: settings.adminEmail }
+      };
+      const localePath = typeof window !== 'undefined' ? window.location.pathname.split('/')[1] || 'en' : 'en';
+      const res = await authorizedFetch(`/${localePath}/api/settings/general`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        const body = await res.text().catch(() => null);
+        let msg = 'Failed to save settings';
+        try { const j = body ? JSON.parse(body) : null; msg = j?.error || j?.message || msg; } catch {}
+        toast.error(tCommon('error'), { description: msg });
+        return;
+      }
+
       setSaveStatus('success');
       toast.success(tCommon('success'), {
         description: 'Settings saved successfully',
       });
-      
+
       setTimeout(() => setSaveStatus('idle'), 2000);
     } catch (error) {
       toast.error(tCommon('error'), {
@@ -117,7 +147,7 @@ export function SettingsPanel({ locale = "en" }: SettingsPanelProps) {
                   placeholder="Enter site name"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="siteDescription">Site Description</Label>
                 <Input
@@ -127,7 +157,7 @@ export function SettingsPanel({ locale = "en" }: SettingsPanelProps) {
                   placeholder="Enter site description"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="adminEmail">Admin Email</Label>
                 <Input
@@ -138,7 +168,7 @@ export function SettingsPanel({ locale = "en" }: SettingsPanelProps) {
                   placeholder="admin@example.com"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="timezone">Timezone</Label>
                 <Select value={settings.timezone} onValueChange={(value) => setSettings({ ...settings, timezone: value })}>
@@ -176,9 +206,9 @@ export function SettingsPanel({ locale = "en" }: SettingsPanelProps) {
                   onCheckedChange={(checked) => setSettings({ ...settings, emailNotifications: checked })}
                 />
               </div>
-              
+
               <Separator />
-              
+
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label htmlFor="bookingNotifications">Booking Notifications</Label>
@@ -190,9 +220,9 @@ export function SettingsPanel({ locale = "en" }: SettingsPanelProps) {
                   onCheckedChange={(checked) => setSettings({ ...settings, bookingNotifications: checked })}
                 />
               </div>
-              
+
               <Separator />
-              
+
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label htmlFor="systemNotifications">System Notifications</Label>
@@ -228,9 +258,9 @@ export function SettingsPanel({ locale = "en" }: SettingsPanelProps) {
                   </SelectContent>
                 </Select>
               </div>
-              
+
               <Separator />
-              
+
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5">
                   <Label htmlFor="enableDarkMode">Dark Mode</Label>
@@ -265,9 +295,9 @@ export function SettingsPanel({ locale = "en" }: SettingsPanelProps) {
                   onCheckedChange={(checked) => setSettings({ ...settings, twoFactorAuth: checked })}
                 />
               </div>
-              
+
               <Separator />
-              
+
               <div className="space-y-2">
                 <Label htmlFor="sessionTimeout">Session Timeout (minutes)</Label>
                 <Select 

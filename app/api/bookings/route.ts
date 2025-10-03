@@ -145,6 +145,7 @@ export async function POST(request: NextRequest) {
     const endOfDay = new Date(bookingDate);
     endOfDay.setHours(23, 59, 59, 999);
 
+    // Detect overlapping bookings: existing.start_time < new.end_time AND existing.end_time > new.start_time
     const conflictingBookings = await prisma.booking.findMany({
       where: {
         type: validatedData.type,
@@ -155,8 +156,10 @@ export async function POST(request: NextRequest) {
         status: {
           in: ['pending', 'confirmed'],
         },
-        start_time: validatedData.start_time || undefined,
-        end_time: validatedData.end_time || undefined,
+        AND: [
+          { start_time: { lt: validatedData.end_time } },
+          { end_time: { gt: validatedData.start_time } },
+        ],
       },
     });
 

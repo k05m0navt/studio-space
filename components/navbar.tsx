@@ -29,7 +29,6 @@ const NAV_ITEMS = [
   { href: "/coworking", labelKey: "coworking" },
   { href: "/gallery", labelKey: "gallery" },
   { href: "/faq", labelKey: "faq" },
-  { href: "/admin", labelKey: "admin" },
 ] as const;
 
 // Studio logo removed — using plain site title in navbar instead
@@ -394,22 +393,7 @@ export function Navbar({ services: initialServices = null }: { services?: { stud
                     <Calendar className="h-4 w-4" />
                   </motion.button>
                 </Link>
-                <LanguageSwitcher />
-                <DarkModeToggle />
-
-                <button className="h-12 w-12 rounded-full border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 shadow-sm flex items-center justify-center transition-colors" onClick={() => setMenuOpen(!menuOpen)} aria-label={t('aria.toggleMenu')} aria-expanded={menuOpen}>
-                  <AnimatePresence mode="wait">
-                    {menuOpen ? (
-                      <motion.div key="close" initial={{ rotate: 0 }} animate={{ rotate: 90 }} exit={{ rotate: 0 }} transition={{ duration: 0.15, ease: "linear" }}>
-                        <X className="h-6 w-6 text-gray-700 dark:text-gray-300" />
-                      </motion.div>
-                    ) : (
-                      <motion.div key="menu" initial={{ rotate: 90 }} animate={{ rotate: 0 }} exit={{ rotate: 90 }} transition={{ duration: 0.15, ease: "linear" }}>
-                        <Menu className="h-6 w-6 text-gray-700 dark:text-gray-300" />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </button>
+                {/* Mobile simplified: only Book button shown to improve UX on small screens */}
               </div>
             </div>
           </div>
