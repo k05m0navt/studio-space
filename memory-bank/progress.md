@@ -246,6 +246,9 @@
   - Total time: ~11 hours (within 10-14h estimate)
   - Next: Final testing and git commit
 
+- CHORE: CONTRIBUTING.md & Husky
+  - Added `CONTRIBUTING.md` at repo root and a Husky pre-commit hook to run `lint-staged` (install with `yarn install` + `npm run prepare`)
+
 ---
 
 ## 📦 TASK ARCHIVED: 2025-09-30

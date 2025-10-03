@@ -631,6 +631,9 @@ Type: Feature / UX + Backend
 7. Enable PWA
 8. Audit & remove broken features
 9. Add `CONTRIBUTING.md` and Husky pre-commit hooks
+  - [x] Create `CONTRIBUTING.md` at repo root
+  - [x] Add Husky pre-commit hook `.husky/pre-commit` to run `lint-staged`
+  - [ ] Document install step: run `yarn install` then `npm run prepare` (or `yarn prepare`) to enable hooks
 
 ## Status
 - [x] Planning complete
